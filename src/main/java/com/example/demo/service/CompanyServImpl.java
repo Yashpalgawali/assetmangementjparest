@@ -35,20 +35,14 @@ public class CompanyServImpl implements CompanyService {
 	}
 
 	@Override
-	public Company getCompanyById(String id) {
+	public Company getCompanyById(Long id) {
 		// TODO Auto-generated method stub
-		Long cid = Long.valueOf(id);
-		
-		Company comp = comprepo.findById(cid).get();
-		
-		if(comp!=null)
-		{
-			return comp;
+		try {
+			return comprepo.findById(id).get();
 		}
-		else {
+		catch(Exception e){
 			return null;
 		}
-		
 	}
 
 	@Override

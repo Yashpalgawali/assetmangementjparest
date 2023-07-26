@@ -39,8 +39,7 @@ public class CompanyController {
 	public ResponseEntity<List<Company>> saveCompany(@RequestBody Company company)
 	{
 		Company comp = compserv.saveCompany(company);
-		if(comp!=null)
-		{
+		if(comp!=null){
 			return new ResponseEntity<List<Company>>(compserv.getAllCompanies(),HttpStatus.OK);
 		}
 		else {
@@ -49,8 +48,7 @@ public class CompanyController {
 	}
 
 	@GetMapping("/")
-	public ResponseEntity<List<Company>>  viewCompany()
-	{
+	public ResponseEntity<List<Company>> viewCompany() {
 			List<Company> clist = compserv.getAllCompanies();
 			if(clist.size()>0){
 				return new ResponseEntity<List<Company>>(clist,HttpStatus.OK) ;
@@ -60,29 +58,28 @@ public class CompanyController {
 			}
 	}
 	
-//	@GetMapping("/editcompany/{id}")
-//	public String editCompany(@PathVariable("id") Long cid,Model model , RedirectAttributes attr)
-//	{
-//		Company comp = compserv.getCompanyById(""+cid);
-//		model.addAttribute("comp", comp);
-//		return "EditCompany";
-//	}
-//	
-//	@RequestMapping("/updatecompany")
-//	public String updateCompany(@ModelAttribute("Company")Company comp,RedirectAttributes attr)
-//	{
-//		int res = compserv.updateCompany(comp);
-//		if(res > 0)
-//		{
-//			attr.addFlashAttribute("response", "Company updated successfully");
-//			return "redirect:/viewcompanies";
-//		}
-//		else {
-//			attr.addFlashAttribute("reserr", "Company is not updated ");
-//			return "redirect:/viewcompanies";
-//		}
-//		
-//	}
+	@GetMapping("/{id}")
+	public ResponseEntity<Company> editCompany(@PathVariable("id") Long cid) {
+		Company comp = compserv.getCompanyById(cid);
+		if(comp!=null){
+			return new ResponseEntity<Company>(comp,HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<Company>(HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	@RequestMapping("/updatecompany")
+	public ResponseEntity<List<Company>> updateCompany(@RequestBody Company comp)
+	{
+		int res = compserv.updateCompany(comp);
+		if (res > 0){
+			return new ResponseEntity<List<Company>>(compserv.getAllCompanies(),HttpStatus.OK) ;
+		}
+		else {
+			return new ResponseEntity<List<Company>>(HttpStatus.NOT_FOUND) ;
+		}
+	}
 
 
 }
