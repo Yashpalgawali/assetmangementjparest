@@ -10,8 +10,8 @@ public Designation saveDesignation(Designation dept);
 	
 	public List<Designation> getAllDesignations();
 	
-	public Designation getDesignationById(String deptid);
+	public Designation getDesignationById(Long deptid);
 	
 	public int updateDesignation(Designation dept);
-	
+
 }

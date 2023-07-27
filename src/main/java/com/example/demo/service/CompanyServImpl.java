@@ -19,8 +19,7 @@ public class CompanyServImpl implements CompanyService {
 	public Company saveCompany(Company comp) {
 		// TODO Auto-generated method stub
 		
-		if(comp!=null)
-		{
+		if(comp!=null){
 			return comprepo.save(comp);
 		}
 		else {

@@ -27,16 +27,12 @@ public class DesignationServiceImpl implements DesignationService {
 	}
 
 	@Override
-	public Designation getDesignationById(String desigid) {
+	public Designation getDesignationById(Long desigid) {
 		// TODO Auto-generated method stub
-		Long did = Long.valueOf(desigid);
-		
-		Designation desig = desigrepo.findById(did).get();
-		if(desig!=null)
-		{
-			return desig;
+		try {
+			return desigrepo.findById(desigid).get();
 		}
-		else {
+		catch(Exception e) {
 			return null;
 		}
 		
