@@ -34,18 +34,12 @@ public class DepartmentServImpl implements DepartmentService {
 	}
 
 	@Override
-	public Department getDepartmentById(String deptid) {
+	public Department getDepartmentById(Long deptid) {
 		// TODO Auto-generated method stub
-		
-		Long did = Long.valueOf(deptid);
-		
-		Department dept = deptrepo.findById(did).get();
-		
-		if(dept!=null)
-		{
-			return dept;
+		try {
+			return  deptrepo.findById(deptid).get();
 		}
-		else {
+		catch(Exception e) {
 			return null;
 		}
 	}
@@ -57,11 +51,10 @@ public class DepartmentServImpl implements DepartmentService {
 	}
 
 	@Override
-	public List<Department> getDepartmentByCompanyId(String cid) {
+	public List<Department> getDepartmentByCompanyId(Long cid) {
 		// TODO Auto-generated method stub
-		Long cmid = Long.valueOf(cid);
 		
-		return deptrepo.getAllDepartmentsByCompanyId(cmid);
+		return deptrepo.getAllDepartmentsByCompanyId(""+cid);
 	}
 
 }

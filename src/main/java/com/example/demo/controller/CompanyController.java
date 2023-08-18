@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,12 +30,7 @@ public class CompanyController {
 	@Autowired
 	CompanyService compserv;
 	
-//	@GetMapping("/addcompany")
-//	public String addCompany()
-//	{
-//		return "AddCompany";
-//	}
-	
+
 	@PostMapping("/")
 	public ResponseEntity<List<Company>> saveCompany(@RequestBody Company company)
 	{
@@ -69,9 +65,9 @@ public class CompanyController {
 		}
 	}
 	
-	@RequestMapping("/updatecompany")
-	public ResponseEntity<List<Company>> updateCompany(@RequestBody Company comp)
-	{
+	@PostMapping("/updatecompany")
+	public ResponseEntity<List<Company>> updateCompany(@RequestBody Company comp){
+		System.err.println("inside update comp controller \n Company = "+comp.toString());
 		int res = compserv.updateCompany(comp);
 		if (res > 0){
 			return new ResponseEntity<List<Company>>(compserv.getAllCompanies(),HttpStatus.OK) ;
@@ -80,6 +76,5 @@ public class CompanyController {
 			return new ResponseEntity<List<Company>>(HttpStatus.NOT_FOUND) ;
 		}
 	}
-
 
 }

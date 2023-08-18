@@ -5,25 +5,22 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import com.example.demo.models.Company;
 import com.example.demo.models.Department;
 import com.example.demo.service.CompanyService;
 import com.example.demo.service.DepartmentService;
 
 @RestController
 @RequestMapping("/department")
+@CrossOrigin("*")
 public class DepartmentController {
 
 	@Autowired
@@ -31,19 +28,12 @@ public class DepartmentController {
 	
 	@Autowired
 	CompanyService compserv;
-//	
-//	@GetMapping("/adddepartment")
-//	public String addDepartment(Model model)
-//	{
-//		List<Company> clist = compserv.getAllCompanies();
-//		
-//		model.addAttribute("clist", clist);
-//		return "AddDepartment";
-//	}
+
 	
 	@PostMapping("/")
 	public ResponseEntity<List<Department>> saveDepartment(@RequestBody Department dept)
 	{
+		System.err.println("Inside savedept method end point");
 		Department depart = deptserv.saveDepartment(dept);
 		
 		if(depart!=null){
@@ -55,7 +45,8 @@ public class DepartmentController {
 	}
 	
 	@GetMapping("/")
-	public ResponseEntity<List<Department>> viewAllDepartments(Model model){
+	public ResponseEntity<List<Department>> viewAllDepartments(){
+		System.err.println("inside get all departments method\n");
 		List<Department> dlist = deptserv.getAllDepartments();
 		
 		if(dlist.size()>0){
@@ -67,8 +58,7 @@ public class DepartmentController {
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<Department> getDepartmentByDeptId(@PathVariable("id")String id)
-	{
+	public ResponseEntity<Department> getDepartmentByDeptId(@PathVariable("id")Long id){
 		Department dept = deptserv.getDepartmentById(id);
 		if(dept!=null) {
 			return new ResponseEntity<Department>(dept,HttpStatus.OK);
@@ -79,13 +69,11 @@ public class DepartmentController {
 	}
 	
 	
-	@RequestMapping("/updatedepartment")
+	@PutMapping("/updatedepartment")
 	public ResponseEntity<List<Department>> updateDepartment(@RequestBody Department dept)
-	{
+	{System.err.println("inside updatedepartment method \nName = "+dept.getDept_name()+" \n Company Id "+dept.getCompany().getComp_id());
 		int result = deptserv.updateDepartment(dept);
-		if(result > 0 )
-		{
-			
+		if(result > 0 ){
 			return new ResponseEntity<List<Department>>(deptserv.getAllDepartments() ,HttpStatus.OK);
 		}
 		else {
@@ -93,10 +81,10 @@ public class DepartmentController {
 		}
 	}
 	
-	@RequestMapping("/getdeptbycompid/{id}")
-	public ResponseEntity<List<Department>> getDepartmentByCompanyId(@PathVariable("id")String id){
-		return new ResponseEntity<List<Department>>(deptserv.getDepartmentByCompanyId(id),HttpStatus.OK);
-	}
+//	@RequestMapping("/getdeptbycompid/{id}")
+//	public ResponseEntity<List<Department>> getDepartmentByCompanyId(@PathVariable("id")Long id){
+//		return new ResponseEntity<List<Department>>(deptserv.getDepartmentByCompanyId(id),HttpStatus.OK);
+//	}
 	
 //	@GetMapping("/viewdepartments")
 //	public String viewAllDepartments(Model model)

@@ -10,10 +10,10 @@ public interface DepartmentService {
 	
 	public List<Department> getAllDepartments();
 	
-	public Department getDepartmentById(String deptid);
+	public Department getDepartmentById(Long deptid);
 	
 	public int updateDepartment(Department dept);
 	
-	public List<Department> getDepartmentByCompanyId(String cid);
+	public List<Department> getDepartmentByCompanyId(Long cid);
 	
 }

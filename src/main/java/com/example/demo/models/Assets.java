@@ -12,9 +12,12 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @AllArgsConstructor
@@ -40,7 +43,7 @@ public class Assets {
 	private Long count;
 	
 	
-	
+	@JsonIgnore
 	@ManyToOne(targetEntity = AssetType.class, cascade = {CascadeType.MERGE},fetch = FetchType.LAZY)
 	@JoinColumn(name="type_id",referencedColumnName = "type_id")
 	private AssetType atype;

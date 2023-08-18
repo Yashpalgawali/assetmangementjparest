@@ -18,7 +18,6 @@ public class CompanyServImpl implements CompanyService {
 	@Override
 	public Company saveCompany(Company comp) {
 		// TODO Auto-generated method stub
-		
 		if(comp!=null){
 			return comprepo.save(comp);
 		}
@@ -30,16 +29,18 @@ public class CompanyServImpl implements CompanyService {
 	@Override
 	public List<Company> getAllCompanies() {
 		// TODO Auto-generated method stub
-		return comprepo.findAll();
+		List<Company> clist = comprepo.getAllCompanies();
+		return clist;
 	}
 
 	@Override
 	public Company getCompanyById(Long id) {
 		// TODO Auto-generated method stub
 		try {
-			return comprepo.findById(id).get();
+			Company comp = comprepo.findById(""+id).get();
+			return comp;
 		}
-		catch(Exception e){
+		catch(Exception e) {
 			return null;
 		}
 	}
