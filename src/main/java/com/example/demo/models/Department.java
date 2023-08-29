@@ -18,6 +18,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @AllArgsConstructor
@@ -35,6 +36,7 @@ public class Department {
 	private String dept_name;
 	
 	
+	@ToString.Exclude
 //	@ManyToOne(targetEntity = Company.class,cascade = {CascadeType.MERGE},fetch = FetchType.EAGER)
 	@ManyToOne(targetEntity = Company.class,cascade = {CascadeType.MERGE})
 	@JoinColumn(name="comp_id",referencedColumnName = "comp_id")

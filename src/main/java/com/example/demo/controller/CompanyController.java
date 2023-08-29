@@ -24,7 +24,7 @@ import com.example.demo.service.CompanyService;
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping("company")
+@RequestMapping("company") 
 public class CompanyController {
 
 	@Autowired

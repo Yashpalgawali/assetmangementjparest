@@ -21,8 +21,8 @@ public interface AssetRepo extends JpaRepository<Assets, Long> {
 	public int updateAsset(String aname,Long tid,String asnum,String monum,String qty,Long aid);
 	
 
-	@Query("SELECT a FROM Assets a JOIN a.atype  atypes")// JOIN using JPQL
-	//@Query(value="SELECT * FROM tbl_assets JOIN tbl_assettype ON tbl_assettype.type_id=tbl_assets.type_id ",nativeQuery = true)
+	//@Query("SELECT a FROM Assets a JOIN a.atype  atypes")// JOIN using JPQL
+	@Query(value="SELECT * FROM tbl_assets JOIN tbl_assettype ON tbl_assettype.type_id=tbl_assets.type_id ",nativeQuery = true)
 	public List<Assets> getAllAssets(); 
 	
 	@Modifying

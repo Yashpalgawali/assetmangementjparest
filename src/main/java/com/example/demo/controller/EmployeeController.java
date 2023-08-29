@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -84,7 +86,7 @@ public class EmployeeController {
 		model.addAttribute("aslist", assetserv.getAllAssets());
 		return "AddEmployee";
 	}
-	
+
 	@RequestMapping("/saveemployee")
 	public String saveEmployee(@ModelAttribute("Employee")Employee empl,RedirectAttributes attr)
 	{
@@ -412,7 +414,6 @@ public class EmployeeController {
 				});
 			}
 	        ExportAssignedAssets excelExporter = new ExportAssignedAssets(alist);
-	         
 	        excelExporter.export(response);    
 	    } 
 		

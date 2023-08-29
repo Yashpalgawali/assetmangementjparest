@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -34,14 +35,6 @@ public class AssetController {
 	@Autowired
 	AssetService assetserv;
 	
-//	@GetMapping("/addasset")
-//	public String addAssets(Model model)
-//	{
-//		List<AssetType> alist = atypeserv.getAllAssetTypes();
-//		model.addAttribute("alist", alist);
-//		return "AddAsset";
-//	}
-	
 	@PostMapping("/")
 	public ResponseEntity<List<Assets>> saveAssets(@RequestBody Assets asset)
 	{
@@ -58,19 +51,16 @@ public class AssetController {
 	public ResponseEntity<List<Assets>> viewAssets()
 	{
 		List<Assets> asset = assetserv.getAllAssets();
-		if(asset.size()>0)
-		{
+		if(asset.size()>0) {
 			return new ResponseEntity<List<Assets>>(asset,HttpStatus.OK);
 		}
 		else {
 			return new ResponseEntity<List<Assets>>(HttpStatus.NOT_FOUND);
 		}
-		
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Assets> editAssetByIs(@PathVariable("id") String id)
-	{
+	public ResponseEntity<Assets> editAssetByIs(@PathVariable("id") String id) {
 		Assets asset = assetserv.getAssetsById(id);
 		if(asset!=null){
 			return new ResponseEntity<Assets>(asset , HttpStatus.OK);
@@ -79,9 +69,9 @@ public class AssetController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
-	
+	 
 	@PostMapping("/updateasset")
-	public ResponseEntity<List<Assets>> updateAsset(@ModelAttribute("Assets")Assets ast,RedirectAttributes attr)
+	public ResponseEntity<List<Assets>> updateAsset(@RequestBody Assets ast)
 	{
 		int res = assetserv.updateAssets(ast);
 		if(res > 0){
@@ -91,20 +81,4 @@ public class AssetController {
 			return new ResponseEntity<List<Assets>>( HttpStatus.NOT_MODIFIED);
 		}
 	}
-//	@GetMapping("/editasset/{id}")
-//	public String editAssetByIs(@PathVariable("id") String id,Model model, RedirectAttributes attr)
-//	{
-//		Assets asset = assetserv.getAssetsById(id);
-//		if(asset!=null){
-//			model.addAttribute("atype", atypeserv.getAllAssetTypes());
-//			model.addAttribute("asset", asset);
-//			return "EditAsset";
-//		}
-//		else {
-//			attr.addFlashAttribute("reserr", "Asset Type is not found for given Id");
-//			return "redirect:/viewassets";
-//		}
-//	}
-	
-	
 }
