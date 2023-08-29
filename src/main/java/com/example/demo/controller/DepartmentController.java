@@ -81,10 +81,10 @@ public class DepartmentController {
 		}
 	}
 	
-//	@RequestMapping("/getdeptbycompid/{id}")
-//	public ResponseEntity<List<Department>> getDepartmentByCompanyId(@PathVariable("id")Long id){
-//		return new ResponseEntity<List<Department>>(deptserv.getDepartmentByCompanyId(id),HttpStatus.OK);
-//	}
+	@RequestMapping("/getdeptbycompid/{id}")
+	public ResponseEntity<List<Department>> getDepartmentByCompanyId(@PathVariable("id")Long id){
+		return new ResponseEntity<List<Department>>(deptserv.getDepartmentByCompanyId(id),HttpStatus.OK);
+	}
 	
 //	@GetMapping("/viewdepartments")
 //	public String viewAllDepartments(Model model)
@@ -143,10 +143,6 @@ public class DepartmentController {
 //		}
 //		
 //	}
-	
-	
-	
-	
 	
 	
 }

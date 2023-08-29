@@ -15,10 +15,12 @@ import java.util.stream.Stream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -48,6 +50,8 @@ import com.example.demo.service.DesignationService;
 import com.example.demo.service.EmployeeService;
 
 @Controller
+@CrossOrigin("*")
+@RequestMapping("employee")
 public class EmployeeController {
 
 	@Autowired
@@ -226,15 +230,24 @@ public class EmployeeController {
 		}
 	}
 	
-	@GetMapping("/viewallemployees")
-	public String viewAllEmployees(Model model)
+//	@GetMapping("/viewallemployees")
+//	public String viewAllEmployees(Model model)
+//	{
+//		List<Employee> elist = empserv.getAllEmployees();
+//		
+//		model.addAttribute("elist", elist);
+//		return "ViewAllEmployees";
+//	}
+	
+	@GetMapping("/")
+	@ResponseBody
+	public ResponseEntity<List<Employee>> viewAllEmployees()
 	{
 		List<Employee> elist = empserv.getAllEmployees();
 		
-		model.addAttribute("elist", elist);
-		return "ViewAllEmployees";
+		return new ResponseEntity<List<Employee>>(elist, HttpStatus.OK);
 	}
-	 
+	  
 	@GetMapping("/retrieveassetsbyempid/{id}")
 	public String retrieveAssets(@PathVariable("id") Long id,Model model,RedirectAttributes attr)
 	{

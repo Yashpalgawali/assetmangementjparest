@@ -38,7 +38,7 @@ public class Employee {
 	@JoinColumn(name="desig_id",referencedColumnName = "desig_id")
 	private Designation designation;
 	
-	@ManyToOne(targetEntity = Department.class,cascade = {CascadeType.MERGE},fetch = FetchType.LAZY)
+	@ManyToOne(targetEntity = Department.class,cascade = {CascadeType.MERGE})
 	@JoinColumn(name="dept_id",referencedColumnName = "dept_id")
 	private Department department;
 	
