@@ -8,27 +8,24 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.exporttoexcel.ExportAssetAssignHistory;
@@ -49,7 +46,7 @@ import com.example.demo.service.CompanyService;
 import com.example.demo.service.DesignationService;
 import com.example.demo.service.EmployeeService;
 
-@Controller
+@RestController
 @CrossOrigin("*")
 @RequestMapping("employee")
 public class EmployeeController {
@@ -75,6 +72,9 @@ public class EmployeeController {
 	@Autowired
 	AssetTypeService atypeserv;
 	
+	@Autowired
+	Environment env;
+	
 	private LocalDateTime today;
 	
 	private DateTimeFormatter ddate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -82,15 +82,17 @@ public class EmployeeController {
 	
 	private String tday=ddate.format(today.now()),ttime=dtime.format(today.now());
 	
-	@GetMapping("/addemployee")
-	public String addEmployee(Model model)
-	{
-		model.addAttribute("clist", compserv.getAllCompanies());
-		model.addAttribute("desiglist", desigserv.getAllDesignations());
-		model.addAttribute("aslist", assetserv.getAllAssets());
-		return "AddEmployee";
-	}
-
+//	@GetMapping("/addemployee")
+//	public String addEmployee(Model model)
+//	{
+//		model.addAttribute("clist", compserv.getAllCompanies());
+//		model.addAttribute("desiglist", desigserv.getAllDesignations());
+//		model.addAttribute("aslist", assetserv.getAllAssets());
+//		model.addAttribute("appname", env.getProperty("spring.application.name"));
+//		
+//		return "AddEmployee";
+//	}
+	
 	@RequestMapping("/saveemployee")
 	public String saveEmployee(@ModelAttribute("Employee")Employee empl,RedirectAttributes attr)
 	{
@@ -127,12 +129,10 @@ public class EmployeeController {
 				
 				isassigned = assignserv.saveAssignedAssets(assignasset);
 				
-				if(isassigned!=null)
-				{	
+				if(isassigned!=null){	
 					qty = (Integer)assetserv.getAssetQuantityByAssetId(astid);
 					qty-=1;
 					assetserv.updateAssetQuantityByAssetId(astid, ""+qty);
-					
 					AssetAssignHistory ahist = new AssetAssignHistory();
 				
 					ahist.setAsset(ast);
@@ -155,9 +155,8 @@ public class EmployeeController {
 	}
 	
 	
-	//This method returns the assigned assets in single column 
 	@GetMapping("/viewassignedassets")
-	public String viewAllAssignedAssets(Model model)
+	public ResponseEntity<List<AssignedAssets>> viewAllAssignedAssets(Model model)
 	{
 		List<AssignedAssets> alist = new ArrayList<AssignedAssets>();
 		List<Object[]>  aslist = assignserv.getAllAssignedassetsGroup();
@@ -202,8 +201,7 @@ public class EmployeeController {
 					dept.setDept_name(ast[13].toString());
 					
 					Company comp = new Company();
-					//comp.setComp_id((Long.valueOf(ast[14].toString())));
-					comp.setComp_id(ast[14].toString());
+					comp.setComp_id(""+ast[14]);
 					comp.setComp_name(ast[15].toString());
 					
 					String mod_num = "";
@@ -222,13 +220,86 @@ public class EmployeeController {
 					alist.add(asts);
 			});
 		
-			model.addAttribute("aslist", alist);
-			return "ViewAssignedAssets";
+			return new ResponseEntity<List<AssignedAssets>>(alist ,HttpStatus.OK);
 		}
 		else {
-				return "redirect:/viewallemployees";
+			return new ResponseEntity<List<AssignedAssets>>(alist ,HttpStatus.NO_CONTENT);
 		}
 	}
+	
+	//This method returns the assigned assets in single column 
+//	@GetMapping("/viewassignedassets")
+//	public String viewAllAssignedAssets(Model model)
+//	{
+//		List<AssignedAssets> alist = new ArrayList<AssignedAssets>();
+//		List<Object[]>  aslist = assignserv.getAllAssignedassetsGroup();
+//		
+//		if(aslist.size() >0){
+//			aslist.forEach(ast->{
+//					AssignedAssets asts = new AssignedAssets();
+//					
+//					String assets= "",asset_type="";
+//					
+//					asts.setAssigned_asset_id(Long.valueOf(ast[0].toString()));
+//					asts.setAssign_date(ast[1].toString());
+//					asts.setAssign_time(ast[2].toString());
+//					asts.setAsset_id(Long.valueOf(ast[3].toString()));
+//					asts.setEmp_id((Long.valueOf(ast[4].toString())));
+//					
+//					assets = Stream.of(ast[5].toString().split(",")).collect(Collectors.toList()).toString();
+//					
+//					assets = assets.replace("[", "");
+//					assets = assets.replace("]", "");
+//					
+//					asts.setAssigned(assets);
+//					
+//					asset_type = Stream.of(ast[6].toString().split(",")).collect(Collectors.toList()).toString();
+//					asset_type = asset_type.replace("[", "");
+//					asset_type = asset_type.replace("]", "");
+//					
+//					asts.setAssigned_types(asset_type);
+//					
+//					Employee emp = new Employee();
+//					
+//					emp.setEmp_name(ast[7].toString());
+//					emp.setEmp_email(ast[8].toString());
+//					emp.setEmp_contact(ast[9].toString());
+//					
+//					Designation desig = new Designation();
+//					desig.setDesig_id((Long.valueOf(ast[10].toString())));
+//					desig.setDesig_name(ast[11].toString());
+//
+//					Department dept = new Department();
+//					dept.setDept_id((Long.valueOf(ast[12].toString())));
+//					dept.setDept_name(ast[13].toString());
+//					
+//					Company comp = new Company();
+//					comp.setComp_id(""+ast[14]);
+//					comp.setComp_name(ast[15].toString());
+//					
+//					String mod_num = "";
+//					
+//					mod_num = Stream.of(ast[16].toString().split(",")).collect(Collectors.toList()).toString();
+//					mod_num = mod_num.replace("[", "");
+//					mod_num = mod_num.replace("]", "");
+//					
+//					asts.setModel_numbers(mod_num);
+//					dept.setCompany(comp);
+//					
+//					emp.setDepartment(dept);
+//					emp.setDesignation(desig);
+//					asts.setEmployee(emp);
+//				
+//					alist.add(asts);
+//			});
+//		
+//			model.addAttribute("aslist", alist);
+//			return "ViewAssignedAssets";
+//		}
+//		else {
+//				return "redirect:/viewallemployees";
+//		}
+//	}
 	
 //	@GetMapping("/viewallemployees")
 //	public String viewAllEmployees(Model model)
@@ -240,14 +311,11 @@ public class EmployeeController {
 //	}
 	
 	@GetMapping("/")
-	@ResponseBody
-	public ResponseEntity<List<Employee>> viewAllEmployees()
-	{
+	public ResponseEntity<List<Employee>> viewAllEmployees() {
 		List<Employee> elist = empserv.getAllEmployees();
-		
 		return new ResponseEntity<List<Employee>>(elist, HttpStatus.OK);
 	}
-	  
+	 
 	@GetMapping("/retrieveassetsbyempid/{id}")
 	public String retrieveAssets(@PathVariable("id") Long id,Model model,RedirectAttributes attr)
 	{
@@ -255,7 +323,7 @@ public class EmployeeController {
 		Employee empl = null;
 		if(assign.size()>0){	
 			Long[] strArray = new Long[assign.size()];
-			for(int i=0;i<assign.size();i++){
+			for(int i=0;i<assign.size();i++) {
 				empl = assign.get(i).getEmployee();
 				strArray[i] = assign.get(i).getAsset().getAsset_id();
 			}
@@ -265,8 +333,7 @@ public class EmployeeController {
 			model.addAttribute("assignedlist", strArray);
 			return "RetrieveAssets";
 		}
-		else
-		{
+		else{
 			attr.addFlashAttribute("reserr", "No Assets are assigned ");
 			return "redirect:/viewallemployees";
 		}
@@ -365,8 +432,7 @@ public class EmployeeController {
 	        List<AssignedAssets> alist = new ArrayList<AssignedAssets>();
 			List<Object[]>  aslist = assignserv.getAllAssignedassetsGroup();
 			
-			if(aslist.size() >0)
-			{
+			if(aslist.size() >0){
 				aslist.forEach(ast->{
 						AssignedAssets asts = new AssignedAssets();
 						
@@ -406,7 +472,6 @@ public class EmployeeController {
 						dept.setDept_name(ast[13].toString());
 						
 						Company comp = new Company();
-						//comp.setComp_id((Long.valueOf(ast[14].toString())));
 						comp.setComp_id(ast[14].toString());
 						comp.setComp_name(ast[15].toString());
 						
@@ -429,8 +494,6 @@ public class EmployeeController {
 	        ExportAssignedAssets excelExporter = new ExportAssignedAssets(alist);
 	        excelExporter.export(response);    
 	    } 
-		
-		
 		
 		@RequestMapping("/exportassignshistory/excel/{id}")
 	    public void exportToExcel(HttpServletResponse response,@PathVariable("id")Long empid ) throws IOException {

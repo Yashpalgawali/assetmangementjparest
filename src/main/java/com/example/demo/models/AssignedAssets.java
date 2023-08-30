@@ -28,27 +28,21 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-
 @Table(name="tbl_assigned_assets")
 public class AssignedAssets {
 
-	
 	@Id
 	@SequenceGenerator(name="assigned_asset_seq",initialValue = 1,allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.AUTO,generator = "assigned_asset_seq")
 	private Long assigned_asset_id;
 	
-	
 	@ManyToOne(targetEntity = Employee.class , cascade = {CascadeType.MERGE})
 	@JoinColumn(name="emp_id",referencedColumnName = "emp_id")
 	private Employee employee;
-	
 	
 	@ManyToOne(targetEntity = Assets.class,cascade = {CascadeType.MERGE},fetch = FetchType.LAZY)
 	@JoinColumn(name="asset_id", referencedColumnName = "asset_id")
