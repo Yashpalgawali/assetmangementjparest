@@ -207,8 +207,8 @@ public class EmployeeController {
 					String mod_num = "";
 					
 					mod_num = Stream.of(ast[16].toString().split(",")).collect(Collectors.toList()).toString();
-					mod_num = mod_num.replace("[", "");
-					mod_num = mod_num.replace("]", "");
+					mod_num = mod_num.replace("[", "").replace("]", "");
+					//mod_num = mod_num.replace("]", "");
 					
 					asts.setModel_numbers(mod_num);
 					dept.setCompany(comp);
@@ -354,17 +354,16 @@ public class EmployeeController {
 	}
 	 
 	@GetMapping("/viewemphistbyempid/{id}")
-	public String viewEmployeeHistoryByEmpId(@PathVariable("id") String id,Model model, RedirectAttributes attr)
+	public ResponseEntity<List<AssetAssignHistory>> viewEmployeeHistoryByEmpId(@PathVariable("id") String id)
 	{
 		List<AssetAssignHistory> ahist = ahistserv.getAssetAssignHistoryByEmpId(id);
 		if(ahist.size()>0){	
-			model.addAttribute("ahist", ahist);
-			model.addAttribute("emp", empserv.getEmployeeById(id));
-			return "ViewEmployeeHistory";
+//			model.addAttribute("ahist", ahist);
+//			model.addAttribute("emp", empserv.getEmployeeById(id));
+			return new ResponseEntity<List<AssetAssignHistory>>(ahist,HttpStatus.OK);
 		}
 		else {
-			attr.addFlashAttribute("reserr", "No History found");
-			return "redirect:/viewassignedassets";
+			return new ResponseEntity<List<AssetAssignHistory>>(HttpStatus.NOT_FOUND);
 		}
 	}
 	
@@ -446,14 +445,14 @@ public class EmployeeController {
 						
 						assets = Stream.of(ast[5].toString().split(",")).collect(Collectors.toList()).toString();
 						
-						assets = assets.replace("[", "");
-						assets = assets.replace("]", "");
+						assets = assets.replace("[", "").replace("]", "");
+						//assets = assets;
 						
 						asts.setAssigned(assets);
 						
 						asset_type = Stream.of(ast[6].toString().split(",")).collect(Collectors.toList()).toString();
-						asset_type = asset_type.replace("[", "");
-						asset_type = asset_type.replace("]", "");
+						asset_type = asset_type.replace("[", "").replace("]", "");
+//						asset_type = asset_type;
 						
 						asts.setAssigned_types(asset_type);
 						
@@ -478,8 +477,8 @@ public class EmployeeController {
 						String mod_num = "";
 						
 						mod_num = Stream.of(ast[16].toString().split(",")).collect(Collectors.toList()).toString().replace("[", "").replace("]", "");
-						mod_num = mod_num.replace("[", "");
-						mod_num = mod_num.replace("]", "");
+						mod_num = mod_num.replace("[", "").replace("]", "");
+						//mod_num = mod_num;
 						
 						asts.setModel_numbers(mod_num);
 						dept.setCompany(comp);
