@@ -29,15 +29,15 @@ public class CompanyServImpl implements CompanyService {
 	@Override
 	public List<Company> getAllCompanies() {
 		// TODO Auto-generated method stub
-		List<Company> clist = comprepo.getAllCompanies();
-		return clist;
+		return comprepo.getAllCompanies();
+		
 	}
 
 	@Override
 	public Company getCompanyById(Long id) {
 		// TODO Auto-generated method stub
 		try {
-			Company comp = comprepo.findById(""+id).get();
+			Company comp = comprepo.findById(id).get();
 			return comp;
 		}
 		catch(Exception e) {

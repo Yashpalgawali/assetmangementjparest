@@ -10,8 +10,10 @@ public class NewassetmanagementWithJpaRestApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(NewassetmanagementWithJpaRestApplication.class, args);
+	
+//		System.err.println(new BCryptPasswordEncoder().encode("admin"));
 	}
-
+ 
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();

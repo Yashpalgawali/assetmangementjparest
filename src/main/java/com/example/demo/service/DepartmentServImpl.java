@@ -54,7 +54,7 @@ public class DepartmentServImpl implements DepartmentService {
 	public List<Department> getDepartmentByCompanyId(Long cid) {
 		// TODO Auto-generated method stub
 		
-		return deptrepo.getAllDepartmentsByCompanyId(""+cid);
+		return deptrepo.getAllDepartmentsByCompanyId(cid);
 	}
 
 }

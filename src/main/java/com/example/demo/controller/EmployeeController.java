@@ -201,7 +201,7 @@ public class EmployeeController {
 					dept.setDept_name(ast[13].toString());
 					
 					Company comp = new Company();
-					comp.setComp_id(""+ast[14]);
+					comp.setComp_id((Long) ast[14]);
 					comp.setComp_name(ast[15].toString());
 					
 					String mod_num = "";
@@ -472,7 +472,7 @@ public class EmployeeController {
 						dept.setDept_name(ast[13].toString());
 						
 						Company comp = new Company();
-						comp.setComp_id(ast[14].toString());
+						comp.setComp_id((Long) ast[14]);
 						comp.setComp_name(ast[15].toString());
 						
 						String mod_num = "";

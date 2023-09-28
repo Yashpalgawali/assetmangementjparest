@@ -12,12 +12,12 @@ import org.springframework.stereotype.Repository;
 import com.example.demo.models.Company;
 
 @Repository("comprepo")
-public interface CompanyRepo extends JpaRepository<Company, String> {
+public interface CompanyRepo extends JpaRepository<Company, Long> {
 
 	@Modifying
 	@Transactional
 	@Query("UPDATE Company c SET c.comp_name=:cname WHERE c.comp_id=:cid")
-	public int updateCompany(String cname,String cid);
+	public int updateCompany(String cname,Long cid);
 	
 	  
 	//@Query(value="select * from tbl_company Left Join tbl_department ON tbl_department.comp_id=tbl_company.comp_id", nativeQuery = true)
