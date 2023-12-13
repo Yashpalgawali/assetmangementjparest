@@ -16,6 +16,9 @@ public interface DepartmentService {
 	
 	public List<Department> getDepartmentByCompanyId(Long cid);
 	
+<<<<<<< HEAD
 	public List<Department> getDepartmentByCompanyName(String cname);
 	
+=======
+>>>>>>> branch 'master' of https://github.com/Yashpalgawali/assetmangementjparest.git
 }

@@ -14,4 +14,8 @@ public interface AssetAssignHistoryRepo extends JpaRepository<AssetAssignHistory
 	@Query("SELECT a FROM AssetAssignHistory a WHERE a.employee.emp_id=?1")
 	public List<AssetAssignHistory> getAssetAssginHistByEmpId(Long empid);
 }
+<<<<<<< HEAD
   
+=======
+ 
+>>>>>>> branch 'master' of https://github.com/Yashpalgawali/assetmangementjparest.git

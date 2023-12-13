@@ -44,7 +44,11 @@ public class AssignedAssets {
 	@JoinColumn(name="emp_id",referencedColumnName = "emp_id")
 	private Employee employee;
 	
+<<<<<<< HEAD
 	@ManyToOne(targetEntity = Assets.class,cascade = {CascadeType.MERGE})
+=======
+	@ManyToOne(targetEntity = Assets.class,cascade = {CascadeType.MERGE},fetch = FetchType.LAZY)
+>>>>>>> branch 'master' of https://github.com/Yashpalgawali/assetmangementjparest.git
 	@JoinColumn(name="asset_id", referencedColumnName = "asset_id")
 	private Assets asset;
 	

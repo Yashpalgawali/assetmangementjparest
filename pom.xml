@@ -100,8 +100,11 @@
     <version>2.7</version>
 </dependency>
 
+<<<<<<< HEAD
 	
 		
+=======
+>>>>>>> branch 'master' of https://github.com/Yashpalgawali/assetmangementjparest.git
 	<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
 	<dependency>
 	    <groupId>org.projectlombok</groupId>

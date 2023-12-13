@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+<<<<<<< HEAD
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,25 @@ public class UserServiceImpl implements UserService {
 	public int updateUsersPassword(String pass, Long id) {
 	
 		return userrepo.updateUsersPassword(new BCryptPasswordEncoder().encode(pass), id);
+=======
+import org.springframework.stereotype.Service;
+
+import com.example.demo.models.Users;
+import com.example.demo.repository.UsersRepository;
+
+@Service("userserv")
+public class UserServiceImpl implements UserService {
+
+	@Autowired
+	UsersRepository userrepo;
+	
+	@Override
+	public int updateUsersPassword(String pass, Long id) {
+		// TODO Auto-generated method stub
+		
+		System.err.println("Inside updateUserpassword service \n Password is "+pass+" \n ID is "+id);
+		return userrepo.updateUsersPassword(pass, id);
+>>>>>>> branch 'master' of https://github.com/Yashpalgawali/assetmangementjparest.git
 	}
 
 	@Override

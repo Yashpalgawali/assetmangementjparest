@@ -31,7 +31,13 @@ public class AssetType {
 	
 	private String type_name;
 	
+<<<<<<< HEAD
 //	@JsonIgnore
 //	@OneToMany(mappedBy = "atype",fetch = FetchType.LAZY)
 //	private List<Assets> asset;
+=======
+	@JsonIgnore
+	@OneToMany(mappedBy = "atype",fetch = FetchType.LAZY)
+	private List<Assets> asset;
+>>>>>>> branch 'master' of https://github.com/Yashpalgawali/assetmangementjparest.git
 }

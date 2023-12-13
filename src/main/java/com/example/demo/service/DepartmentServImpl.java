@@ -17,6 +17,7 @@ public class DepartmentServImpl implements DepartmentService {
 	
 	@Override
 	public Department saveDepartment(Department dept) {
+<<<<<<< HEAD
 		if(dept!=null) {
 			return deptrepo.save(dept);
 		}
@@ -53,6 +54,46 @@ public class DepartmentServImpl implements DepartmentService {
 	@Override
 	public List<Department> getDepartmentByCompanyName(String cname) {
 		return deptrepo.getAllDepartmentsByCompanyName(cname);
+=======
+		// TODO Auto-generated method stub
+		if(dept!=null)
+		{
+			return deptrepo.save(dept);
+		}
+		else {
+			return null;
+		}
+	}
+
+	@Override
+	public List<Department> getAllDepartments() {
+		// TODO Auto-generated method stub
+		return deptrepo.findAll();
+	}
+
+	@Override
+	public Department getDepartmentById(Long deptid) {
+		// TODO Auto-generated method stub
+		try {
+			return  deptrepo.findById(deptid).get();
+		}
+		catch(Exception e) {
+			return null;
+		}
+	}
+
+	@Override
+	public int updateDepartment(Department dept) {
+		// TODO Auto-generated method stub
+		return deptrepo.updateDepartmentById(dept.getDept_name(), dept.getCompany().getComp_id(), dept.getDept_id());
+	}
+
+	@Override
+	public List<Department> getDepartmentByCompanyId(Long cid) {
+		// TODO Auto-generated method stub
+		
+		return deptrepo.getAllDepartmentsByCompanyId(cid);
+>>>>>>> branch 'master' of https://github.com/Yashpalgawali/assetmangementjparest.git
 	}
 
 }

@@ -63,8 +63,12 @@ public class AssignedAssetServImpl implements AssignedAssetService {
 	public List<Object[]> getAllAssignedassetsGroup() {
 		// TODO Auto-generated method stub
 		try {
+<<<<<<< HEAD
 			List<Object[]> nobj = assignassetrepo.getAllNewAssignedAssets();
 			return nobj;
+=======
+			return assignassetrepo.getAllNewAssignedAssets();
+>>>>>>> branch 'master' of https://github.com/Yashpalgawali/assetmangementjparest.git
 		}
 		catch(Exception e)
 		{

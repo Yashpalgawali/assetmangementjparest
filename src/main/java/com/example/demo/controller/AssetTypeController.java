@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+<<<<<<< HEAD
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -85,6 +86,80 @@ public class AssetTypeController {
 		}
 		else {
 			return new ResponseEntity<>( HttpStatus.NOT_FOUND);
+=======
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.example.demo.models.AssetType;
+import com.example.demo.service.AssetTypeService;
+
+@RestController
+@RequestMapping("assettype")
+@CrossOrigin("*")
+public class AssetTypeController {
+
+	@Autowired
+	AssetTypeService atypeserv;
+	
+	
+//	@GetMapping("/addassettype")
+//	public String addAssetType()
+//	{
+//		return "AddAssetType";
+//	}
+	
+	@PostMapping("/")
+	public ResponseEntity<List<AssetType>> saveAssetType(@RequestBody AssetType atype)
+	{
+		AssetType type = atypeserv.saveAssetType(atype);
+		if(type!=null)
+		{
+			return new ResponseEntity<List<AssetType>>(atypeserv.getAllAssetTypes(), HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<List<AssetType>>(HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	@GetMapping("/")
+	public ResponseEntity<List<AssetType>> getAllAssetType()
+	{
+		List<AssetType> type = atypeserv.getAllAssetTypes();
+		if(type.size()>0)
+		{
+			return new ResponseEntity<List<AssetType>>(type , HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<List<AssetType>>(HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<AssetType> editAssetTypeById(@PathVariable("id") String id)
+	{
+		AssetType atype = atypeserv.getAssetTypeById(id);
+		if(atype!=null)
+		{
+			return new ResponseEntity<AssetType>(atype , HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<AssetType>( HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	@PostMapping("/updateassettype")
+	public ResponseEntity<List<AssetType>> updateAssetType(@RequestBody AssetType atype)
+	{
+		int res = atypeserv.updateAssetType(atype);
+		
+		if(res>0) {
+			return new ResponseEntity<List<AssetType>>(atypeserv.getAllAssetTypes(), HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<List<AssetType>>( HttpStatus.NOT_FOUND);
+>>>>>>> branch 'master' of https://github.com/Yashpalgawali/assetmangementjparest.git
 		}
 	}
 //	@RequestMapping("/saveassettype")
