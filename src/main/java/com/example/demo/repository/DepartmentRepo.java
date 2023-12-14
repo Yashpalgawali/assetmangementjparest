@@ -22,15 +22,11 @@ public interface DepartmentRepo extends JpaRepository<Department, Long> {
 	
 	
 	@Query("SELECT d FROM Department d JOIN d.company company WHERE d.company.comp_id=:cid")// JOIN using JPQL
-<<<<<<< HEAD
 	//public List<Department> getAllDepartmentsByCompanyId(Long cid);
 	public List<Department> getAllDepartmentsByCompanyId(Long cid);
 	
 	//@Query("SELECT d FROM Department d JOIN d.company company WHERE d.company.comp_name=:name")// JOIN using JPQL
 	@Query(value="select * from tbl_department Join tbl_company ON tbl_company.comp_id=tbl_department.comp_id where tbl_company.comp_name=?1",nativeQuery = true)
 	public List<Department> getAllDepartmentsByCompanyName(String name);
-=======
-	public List<Department> getAllDepartmentsByCompanyId(Long cid);
->>>>>>> branch 'master' of https://github.com/Yashpalgawali/assetmangementjparest.git
 	
 }

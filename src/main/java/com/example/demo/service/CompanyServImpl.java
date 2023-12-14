@@ -29,13 +29,8 @@ public class CompanyServImpl implements CompanyService {
 	@Override
 	public List<Company> getAllCompanies() {
 		// TODO Auto-generated method stub
-<<<<<<< HEAD
 		List<Company> clist = comprepo.getAllCompanies();
 		return clist;
-=======
-		return comprepo.getAllCompanies();
-		
->>>>>>> branch 'master' of https://github.com/Yashpalgawali/assetmangementjparest.git
 	}
 
 	@Override

@@ -95,13 +95,8 @@ public class ExportAssignedAssets {
 			createCell(row,columnCount++, asset.getAssign_date() ,style);
 			createCell(row,columnCount++, asset.getAssign_time() ,style);
 			createCell(row,columnCount++, asset.getEmployee().getEmp_email() ,style);
-<<<<<<< HEAD
 			createCell(row,columnCount++, asset.getEmployee().getDepartment().getDept_name(), style);
 			createCell(row,columnCount++, asset.getEmployee().getDepartment().getCompany().getComp_name(), style);
-=======
-			createCell(row, columnCount++, asset.getEmployee().getDepartment().getDept_name(), style);
-			createCell(row, columnCount++, asset.getEmployee().getDepartment().getCompany().getComp_name(), style);
->>>>>>> branch 'master' of https://github.com/Yashpalgawali/assetmangementjparest.git
 		}
 	}
 	

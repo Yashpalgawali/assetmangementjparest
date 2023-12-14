@@ -20,10 +20,6 @@ public interface CompanyRepo extends JpaRepository<Company, Long> {
 	public int updateCompany(String cname,Long cid);
 	
 	  
-<<<<<<< HEAD
-=======
-	//@Query(value="select * from tbl_company Left Join tbl_department ON tbl_department.comp_id=tbl_company.comp_id", nativeQuery = true)
->>>>>>> branch 'master' of https://github.com/Yashpalgawali/assetmangementjparest.git
 	@Query("SELECT c FROM Company c")
 	public List<Company> getAllCompanies();
 }

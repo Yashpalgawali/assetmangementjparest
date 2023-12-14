@@ -26,7 +26,6 @@ import com.example.demo.service.AssetTypeService;
 
 @RestController
 @RequestMapping("asset")
-@CrossOrigin("*")
 public class AssetController {
 
 	@Autowired
@@ -38,8 +37,6 @@ public class AssetController {
 	@PostMapping("/")
 	public ResponseEntity<List<Assets>> saveAssets(@RequestBody Assets asset)
 	{
-<<<<<<< HEAD
-		System.err.println(asset.toString());
 		Assets ast = assetserv.saveAssets(asset);
 		if(ast!=null){
 			return new ResponseEntity<List<Assets>>(assetserv.getAllAssets(), HttpStatus.OK);
@@ -53,7 +50,6 @@ public class AssetController {
 	public ResponseEntity<List<Assets>> viewAssets()
 	{
 		List<Assets> asset = assetserv.getAllAssets();
-		asset.stream().forEach(e->System.err.println(e));
 		if(asset.size()>0) {
 			return new ResponseEntity<List<Assets>>(asset,HttpStatus.OK);
 		}
@@ -77,45 +73,6 @@ public class AssetController {
 	public ResponseEntity<List<Assets>> updateAsset(@RequestBody Assets ast) {
 		int res = assetserv.updateAssets(ast);
 		if(res > 0) {
-=======
-		Assets ast = assetserv.saveAssets(asset);
-		if(ast!=null){
-			return new ResponseEntity<List<Assets>>(assetserv.getAllAssets(), HttpStatus.OK);
-		}
-		else {
-			return new ResponseEntity<List<Assets>>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-	
-	@GetMapping("/")
-	public ResponseEntity<List<Assets>> viewAssets()
-	{
-		List<Assets> asset = assetserv.getAllAssets();
-		if(asset.size()>0) {
-			return new ResponseEntity<List<Assets>>(asset,HttpStatus.OK);
-		}
-		else {
-			return new ResponseEntity<List<Assets>>(HttpStatus.NOT_FOUND);
-		}
-	}
-
-	@GetMapping("/{id}")
-	public ResponseEntity<Assets> editAssetByIs(@PathVariable("id") String id) {
-		Assets asset = assetserv.getAssetsById(id);
-		if(asset!=null){
-			return new ResponseEntity<Assets>(asset , HttpStatus.OK);
-		}
-		else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
-	}
-	 
-	@PostMapping("/updateasset")
-	public ResponseEntity<List<Assets>> updateAsset(@RequestBody Assets ast)
-	{
-		int res = assetserv.updateAssets(ast);
-		if(res > 0){
->>>>>>> branch 'master' of https://github.com/Yashpalgawali/assetmangementjparest.git
 			return new ResponseEntity<List<Assets>>(assetserv.getAllAssets(), HttpStatus.OK);
 		}
 		else {

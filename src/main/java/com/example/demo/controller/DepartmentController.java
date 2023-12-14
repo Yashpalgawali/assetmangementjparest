@@ -19,9 +19,7 @@ import com.example.demo.service.CompanyService;
 import com.example.demo.service.DepartmentService;
 
 @RestController
-<<<<<<< HEAD
 @RequestMapping("department")
-@CrossOrigin(origins = "*")
 public class DepartmentController {
 
 	@Autowired
@@ -35,7 +33,6 @@ public class DepartmentController {
 	public ResponseEntity<List<Department>> saveDepartment(@RequestBody Department dept) {
 		
 		Department depart = deptserv.saveDepartment(dept);
-		
 		if(depart!=null) {
 			return new ResponseEntity<List<Department>>(deptserv.getAllDepartments() ,HttpStatus.OK);
 		}	
@@ -47,7 +44,6 @@ public class DepartmentController {
 	@GetMapping("/")
 	public ResponseEntity<List<Department>> viewAllDepartments(){
 		List<Department> dlist = deptserv.getAllDepartments();
-		dlist.stream().forEach(e->System.err.println(e));
 		if(dlist.size()>0){
 			return new ResponseEntity<List<Department>>(dlist ,HttpStatus.OK);
 		}	
@@ -67,11 +63,9 @@ public class DepartmentController {
 		}
 	}
 	
-	
 	@PutMapping("/")
 	public ResponseEntity<List<Department>> updateDepartment(@RequestBody Department dept)
 	{
-		System.err.println("Updated dta is "+dept.toString());
 		int result = deptserv.updateDepartment(dept);
 		if(result > 0 ){
 			return new ResponseEntity<List<Department>>(deptserv.getAllDepartments() ,HttpStatus.OK);
@@ -83,142 +77,12 @@ public class DepartmentController {
 	
 	@GetMapping("/getdeptbycompid/{id}")
 	public ResponseEntity<List<Department>> getDepartmentByCompanyId(@PathVariable("id")Long id){
-		
 		return new ResponseEntity<List<Department>>(deptserv.getDepartmentByCompanyId(id),HttpStatus.OK);
 	}
 	
 	@GetMapping("/getdeptbycompname/{name}")
 	public ResponseEntity<List<Department>> getDepartmentByCompanyName(@PathVariable("name")String name){
-		
 		return new ResponseEntity<List<Department>>(deptserv.getDepartmentByCompanyName(name),HttpStatus.OK);
 	}
-	
-=======
-@RequestMapping("/department")
-@CrossOrigin("*")
-public class DepartmentController {
 
-	@Autowired
-	DepartmentService deptserv;
-	
-	@Autowired
-	CompanyService compserv;
-
-	
-	@PostMapping("/")
-	public ResponseEntity<List<Department>> saveDepartment(@RequestBody Department dept)
-	{
-		System.err.println("Inside savedept method end point");
-		Department depart = deptserv.saveDepartment(dept);
-		
-		if(depart!=null){
-			return new ResponseEntity<List<Department>>(deptserv.getAllDepartments() ,HttpStatus.OK);
-		}	
-		else {
-			return new ResponseEntity<List<Department>>(HttpStatus.NO_CONTENT);
-		}
-	}
-	
-	@GetMapping("/")
-	public ResponseEntity<List<Department>> viewAllDepartments(){
-		System.err.println("inside get all departments method\n");
-		List<Department> dlist = deptserv.getAllDepartments();
-		
-		if(dlist.size()>0){
-			return new ResponseEntity<List<Department>>(dlist ,HttpStatus.OK);
-		}	
-		else {
-			return new ResponseEntity<List<Department>>(HttpStatus.NO_CONTENT);
-		}
-	}
-	
-	@GetMapping("/{id}")
-	public ResponseEntity<Department> getDepartmentByDeptId(@PathVariable("id")Long id){
-		Department dept = deptserv.getDepartmentById(id);
-		if(dept!=null) {
-			return new ResponseEntity<Department>(dept,HttpStatus.OK);
-		}
-		else{
-			return new ResponseEntity<Department>(HttpStatus.NOT_FOUND);
-		}
-	}
-	
-	
-	@PutMapping("/updatedepartment")
-	public ResponseEntity<List<Department>> updateDepartment(@RequestBody Department dept)
-	{System.err.println("inside updatedepartment method \nName = "+dept.getDept_name()+" \n Company Id "+dept.getCompany().getComp_id());
-		int result = deptserv.updateDepartment(dept);
-		if(result > 0 ){
-			return new ResponseEntity<List<Department>>(deptserv.getAllDepartments() ,HttpStatus.OK);
-		}
-		else {
-			return new ResponseEntity<List<Department>>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-	
-	@RequestMapping("/getdeptbycompid/{id}")
-	public ResponseEntity<List<Department>> getDepartmentByCompanyId(@PathVariable("id")Long id){
-		return new ResponseEntity<List<Department>>(deptserv.getDepartmentByCompanyId(id),HttpStatus.OK);
-	}
->>>>>>> branch 'master' of https://github.com/Yashpalgawali/assetmangementjparest.git
-	
-//	@GetMapping("/viewdepartments")
-//	public String viewAllDepartments(Model model)
-//	{
-//		List<Department> dlist = deptserv.getAllDepartments();
-//		model.addAttribute("dlist", dlist);
-//		return "ViewDepartments";
-//	}
-//	@RequestMapping("/savedepartment")
-//	public String saveDepartment(@ModelAttribute("Department") Department dept,RedirectAttributes attr)
-//	{
-//		Department depart = deptserv.saveDepartment(dept);
-//		
-//		if(depart!=null)
-//		{
-//			attr.addFlashAttribute("response", "Department is saved Successfully");
-//			return "redirect:/viewdepartments";
-//		}	
-//		else {
-//			attr.addFlashAttribute("reserr", "Department is not saved ");
-//			return "redirect:/viewdepartments";
-//		}
-//	}
-	
-//	@GetMapping("/editdeptbyid/{id}")
-//	public String getDepartmentByDeptId(@PathVariable("id")String id,Model model,RedirectAttributes attr)
-//	{
-//		Department dept = deptserv.getDepartmentById(id);
-//		if(dept!=null)
-//		{
-//			model.addAttribute("clist", compserv.getAllCompanies());
-//			model.addAttribute("dept", dept);
-//			return "EditDepartment";
-//		}
-//		else
-//		{
-//			attr.addFlashAttribute("reserr", "No Department Found");
-//			return "redirect:/viewdepartments";
-//		}
-//	}
-	
-	
-//	@RequestMapping("/updatedepartment")
-//	public String updateDepartment(@ModelAttribute("Department")Department dept,RedirectAttributes attr)
-//	{
-//		int result = deptserv.updateDepartment(dept);
-//		if(result > 0 )
-//		{
-//			attr.addFlashAttribute("response", "Department is updated Successfully");
-//			return "redirect:/viewdepartments";
-//		}
-//		else
-//		{
-//			attr.addFlashAttribute("reserr", "Department is not Updated ");
-//			return "redirect:/viewdepartments";
-//		}
-//		
-//	}
-	
-	
 }

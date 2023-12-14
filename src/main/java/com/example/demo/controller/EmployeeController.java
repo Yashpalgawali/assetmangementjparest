@@ -47,7 +47,6 @@ import com.example.demo.service.DesignationService;
 import com.example.demo.service.EmployeeService;
 
 @RestController
-@CrossOrigin("*")
 @RequestMapping("employee")
 public class EmployeeController {
 
@@ -82,19 +81,10 @@ public class EmployeeController {
 	
 	private String tday=ddate.format(today.now()),ttime=dtime.format(today.now());
 	
-//	@PostMapping("/")
-//	public ResponseEntity<List<Employee>> saveEmployee(@RequestBody Employee empl ) {
-//		
-//		System.err.println(empl.toString());
-//		String asset_ids = empl.getAsset_ids().toString();
-//		System.out.println("Asset Ids are =>> "+asset_ids);
-//
-//		return new ResponseEntity<List<Employee>>(HttpStatus.INTERNAL_SERVER_ERROR);
-//	}
+
 	@PostMapping("/")
 	public ResponseEntity<List<Employee>> saveEmployee(@RequestBody Employee empl ) {
 	
-		//String asset_ids = empl.getMulti_assets();
 		String asset_ids = empl.getAsset_ids().toString().replace("[", "").replace("]", "").replace(" ", "");
 		
 		AssignedAssets isassigned = null;
@@ -150,16 +140,7 @@ public class EmployeeController {
 		} 
 	}
 	
-//	@GetMapping("/addemployee")
-//	public String addEmployee(Model model)
-//	{
-//		model.addAttribute("clist", compserv.getAllCompanies());
-//		model.addAttribute("desiglist", desigserv.getAllDesignations());
-//		model.addAttribute("aslist", assetserv.getAllAssets());
-//		model.addAttribute("appname", env.getProperty("spring.application.name"));
-//		
-//		return "AddEmployee";
-//	}
+
 	
 //	@RequestMapping("/saveemployee")
 //	public String saveEmployee(@ModelAttribute("Employee")Employee empl,RedirectAttributes attr)
@@ -230,7 +211,6 @@ public class EmployeeController {
 		List<AssignedAssets> alist = new ArrayList<AssignedAssets>();
 		List<Object[]>  aslist = assignserv.getAllAssignedassetsGroup();
 		
-		
 		if(aslist.size() >0){
 			aslist.forEach(ast->{
 					AssignedAssets asts = new AssignedAssets();
@@ -295,89 +275,6 @@ public class EmployeeController {
 		}
 	}
 	
-	//This method returns the assigned assets in single column 
-//	@GetMapping("/viewassignedassets")
-//	public String viewAllAssignedAssets(Model model)
-//	{
-//		List<AssignedAssets> alist = new ArrayList<AssignedAssets>();
-//		List<Object[]>  aslist = assignserv.getAllAssignedassetsGroup();
-//		
-//		if(aslist.size() >0){
-//			aslist.forEach(ast->{
-//					AssignedAssets asts = new AssignedAssets();
-//					
-//					String assets= "",asset_type="";
-//					
-//					asts.setAssigned_asset_id(Long.valueOf(ast[0].toString()));
-//					asts.setAssign_date(ast[1].toString());
-//					asts.setAssign_time(ast[2].toString());
-//					asts.setAsset_id(Long.valueOf(ast[3].toString()));
-//					asts.setEmp_id((Long.valueOf(ast[4].toString())));
-//					
-//					assets = Stream.of(ast[5].toString().split(",")).collect(Collectors.toList()).toString();
-//					
-//					assets = assets.replace("[", "");
-//					assets = assets.replace("]", "");
-//					
-//					asts.setAssigned(assets);
-//					
-//					asset_type = Stream.of(ast[6].toString().split(",")).collect(Collectors.toList()).toString();
-//					asset_type = asset_type.replace("[", "");
-//					asset_type = asset_type.replace("]", "");
-//					
-//					asts.setAssigned_types(asset_type);
-//					
-//					Employee emp = new Employee();
-//					
-//					emp.setEmp_name(ast[7].toString());
-//					emp.setEmp_email(ast[8].toString());
-//					emp.setEmp_contact(ast[9].toString());
-//					
-//					Designation desig = new Designation();
-//					desig.setDesig_id((Long.valueOf(ast[10].toString())));
-//					desig.setDesig_name(ast[11].toString());
-//
-//					Department dept = new Department();
-//					dept.setDept_id((Long.valueOf(ast[12].toString())));
-//					dept.setDept_name(ast[13].toString());
-//					
-//					Company comp = new Company();
-//					comp.setComp_id(""+ast[14]);
-//					comp.setComp_name(ast[15].toString());
-//					
-//					String mod_num = "";
-//					
-//					mod_num = Stream.of(ast[16].toString().split(",")).collect(Collectors.toList()).toString();
-//					mod_num = mod_num.replace("[", "");
-//					mod_num = mod_num.replace("]", "");
-//					
-//					asts.setModel_numbers(mod_num);
-//					dept.setCompany(comp);
-//					
-//					emp.setDepartment(dept);
-//					emp.setDesignation(desig);
-//					asts.setEmployee(emp);
-//				
-//					alist.add(asts);
-//			});
-//		
-//			model.addAttribute("aslist", alist);
-//			return "ViewAssignedAssets";
-//		}
-//		else {
-//				return "redirect:/viewallemployees";
-//		}
-//	}
-	
-//	@GetMapping("/viewallemployees")
-//	public String viewAllEmployees(Model model)
-//	{
-//		List<Employee> elist = empserv.getAllEmployees();
-//		
-//		model.addAttribute("elist", elist);
-//		return "ViewAllEmployees";
-//	}
-	
 	@GetMapping("/")
 	public ResponseEntity<List<Employee>> viewAllEmployees() {
 		List<Employee> elist = empserv.getAllEmployees();
@@ -388,17 +285,7 @@ public class EmployeeController {
 	public ResponseEntity<List<AssignedAssets>> retrieveAssets(@PathVariable("id") Long id)
 	{
 		List<AssignedAssets> assign = assignserv.getAssignedAssetsByEmpId(id);
-		Employee empl = null;
-		if(assign.size()>0){	
-//			Long[] strArray = new Long[assign.size()];
-//			for(int i=0;i<assign.size();i++) {
-//				empl = assign.get(i).getEmployee();
-//				strArray[i] = assign.get(i).getAsset().getAsset_id();
-//			}
-			
-//			model.addAttribute("aslist", 	assetserv.getAllAssets());
-//			model.addAttribute("emp", 		empl);
-//			model.addAttribute("assignedlist", strArray);
+		if(assign.size()>0){
 			return new ResponseEntity<List<AssignedAssets>>(assign,HttpStatus.OK);
 		}
 		else{
@@ -406,27 +293,7 @@ public class EmployeeController {
 		}
 	}
 	
-//	@GetMapping("/retrieveassetsbyempid/{id}")
-//	public String retrieveAssets(@PathVariable("id") Long id,Model model,RedirectAttributes attr)
-//	{
-//		List<AssignedAssets> assign = assignserv.getAssignedAssetsByEmpId(id);
-//		Employee empl = null;
-//		if(assign.size()>0){	
-//			Long[] strArray = new Long[assign.size()];
-//			for(int i=0;i<assign.size();i++) {
-//				empl = assign.get(i).getEmployee();
-//				strArray[i] = assign.get(i).getAsset().getAsset_id();
-//			}
-//			model.addAttribute("aslist", 	assetserv.getAllAssets());
-//			model.addAttribute("emp", 		empl);
-//			model.addAttribute("assignedlist", strArray);
-//			return "RetrieveAssets";
-//		}
-//		else{
-//			attr.addFlashAttribute("reserr", "No Assets are assigned ");
-//			return "redirect:/viewallemployees";
-//		}
-//	}
+
 	
 	@PostMapping("/updateretrieveassets")
 	public String updateRetrieveAssets(@ModelAttribute("AssignedAssets")AssignedAssets assign,RedirectAttributes attr)
@@ -447,8 +314,6 @@ public class EmployeeController {
 	{
 		List<AssetAssignHistory> ahist = ahistserv.getAssetAssignHistoryByEmpId(id);
 		if(ahist.size()>0){	
-//			model.addAttribute("ahist", ahist);
-//			model.addAttribute("emp", empserv.getEmployeeById(id));
 			return new ResponseEntity<List<AssetAssignHistory>>(ahist,HttpStatus.OK);
 		}
 		else {
@@ -496,20 +361,6 @@ public class EmployeeController {
 			return new  ResponseEntity<Employee>(HttpStatus.NOT_MODIFIED);
 		}
 	}
-	
-//	@RequestMapping("/updateassignasset")
-//	public String updateAssignedAssets(@ModelAttribute("Employee")Employee emp,RedirectAttributes attr)
-//	{
-//		int res = empserv.updateEmployee(emp);
-//		if(res>0){
-//			attr.addFlashAttribute("response", "Assets are assigned successfully");
-//			return "redirect:/viewassignedassets";
-//		}
-//		else{
-//			attr.addFlashAttribute("reserr", "Assets are not assigned ");
-//			return "redirect:/viewassignedassets";
-//		}
-//	}
 	
 		@GetMapping("/exportassignedassets/excel")
 	    public void exportToExcel(HttpServletResponse response) throws IOException {

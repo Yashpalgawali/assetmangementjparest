@@ -23,12 +23,8 @@ public class AssetServImpl implements AssetService {
 	@Override
 	public List<Assets> getAllAssets() {
 		// TODO Auto-generated method stub
-<<<<<<< HEAD
 		//return assetrepo.getAllAssets();
 		return assetrepo.findAll();
-=======
-		return assetrepo.getAllAssets();
->>>>>>> branch 'master' of https://github.com/Yashpalgawali/assetmangementjparest.git
 	}
 
 	@Override
