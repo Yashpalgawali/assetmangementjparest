@@ -1,5 +1,6 @@
 package com.example.demo.exporttoexcel;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -100,16 +101,18 @@ public class ExportAssignedAssets {
 		}
 	}
 	
-	public void export(HttpServletResponse resp)throws IOException
+	//public void export(HttpServletResponse resp)throws IOException
+	public byte[] export(HttpServletResponse resp)throws IOException
 	{
 		writeHeaderLine();
 		writeDataLines();
 		
-		ServletOutputStream outputStream = resp.getOutputStream();
-		
-		workbook.write(outputStream);
+		//ServletOutputStream outputStream = resp.getOutputStream();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+		workbook.write(bos);
 		workbook.close();
-		outputStream.close();
-		
+		bos.close();
+		return bos.toByteArray();
 	}
 }

@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -15,7 +16,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -362,9 +366,88 @@ public class EmployeeController {
 		}
 	}
 	
-		@GetMapping("/exportassignedassets/excel")
-	    public void exportToExcel(HttpServletResponse response) throws IOException {
-			System.err.println("exporto to excel");
+	@GetMapping("/exportassignedassets/excel")
+    public ResponseEntity<InputStreamResource> exportToExcel(HttpServletResponse response) throws IOException {
+		// Set headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=example.xlsx");
+        
+        
+        List<AssignedAssets> alist = new ArrayList<AssignedAssets>();
+		List<Object[]>  aslist = assignserv.getAllAssignedassetsGroup();
+		
+		if(aslist.size() >0){
+			aslist.forEach(ast->{
+					AssignedAssets asts = new AssignedAssets();
+					
+					String assets= "",asset_type="";
+					
+					asts.setAssigned_asset_id(Long.valueOf(ast[0].toString()));
+					asts.setAssign_date(ast[1].toString());
+					asts.setAssign_time(ast[2].toString());
+					asts.setAsset_id(Long.valueOf(ast[3].toString()));
+					asts.setEmp_id((Long.valueOf(ast[4].toString())));
+					
+					assets = Stream.of(ast[5].toString().split(",")).collect(Collectors.toList()).toString();
+					
+					assets = assets.replace("[", "").replace("]", "");
+					
+					asts.setAssigned(assets);
+					
+					asset_type = Stream.of(ast[6].toString().split(",")).collect(Collectors.toList()).toString();
+					asset_type = asset_type.replace("[", "").replace("]", "");
+					
+					asts.setAssigned_types(asset_type);
+					
+					Employee emp = new Employee();
+					
+					emp.setEmp_name(ast[7].toString());
+					emp.setEmp_email(ast[8].toString());
+					emp.setEmp_contact(ast[9].toString());
+					
+					Designation desig = new Designation();
+					desig.setDesig_id((Long.valueOf(ast[10].toString())));
+					desig.setDesig_name(ast[11].toString());
+
+					Department dept = new Department();
+					dept.setDept_id((Long.valueOf(ast[12].toString())));
+					dept.setDept_name(ast[13].toString());
+					
+					Company comp = new Company();
+					comp.setComp_id(Long.valueOf(ast[14].toString()));
+					comp.setComp_name(ast[15].toString());
+					
+					String mod_num = "";
+					
+					mod_num = Stream.of(ast[16].toString().split(",")).collect(Collectors.toList()).toString().replace("[", "").replace("]", "");
+					mod_num = mod_num.replace("[", "").replace("]", "");
+					
+					asts.setModel_numbers(mod_num);
+					dept.setCompany(comp);
+					
+					emp.setDepartment(dept);
+					emp.setDesignation(desig);
+					asts.setEmployee(emp);
+				
+					alist.add(asts);
+			});
+		}
+		
+        ExportAssignedAssets excelExporter = new ExportAssignedAssets(alist);
+        byte[] excelContent = excelExporter.export(response);
+        
+        // Return the file as a ResponseEntity
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .body(new InputStreamResource(new ByteArrayInputStream(excelContent)));
+
+	}
+	
+//		@GetMapping("/exportassignedassets/excel")
+//	    public void exportToExcel(HttpServletResponse response) throws IOException {
+//			System.err.println("exporto to excel");
 		
 //	        response.setContentType("application/octet-stream");
 //	        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
@@ -392,7 +475,6 @@ public class EmployeeController {
 //						assets = Stream.of(ast[5].toString().split(",")).collect(Collectors.toList()).toString();
 //						
 //						assets = assets.replace("[", "").replace("]", "");
-
 //						
 //						asts.setAssigned(assets);
 //						
@@ -423,7 +505,6 @@ public class EmployeeController {
 //						
 //						mod_num = Stream.of(ast[16].toString().split(",")).collect(Collectors.toList()).toString().replace("[", "").replace("]", "");
 //						mod_num = mod_num.replace("[", "").replace("]", "");
-//						//mod_num = mod_num;
 //						
 //						asts.setModel_numbers(mod_num);
 //						dept.setCompany(comp);
@@ -438,22 +519,34 @@ public class EmployeeController {
 //			
 //	        ExportAssignedAssets excelExporter = new ExportAssignedAssets(alist);
 //	        excelExporter.export(response);
-	    } 
+//	    } 
 		
 		@RequestMapping("/exportassignshistory/excel/{id}")
-	    public void exportToExcel(HttpServletResponse response,@PathVariable("id")Long empid ) throws IOException {
-	        response.setContentType("application/octet-stream");
-	        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-	        String currentDateTime = dateFormatter.format(new Date());
-	         
-	        String headerKey   = "Content-Disposition";
-	        String headerValue = "attachment; filename=Assigned_Assets_History" + currentDateTime + ".xls";
-	        response.setHeader(headerKey, headerValue);
-	         
+	    public ResponseEntity<InputStreamResource> exportToExcel(HttpServletResponse response,@PathVariable("id")Long empid ) throws IOException {
+			// Set headers
+	        HttpHeaders headers = new HttpHeaders();
+	        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=example.xlsx");
+	        
+//	        response.setContentType("application/octet-stream");
+//	        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+//	        String currentDateTime = dateFormatter.format(new Date());
+//	         
+//	        String headerKey   = "Content-Disposition";
+//	        String headerValue = "attachment; filename=Assigned_Assets_History" + currentDateTime + ".xls";
+//	        response.setHeader(headerKey, headerValue);
+//	         
 	        List<AssetAssignHistory> alist = ahistserv.getAssetAssignHistoryByEmpId(""+empid);
 	        
 	        ExportAssetAssignHistory ahist = new ExportAssetAssignHistory(alist);
 	        ahist.export(response);
 	        
+	        byte[] excelContent = ahist.export(response);
+	        
+	        // Return the file as a ResponseEntity
+	        return ResponseEntity
+	                .ok()
+	                .headers(headers)
+	                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+	                .body(new InputStreamResource(new ByteArrayInputStream(excelContent)));
 		}
 }
