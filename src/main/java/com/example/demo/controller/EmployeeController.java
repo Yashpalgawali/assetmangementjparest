@@ -2,18 +2,13 @@ package com.example.demo.controller;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.InputStreamResource;
@@ -21,8 +16,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import com.example.demo.exporttoexcel.ExportAssetAssignHistory;
 import com.example.demo.exporttoexcel.ExportAssignedAssets;
 import com.example.demo.models.AssetAssignHistory;
@@ -78,12 +70,12 @@ public class EmployeeController {
 	@Autowired
 	Environment env;
 	
-	private LocalDateTime today;
+//	private LocalDateTime today;
 	
-	private DateTimeFormatter ddate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	private DateTimeFormatter ddate = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 	private DateTimeFormatter dtime = DateTimeFormatter.ofPattern("HH:mm:ss");
 	
-	private String tday=ddate.format(today.now()),ttime=dtime.format(today.now());
+//	private String tday=ddate.format(LocalDateTime.now()),ttime=dtime.format(LocalDateTime.now());
 	
 
 	@PostMapping("/")
@@ -117,8 +109,8 @@ public class EmployeeController {
 				assignasset.setEmployee(emp);
 				assignasset.setAsset(ast);
 			
-				assignasset.setAssign_date(ddate.format(today.now()));
-				assignasset.setAssign_time(dtime.format(today.now()));
+				assignasset.setAssign_date(ddate.format(LocalDateTime.now()));
+				assignasset.setAssign_time(dtime.format(LocalDateTime.now()));
 				
 				isassigned = assignserv.saveAssignedAssets(assignasset);
 				
@@ -130,8 +122,8 @@ public class EmployeeController {
 				
 					ahist.setAsset(ast);
 					ahist.setEmployee(emp);
-					ahist.setOperation_date(ddate.format(today.now()));
-					ahist.setOperation_time(dtime.format(today.now()));
+					ahist.setOperation_date(ddate.format(LocalDateTime.now()));
+					ahist.setOperation_time(dtime.format(LocalDateTime.now()));
 					ahist.setOperation("Asset Assigned");
 					
 					ahistserv.saveAssetAssignHistory(ahist);
@@ -143,8 +135,6 @@ public class EmployeeController {
 			return new ResponseEntity<List<Employee>>(HttpStatus.INTERNAL_SERVER_ERROR);
 		} 
 	}
-	
-
 	
 //	@RequestMapping("/saveemployee")
 //	public String saveEmployee(@ModelAttribute("Employee")Employee empl,RedirectAttributes attr)
@@ -218,24 +208,17 @@ public class EmployeeController {
 		if(aslist.size() >0){
 			aslist.forEach(ast->{
 					AssignedAssets asts = new AssignedAssets();
-					
 					String assets= "",asset_type="";
-					
 					asts.setAssigned_asset_id(Long.valueOf(ast[0].toString()));
 					asts.setAssign_date(ast[1].toString());
 					asts.setAssign_time(ast[2].toString());
 					asts.setAsset_id(Long.valueOf(ast[3].toString()));
 					asts.setEmp_id((Long.valueOf(ast[4].toString())));
-					
 					assets = Stream.of(ast[5].toString().split(",")).collect(Collectors.toList()).toString();
-					
 					assets = assets.replace("[", "").replace("]", ""); 
-					
 					asts.setAssigned(assets);
-					
 					asset_type = Stream.of(ast[6].toString().split(",")).collect(Collectors.toList()).toString();
 					asset_type = asset_type.replace("[", "").replace("]", "");
-					
 					asts.setAssigned_types(asset_type);
 					
 					Employee emp = new Employee();
@@ -271,11 +254,10 @@ public class EmployeeController {
 				
 					alist.add(asts);
 			});
-		
 			return new ResponseEntity<List<AssignedAssets>>(alist ,HttpStatus.OK);
 		}
 		else {
-			return new ResponseEntity<List<AssignedAssets>>(alist ,HttpStatus.NO_CONTENT);
+			return new ResponseEntity<List<AssignedAssets>>(HttpStatus.NO_CONTENT);
 		}
 	}
 	
@@ -289,15 +271,13 @@ public class EmployeeController {
 	public ResponseEntity<List<AssignedAssets>> retrieveAssets(@PathVariable("id") Long id)
 	{
 		List<AssignedAssets> assign = assignserv.getAssignedAssetsByEmpId(id);
-		if(assign.size()>0){
+		if(assign.size()>0) {
 			return new ResponseEntity<List<AssignedAssets>>(assign,HttpStatus.OK);
 		}
 		else{
 			return new ResponseEntity<List<AssignedAssets>>(HttpStatus.NOT_FOUND);
 		}
 	}
-	
-
 	
 	@PostMapping("/updateretrieveassets")
 	public String updateRetrieveAssets(@ModelAttribute("AssignedAssets")AssignedAssets assign,RedirectAttributes attr)
@@ -370,7 +350,7 @@ public class EmployeeController {
     public ResponseEntity<InputStreamResource> exportToExcel(HttpServletResponse response) throws IOException {
 		// Set headers
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=example.xlsx");
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=All_Assigned_Assets.xlsx");
         
         
         List<AssignedAssets> alist = new ArrayList<AssignedAssets>();
@@ -523,18 +503,18 @@ public class EmployeeController {
 		
 		@RequestMapping("/exportassignshistory/excel/{id}")
 	    public ResponseEntity<InputStreamResource> exportToExcel(HttpServletResponse response,@PathVariable("id")Long empid ) throws IOException {
+		
+			System.err.println("inside exportassignshistory excel history \n ID = "+empid);
 			// Set headers
 	        HttpHeaders headers = new HttpHeaders();
-	        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=example.xlsx");
+	        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Asset_Assigned_History_Employee.xlsx");
 	        
 //	        response.setContentType("application/octet-stream");
 //	        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
 //	        String currentDateTime = dateFormatter.format(new Date());
-//	         
 //	        String headerKey   = "Content-Disposition";
 //	        String headerValue = "attachment; filename=Assigned_Assets_History" + currentDateTime + ".xls";
 //	        response.setHeader(headerKey, headerValue);
-//	         
 	        List<AssetAssignHistory> alist = ahistserv.getAssetAssignHistoryByEmpId(""+empid);
 	        
 	        ExportAssetAssignHistory ahist = new ExportAssetAssignHistory(alist);
