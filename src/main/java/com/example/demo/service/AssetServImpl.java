@@ -1,11 +1,15 @@
 package com.example.demo.service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.models.Activity;
 import com.example.demo.models.Assets;
+import com.example.demo.repository.ActivityRepo;
 import com.example.demo.repository.AssetRepo;
 
 @Service("assetserv")
@@ -13,48 +17,91 @@ public class AssetServImpl implements AssetService {
 
 	@Autowired
 	AssetRepo assetrepo;
+	@Autowired
+	ActivityRepo activityrepo;
+	
+	DateTimeFormatter tday  =  DateTimeFormatter.ofPattern("dd-MM-yyyy");
+	DateTimeFormatter ttime =  DateTimeFormatter.ofPattern("hh:mm:ss");
+	
+	Activity activity;
 	
 	@Override
 	public Assets saveAssets(Assets asset) {
-		// TODO Auto-generated method stub
-		return assetrepo.save(asset);
+		Assets ast = assetrepo.save(asset);
+		if(ast!=null) {
+			activity=new Activity();
+			activity.setActivity(asset.getAsset_name() +" is saved successfully");
+			activity.setOperation_date(tday.format(LocalDateTime.now()));
+			activity.setOperation_time(ttime.format(LocalDateTime.now()));
+			activityrepo.save(activity);
+			return ast;
+		}
+		else
+		 {
+			activity=new Activity();
+			activity.setActivity(asset.getAsset_name() +" is not saved ");
+			activity.setOperation_date(tday.format(LocalDateTime.now()));
+			activity.setOperation_time(ttime.format(LocalDateTime.now()));
+			activityrepo.save(activity);
+			return ast;
+		 }
 	}
 
 	@Override
 	public List<Assets> getAllAssets() {
-		// TODO Auto-generated method stub
-		//return assetrepo.getAllAssets();
 		return assetrepo.findAll();
 	}
 
 	@Override
 	public Assets getAssetsById(String id) { 
-		// TODO Auto-generated method stub
-		Long aid =Long.valueOf(id);
-		return assetrepo.findById(aid).get();
+		return assetrepo.findById(Long.valueOf(id)).get();
 	}
 
 	@Override
 	public int updateAssets(Assets asset) {
-		// TODO Auto-generated method stub
-		
-		return assetrepo.updateAsset(asset.getAsset_name(), asset.getAtype().getType_id(), asset.getAsset_number(), asset.getModel_number(), asset.getQuantity() , asset.getAsset_id());
+		int res = assetrepo.updateAsset(asset.getAsset_name(), asset.getAtype().getType_id(), asset.getAsset_number(), asset.getModel_number(), asset.getQuantity() , asset.getAsset_id());
+		if(res>0) {
+			activity=new Activity();
+			activity.setActivity(asset.getAsset_name() +" is updated successfully");
+			activity.setOperation_date(tday.format(LocalDateTime.now()));
+			activity.setOperation_time(ttime.format(LocalDateTime.now()));
+			activityrepo.save(activity);
+			return res;
+		 }
+		else {
+			activity=new Activity();
+			activity.setActivity(asset.getAsset_name() +" is not updated ");
+			activity.setOperation_date(tday.format(LocalDateTime.now()));
+			activity.setOperation_time(ttime.format(LocalDateTime.now()));
+			activityrepo.save(activity);
+			return res;
+		}
 	}
 
 	@Override
 	public int updateAssetQuantityByAssetId(Long asid,String qty) {
-		// TODO Auto-generated method stub
-		
-		System.err.println("inside updateAssetQuantityByAssetId Service layer ---->>>\nAsset ID is ->> "+asid+"\nQuantity ->> "+qty+"\n");
-		
-		return assetrepo.updateAssetQuantityByAssetId(asid, qty);
+		int res = assetrepo.updateAssetQuantityByAssetId(asid, qty);
+		Assets ast = assetrepo.getById(asid);
+		if(res>0) {
+			activity=new Activity();
+			activity.setActivity("Quantity of "+ast.getAsset_name() +" is updated to "+qty+" successfully");
+			activity.setOperation_date(tday.format(LocalDateTime.now()));
+			activity.setOperation_time(ttime.format(LocalDateTime.now()));
+			activityrepo.save(activity);
+			return res;
+		 }
+		else {
+			activity=new Activity();
+			activity.setActivity("Quantity of "+ast.getAsset_name() +" is not updated ");
+			activity.setOperation_date(tday.format(LocalDateTime.now()));
+			activity.setOperation_time(ttime.format(LocalDateTime.now()));
+			activityrepo.save(activity);
+			return res;
+		}
 	}
 
 	@Override
 	public int getAssetQuantityByAssetId(Long asid) {
-		// TODO Auto-generated method stub
-		
 		return assetrepo.getQuantiyByAssetId(asid);
 	}
-
 }

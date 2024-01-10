@@ -14,19 +14,14 @@ public class AssetAssignHistServImpl implements AssetAssignHistService {
 
 	@Autowired
 	AssetAssignHistoryRepo assetassignhistrepo;
-	
-	
 	@Override
 	public AssetAssignHistory saveAssetAssignHistory(AssetAssignHistory ahist) {
-		// TODO Auto-generated method stub
 		return assetassignhistrepo.save(ahist);
 	}
 
 	@Override
 	public List<AssetAssignHistory> getAssetAssignHistoryByEmpId(String empid) {
-		// TODO Auto-generated method stub
-		Long eid = Long.valueOf(empid);
-		return assetassignhistrepo.getAssetAssginHistByEmpId(eid);
+		return assetassignhistrepo.getAssetAssginHistByEmpId(Long.valueOf(empid));
 	}
 
 }

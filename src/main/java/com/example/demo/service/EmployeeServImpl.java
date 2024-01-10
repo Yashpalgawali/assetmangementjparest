@@ -48,11 +48,11 @@ public class EmployeeServImpl implements EmployeeService {
 	
 	@Override
 	public Employee saveEmployee(Employee emp) {
-		// TODO Auto-generated method stub
-	
+		
+		Employee empl = emprepo.save(emp);
 		if(emp!=null)
 		{
-			return emprepo.save(emp);
+			return null;
 		}
 		else {
 			return null;

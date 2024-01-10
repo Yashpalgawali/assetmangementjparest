@@ -16,25 +16,18 @@ public class AssetTypeServImpl implements AssetTypeService {
 	
 	@Override
 	public AssetType saveAssetType(AssetType atype) {
-		// TODO Auto-generated method stub
 		return atyperepo.save(atype);
 	}
 
 	@Override
 	public List<AssetType> getAllAssetTypes() {
-		// TODO Auto-generated method stub
 		return atyperepo.findAll();
 	}
 
 	@Override
 	public AssetType getAssetTypeById(String id) {
-		// TODO Auto-generated method stub
-		Long tid = Long.valueOf(id);
-		
-		AssetType atype = atyperepo.findById(tid).get();
-	
-		if(atype!=null)
-		{
+		AssetType atype = atyperepo.findById(Long.valueOf(id)).get();
+		if(atype!=null) {
 			return atype;
 		}
 		else {
@@ -44,7 +37,6 @@ public class AssetTypeServImpl implements AssetTypeService {
 
 	@Override
 	public int updateAssetType(AssetType atype) {
-		// TODO Auto-generated method stub
 		return atyperepo.updateAssetType(atype.getType_id(), atype.getType_name());
 	}
 
