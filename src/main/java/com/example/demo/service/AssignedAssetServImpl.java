@@ -20,31 +20,33 @@ public class AssignedAssetServImpl implements AssignedAssetService {
 
 	@Override
 	public AssignedAssets saveAssignedAssets(AssignedAssets assign) {
-		// TODO Auto-generated method stub
-		return assignassetrepo.save(assign);
+		AssignedAssets asset = assignassetrepo.save(assign);
+		if(asset!=null)
+		{
+			System.out.println("\n Assets assigned successfully\n");
+		}
+		else {
+			System.out.println(" Assets are NOT assigned \n");
+		}
+		return  asset;
 	}
 
 	@Override
 	public List<AssignedAssets> getAllAssignedAssets() {
-		// TODO Auto-generated method stub
-		
 		List<AssignedAssets> alist =  assignassetrepo.getAllAssignedAssets(); 
 		return alist;
 	}
 
 	@Override
 	public List<AssignedAssets> getAssignedAssetsByEmpId(Long empid) {
-		// TODO Auto-generated method stub
 		return assignassetrepo.getAllAssignedAssetsByEmpId(empid);
 	}
 
 	@Override
 	public int retrieveAssetByEmpId(AssignedAssets assign) {
-		// TODO Auto-generated method stub
 		String asset_ids = assign.getMulti_assets();
 		
 		String[] strarr	=   asset_ids.split(",");
-				
 		int res = 0;
 		
 		for(int i=0;i<strarr.length;i++)
@@ -61,7 +63,6 @@ public class AssignedAssetServImpl implements AssignedAssetService {
 
 	@Override
 	public List<Object[]> getAllAssignedassetsGroup() {
-		// TODO Auto-generated method stub
 		try {
 			List<Object[]> nobj = assignassetrepo.getAllNewAssignedAssets();
 			return nobj;

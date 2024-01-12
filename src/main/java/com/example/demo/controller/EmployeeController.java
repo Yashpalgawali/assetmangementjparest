@@ -79,21 +79,27 @@ public class EmployeeController {
 	
 
 	@PostMapping("/")
-	public ResponseEntity<List<Employee>> saveEmployee(@RequestBody Employee empl ) {
-	
+	public ResponseEntity<Employee> saveEmployee(@RequestBody Employee empl ) {
+	System.out.println("inside save employee method \n Asset Ids = "+empl.getAsset_ids());
 		String asset_ids = empl.getAsset_ids().toString().replace("[", "").replace("]", "").replace(" ", "");
 		
 		AssignedAssets isassigned = null;
+		
 		Employee emp = empserv.saveEmployee(empl);
 		if(emp!=null) {
+			System.out.println("Employee is saved successfully\n");
 			String[] asset_arr = asset_ids.split(",");
 							
 			for(int i=0;i<asset_arr.length;i++){
+				
+				System.err.println("Asset ID is = "+asset_arr[i]+"\n");
 				AssignedAssets assignasset = new AssignedAssets();
 				int qty =0;
 				Long astid = Long.valueOf(asset_arr[i]);
 				Assets ast = new Assets();
 				Assets getasset = assetserv.getAssetsById(""+astid);
+				
+				System.out.println("Asset is = "+getasset.toString());
 				
 				AssetType atype = new AssetType();
 				atype = atypeserv.getAssetTypeById(""+getasset.getAtype().getType_id());
@@ -129,10 +135,12 @@ public class EmployeeController {
 					ahistserv.saveAssetAssignHistory(ahist);
 				}
 			}
-			return new ResponseEntity<List<Employee>>(empserv.getAllEmployees(), HttpStatus.OK);
+			System.err.println("emp saved successfully");
+			return new ResponseEntity<Employee>(emp, HttpStatus.OK);
 		}
 		else {
-			return new ResponseEntity<List<Employee>>(HttpStatus.INTERNAL_SERVER_ERROR);
+			System.err.println("emp is not saved successfully");
+			return new ResponseEntity<Employee>(HttpStatus.INTERNAL_SERVER_ERROR);
 		} 
 	}
 	

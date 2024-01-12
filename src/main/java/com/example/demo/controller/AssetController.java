@@ -26,6 +26,7 @@ import com.example.demo.service.AssetTypeService;
 
 @RestController
 @RequestMapping("asset")
+@CrossOrigin("*")
 public class AssetController {
 
 	@Autowired

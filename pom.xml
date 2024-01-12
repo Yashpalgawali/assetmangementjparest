@@ -110,7 +110,7 @@
 </dependencies>
  
 		<build>
-		   <finalName>assetmanagement</finalName>
+		   <finalName>assetmanagementrest</finalName>
 			<plugins>
 				<plugin>
 					<groupId>org.springframework.boot</groupId>

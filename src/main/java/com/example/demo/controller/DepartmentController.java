@@ -20,6 +20,7 @@ import com.example.demo.service.DepartmentService;
 
 @RestController
 @RequestMapping("department")
+@CrossOrigin("*")
 public class DepartmentController {
 
 	@Autowired

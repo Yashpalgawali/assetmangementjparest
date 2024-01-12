@@ -44,15 +44,15 @@ public class EmployeeServImpl implements EmployeeService {
 	private DateTimeFormatter ddate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	private DateTimeFormatter dtime = DateTimeFormatter.ofPattern("HH:mm:ss");
 	
-	private String tday=ddate.format(today.now()),ttime=dtime.format(today.now());
+	private String tday=ddate.format(LocalDateTime.now()),ttime=dtime.format(LocalDateTime.now());
 	
 	@Override
 	public Employee saveEmployee(Employee emp) {
 		
 		Employee empl = emprepo.save(emp);
-		if(emp!=null)
+		if(empl!=null)
 		{
-			return null;
+			return empl;
 		}
 		else {
 			return null;
@@ -61,8 +61,6 @@ public class EmployeeServImpl implements EmployeeService {
 
 	@Override
 	public List<Employee> getAllEmployees() {
-		// TODO Auto-generated method stub
-		
 		try {
 			return emprepo.findAll();
 		}
@@ -74,15 +72,12 @@ public class EmployeeServImpl implements EmployeeService {
 
 	@Override
 	public Employee getEmployeeById(String empid) {
-		// TODO Auto-generated method stub
 		if(empid!=null)
 		{
-			try 
-			{		Long eid = Long.valueOf(empid);
-					return emprepo.findById(eid).get();
+			try {	
+				return emprepo.findById(Long.valueOf(empid)).get();
 			}
-			catch(Exception e)
-			{
+			catch(Exception e) {
 				return null;
 			}
 		}
@@ -93,12 +88,8 @@ public class EmployeeServImpl implements EmployeeService {
 
 	@Override
 	public int updateEmployee(Employee emp) {
-		// TODO Auto-generated method stub
-		
 		String new_assets = emp.getMulti_assets();
-		
 		AssignedAssets isassigned = null;
-		
 		int res = emprepo.updateEmployee(emp.getEmp_name(), emp.getEmp_email(), emp.getEmp_contact(), emp.getDepartment().getDept_id(), emp.getDesignation().getDesig_id(), emp.getEmp_id());
 		
 		List<AssignedAssets> assigned_assets = assignassetrepo.getAllAssignedAssetsByEmpId(emp.getEmp_id());
@@ -124,22 +115,18 @@ public class EmployeeServImpl implements EmployeeService {
 			
 			for(int i=0;i<ol_assets.length;i++)
 			{
-				if(nlist.contains(ol_assets[i]))
-				{
+				if(nlist.contains(ol_assets[i])) {
 					continue;
 				}
-				else 
-				{
+				else {
 					Long asid = Long.valueOf(ol_assets[i]);
 					int output = assignassetrepo.deleteAssignedAssetByEmpidAssetId(asid, emp.getEmp_id());
 					
-					if(output>0)
-					{	
+					if(output>0) {	
 						int qty = assetrepo.getQuantiyByAssetId(asid);
 						qty+=1;
 						
 						assetrepo.updateAssetQuantityByAssetId(asid, ""+qty);
-						
 						AssetAssignHistory ahist = new AssetAssignHistory();
 						
 						Assets ast = new Assets();
@@ -160,8 +147,8 @@ public class EmployeeServImpl implements EmployeeService {
 						
 						ahist.setAsset(ast);
 						ahist.setEmployee(emp);
-						ahist.setOperation_date(ddate.format(today.now()));
-						ahist.setOperation_time(dtime.format(today.now()));
+						ahist.setOperation_date(ddate.format(LocalDateTime.now()));
+						ahist.setOperation_time(dtime.format(LocalDateTime.now()));
 						ahist.setOperation("Asset Retrieved");
 						
 						assetassignhistrepo.save(ahist);
@@ -173,7 +160,6 @@ public class EmployeeServImpl implements EmployeeService {
 			{
 				if(olist.contains(nw_assets[i]))
 				{
-					//System.err.println("\n Asset id "+ol_assets[i]+" from old assets is present in new assets list \n");
 					continue;
 				}
 				else
@@ -204,8 +190,8 @@ public class EmployeeServImpl implements EmployeeService {
 					assignasset.setEmployee(emp);
 					assignasset.setAsset(ast);
 				
-					assignasset.setAssign_date(ddate.format(today.now()));
-					assignasset.setAssign_time(dtime.format(today.now()));
+					assignasset.setAssign_date(ddate.format(LocalDateTime.now()));
+					assignasset.setAssign_time(dtime.format(LocalDateTime.now()));
 					
 					isassigned = assignassetrepo.save(assignasset);
 					
@@ -234,8 +220,6 @@ public class EmployeeServImpl implements EmployeeService {
 		//If Assets to be assigned are greater than the Already assigned assets
 		if(nw_assets.length>ol_assets.length)
 		{
-//			List<String> olist= List.of(ol_assets);
-//			List<String> nlist= List.of(nw_assets);
 			List<String> olist= Arrays.asList(ol_assets);
 			List<String> nlist= Stream.of(new_assets.split(",")).collect(Collectors.toList());
 			
@@ -273,8 +257,8 @@ public class EmployeeServImpl implements EmployeeService {
 					assignasset.setEmployee(emp);
 					assignasset.setAsset(ast);
 				
-					assignasset.setAssign_date(ddate.format(today.now()));
-					assignasset.setAssign_time(dtime.format(today.now()));
+					assignasset.setAssign_date(ddate.format(LocalDateTime.now()));
+					assignasset.setAssign_time(dtime.format(LocalDateTime.now()));
 					
 					isassigned = assignassetrepo.save(assignasset);
 					
@@ -341,8 +325,8 @@ public class EmployeeServImpl implements EmployeeService {
 						
 						ahist.setAsset(ast);
 						ahist.setEmployee(emp);
-						ahist.setOperation_date(ddate.format(today.now()));
-						ahist.setOperation_time(dtime.format(today.now()));
+						ahist.setOperation_date(ddate.format(LocalDateTime.now()));
+						ahist.setOperation_time(dtime.format(LocalDateTime.now()));
 						ahist.setOperation("Asset Retrieved");
 						
 						assetassignhistrepo.save(ahist);
