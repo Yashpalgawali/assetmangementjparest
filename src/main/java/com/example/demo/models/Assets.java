@@ -50,7 +50,7 @@ public class Assets {
 	}
 
 
-	@ToString.Exclude
+	//@ToString.Exclude
 	@ManyToOne(targetEntity = AssetType.class,cascade = {CascadeType.MERGE})
 	@JoinColumn(name="type_id",referencedColumnName = "type_id")
 	private AssetType atype;

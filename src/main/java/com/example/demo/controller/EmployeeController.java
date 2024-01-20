@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -17,13 +18,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.demo.exporttoexcel.ExportAssetAssignHistory;
 import com.example.demo.exporttoexcel.ExportAssignedAssets;
 import com.example.demo.models.AssetAssignHistory;
@@ -42,8 +42,11 @@ import com.example.demo.service.CompanyService;
 import com.example.demo.service.DesignationService;
 import com.example.demo.service.EmployeeService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
 @RequestMapping("employee")
+@Slf4j
 public class EmployeeController {
 
 	@Autowired
@@ -80,6 +83,7 @@ public class EmployeeController {
 
 	@PostMapping("/")
 	public ResponseEntity<Employee> saveEmployee(@RequestBody Employee empl ) {
+		log.info("inside save employee \n");
 	System.out.println("inside save employee method \n Asset Ids = "+empl.getAsset_ids());
 		String asset_ids = empl.getAsset_ids().toString().replace("[", "").replace("]", "").replace(" ", "");
 		
@@ -144,71 +148,10 @@ public class EmployeeController {
 		} 
 	}
 	
-//	@RequestMapping("/saveemployee")
-//	public String saveEmployee(@ModelAttribute("Employee")Employee empl,RedirectAttributes attr)
-//	{
-//		String asset_ids = empl.getMulti_assets();
-//		
-//		AssignedAssets isassigned = null;
-//		Employee emp = empserv.saveEmployee(empl);
-//		if(emp!=null) {
-//			String[] asset_arr = asset_ids.split(",");
-//			
-//			for(int i=0;i<asset_arr.length;i++){
-//				AssignedAssets assignasset = new AssignedAssets();
-//				int qty =0;
-//				Long astid = Long.valueOf(asset_arr[i]);
-//				Assets ast = new Assets();
-//				Assets getasset = assetserv.getAssetsById(""+astid);
-//				
-//				AssetType atype = new AssetType();
-//				atype = atypeserv.getAssetTypeById(""+getasset.getAtype().getType_id());
-//				
-//				ast.setAtype(atype);
-//				
-//				ast.setAsset_id(astid);
-//				ast.setAsset_name(getasset.getAsset_name());
-//				ast.setAsset_number(getasset.getAsset_number());
-//				ast.setModel_number(getasset.getModel_number());
-//				ast.setQuantity(getasset.getQuantity());
-//				
-//				assignasset.setEmployee(emp);
-//				assignasset.setAsset(ast);
-//			
-//				assignasset.setAssign_date(ddate.format(today.now()));
-//				assignasset.setAssign_time(dtime.format(today.now()));
-//				
-//				isassigned = assignserv.saveAssignedAssets(assignasset);
-//				
-//				if(isassigned!=null) {	
-//					qty = (Integer)assetserv.getAssetQuantityByAssetId(astid);
-//					qty-=1;
-//					assetserv.updateAssetQuantityByAssetId(astid, ""+qty);
-//					AssetAssignHistory ahist = new AssetAssignHistory();
-//				
-//					ahist.setAsset(ast);
-//					ahist.setEmployee(emp);
-//					ahist.setOperation_date(ddate.format(today.now()));
-//					ahist.setOperation_time(dtime.format(today.now()));
-//					ahist.setOperation("Asset Assigned");
-//					
-//					ahistserv.saveAssetAssignHistory(ahist);
-//				}
-//			}
-//
-//			attr.addFlashAttribute("response", "Assets are assigned successfully");
-//			return "redirect:/viewassignedassets";
-//		}
-//		else {
-//			attr.addFlashAttribute("reserr", "Employee is not Saved");
-//			return "redirect:/viewassignedassets";
-//		} 
-//	}
-	
-	
+
 	@GetMapping("/viewassignedassets")
 	public ResponseEntity<List<AssignedAssets>> viewAllAssignedAssets()
-	{
+	{log.info("inside viewassignedassets method \n");
 		System.err.println("Inside viewassignedassets method \n");
 		List<AssignedAssets> alist = new ArrayList<AssignedAssets>();
 		List<Object[]>  aslist = assignserv.getAllAssignedassetsGroup();
@@ -279,6 +222,7 @@ public class EmployeeController {
 	public ResponseEntity<List<AssignedAssets>> retrieveAssets(@PathVariable("id") Long id)
 	{
 		List<AssignedAssets> assign = assignserv.getAssignedAssetsByEmpId(id);
+		assign.stream().forEach(e->System.err.println(e));
 		if(assign.size()>0) {
 			return new ResponseEntity<List<AssignedAssets>>(assign,HttpStatus.OK);
 		}
@@ -287,19 +231,52 @@ public class EmployeeController {
 		}
 	}
 	
-	@PostMapping("/updateretrieveassets")
-	public String updateRetrieveAssets(@ModelAttribute("AssignedAssets")AssignedAssets assign,RedirectAttributes attr)
+	@GetMapping("/getassignedassetsbyempid/{id}")
+	public ResponseEntity<List<AssignedAssets>> getAssignedAssetsByEmpId(@PathVariable("id") Long id)
 	{
-		int val = assignserv.retrieveAssetByEmpId(assign);
-		if(val>0) {
-			attr.addFlashAttribute("response", "Assets are assigned successfully");
-			return "redirect:/viewassignedassets";
+		System.out.println("inside getAssignedAssetsByEmpId() \n The emp Id is = "+id);
+		
+		List<AssignedAssets> assign = assignserv.getOnlyAssignedAssetsByEmpId(id);
+		assign.stream().forEach(e->System.err.println(e.toString()));
+	
+		if(assign.size()>0) {
+			return new ResponseEntity<List<AssignedAssets>>(assign,HttpStatus.OK);
 		}
 		else{
-			attr.addFlashAttribute("reserr", "Assets are not assigned successfully");
-			return "redirect:/viewassignedassets";
+			return new ResponseEntity<List<AssignedAssets>>(HttpStatus.NOT_FOUND);
 		}
 	}
+
+	@PutMapping("/delete")
+	public String updateRetrieveAssets(@RequestBody AssignedAssets assign)
+	{
+		System.err.println("Delete mapping called \n"+assign.getAssigned_assets());
+		return "Delete mapping called";
+//		int val = assignserv.retrieveAssetByEmpId(assign);
+//		if(val>0) {
+//			attr.addFlashAttribute("response", "Assets are assigned successfully");
+//			return "redirect:/viewassignedassets";
+//		}
+//		else{
+//			attr.addFlashAttribute("reserr", "Assets are not assigned successfully");
+//			return "redirect:/viewassignedassets";
+//		}
+	}
+	 
+	
+//	@PostMapping("/updateretrieveassets")
+//	public String updateRetrieveAssets(@ModelAttribute("AssignedAssets")AssignedAssets assign,RedirectAttributes attr)
+//	{
+//		int val = assignserv.retrieveAssetByEmpId(assign);
+//		if(val>0) {
+//			attr.addFlashAttribute("response", "Assets are assigned successfully");
+//			return "redirect:/viewassignedassets";
+//		}
+//		else{
+//			attr.addFlashAttribute("reserr", "Assets are not assigned successfully");
+//			return "redirect:/viewassignedassets";
+//		}
+//	}
 	 
 	@GetMapping("/viewemphistbyempid/{id}")
 	public ResponseEntity<List<AssetAssignHistory>> viewEmployeeHistoryByEmpId(@PathVariable("id") String id)
@@ -341,14 +318,14 @@ public class EmployeeController {
 		}
 	}
 	
-	@RequestMapping("/updateassignasset")
-	public  ResponseEntity<Employee> updateAssignedAssets(@ModelAttribute("Employee")Employee emp,RedirectAttributes attr)
+	@PutMapping("/")
+	public  ResponseEntity<Employee> updateAssignedAssets(@RequestBody Employee emp)
 	{
 		int res = empserv.updateEmployee(emp);
-		if(res>0){
+		if(res>0) {
 			return new  ResponseEntity<Employee>(emp,HttpStatus.OK);
 		}
-		else{
+		else {
 			return new  ResponseEntity<Employee>(HttpStatus.NOT_MODIFIED);
 		}
 	}
@@ -358,7 +335,6 @@ public class EmployeeController {
 		// Set headers
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=All_Assigned_Assets.xlsx");
-        
         
         List<AssignedAssets> alist = new ArrayList<AssignedAssets>();
 		List<Object[]>  aslist = assignserv.getAllAssignedassetsGroup();

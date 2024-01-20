@@ -60,4 +60,7 @@ public class Employee {
 	@Transient
 	private String assigned_asset_types;
 	
+//	@Transient
+//	private List<AssignedAssets> assigned_asts;
+	
 }

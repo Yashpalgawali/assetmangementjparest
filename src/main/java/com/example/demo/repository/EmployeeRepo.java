@@ -2,6 +2,8 @@ package com.example.demo.repository;
 
 
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,4 +21,10 @@ public interface EmployeeRepo extends JpaRepository<Employee, Long> {
 	@Transactional
 	@Query("UPDATE Employee e SET e.emp_name=:ename,e.emp_email=:email,e.emp_contact=:cont,e.department.dept_id=:depid,e.designation.desig_id=:desigid WHERE e.emp_id=:eid")
 	public int updateEmployee(String ename,String email,String cont,Long depid,Long desigid,Long eid);
+	
+	@Query("SELECT e FROM Employee e join e.designation JOIN e.department JOIN e.department.company")
+	public List<Employee> getAllEmployees();
+	
+	@Query("SELECT e FROM Employee e join e.designation JOIN e.department JOIN e.department.company WHERE e.emp_id=?1")
+	public Employee getAllEmployeeById(Long eid);
 }

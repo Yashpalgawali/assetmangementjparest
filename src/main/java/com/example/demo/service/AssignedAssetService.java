@@ -11,6 +11,8 @@ public interface AssignedAssetService {
 	public List<AssignedAssets> getAllAssignedAssets();
 
 	public List<AssignedAssets> getAssignedAssetsByEmpId(Long empid);
+	
+	public List<AssignedAssets> getOnlyAssignedAssetsByEmpId(Long empid);
 
 	public int retrieveAssetByEmpId(AssignedAssets assign);
 	

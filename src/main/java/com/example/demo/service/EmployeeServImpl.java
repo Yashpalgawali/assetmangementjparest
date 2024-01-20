@@ -6,15 +6,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.models.Activity;
 import com.example.demo.models.AssetAssignHistory;
 import com.example.demo.models.AssetType;
 import com.example.demo.models.Assets;
 import com.example.demo.models.AssignedAssets;
 import com.example.demo.models.Employee;
+import com.example.demo.repository.ActivityRepo;
 import com.example.demo.repository.AssetAssignHistoryRepo;
 import com.example.demo.repository.AssetRepo;
 import com.example.demo.repository.AssetTypeRepo;
@@ -39,9 +40,12 @@ public class EmployeeServImpl implements EmployeeService {
 	@Autowired
 	AssetTypeRepo atyperepo;
 	
+	@Autowired
+	ActivityRepo actrepo;
+	
 	private LocalDateTime today;
 	
-	private DateTimeFormatter ddate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	private DateTimeFormatter ddate = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 	private DateTimeFormatter dtime = DateTimeFormatter.ofPattern("HH:mm:ss");
 	
 	private String tday=ddate.format(LocalDateTime.now()),ttime=dtime.format(LocalDateTime.now());
@@ -50,8 +54,12 @@ public class EmployeeServImpl implements EmployeeService {
 	public Employee saveEmployee(Employee emp) {
 		
 		Employee empl = emprepo.save(emp);
-		if(empl!=null)
-		{
+		if(empl!=null) {
+			Activity act = new Activity();
+			act.setActivity(emp.getEmp_name()+" is saved successfully");
+			act.setOperation_date(ddate.format(LocalDateTime.now()));
+			act.setOperation_time(dtime.format(LocalDateTime.now()));
+			actrepo.save(act);
 			return empl;
 		}
 		else {
@@ -63,19 +71,18 @@ public class EmployeeServImpl implements EmployeeService {
 	public List<Employee> getAllEmployees() {
 		try {
 			return emprepo.findAll();
+			//return emprepo.getAllEmployees();
 		}
-		catch(Exception e)
-		{
+		catch(Exception e) {
 			return null;
 		}
 	}
 
 	@Override
 	public Employee getEmployeeById(String empid) {
-		if(empid!=null)
-		{
-			try {	
-				return emprepo.findById(Long.valueOf(empid)).get();
+		if(empid!=null) {
+			try {
+				return emprepo.getAllEmployeeById(Long.valueOf(empid));
 			}
 			catch(Exception e) {
 				return null;
@@ -88,18 +95,26 @@ public class EmployeeServImpl implements EmployeeService {
 
 	@Override
 	public int updateEmployee(Employee emp) {
-		String new_assets = emp.getMulti_assets();
+		String new_assets = "";
+		List<String> nl = emp.getAsset_ids();
+
+		for(int i=0;i<nl.size();i++) {
+			if(i==0) {
+				new_assets = nl.get(i);
+			}
+			else {
+				new_assets = new_assets+","+nl.get(i);
+			}
+		}
 		AssignedAssets isassigned = null;
 		int res = emprepo.updateEmployee(emp.getEmp_name(), emp.getEmp_email(), emp.getEmp_contact(), emp.getDepartment().getDept_id(), emp.getDesignation().getDesig_id(), emp.getEmp_id());
 		
 		List<AssignedAssets> assigned_assets = assignassetrepo.getAllAssignedAssetsByEmpId(emp.getEmp_id());
 		
 		String[] ol_assets = new String[assigned_assets.size()];
-		
 		String[] nw_assets = new String[new_assets.length()];
 		
 		nw_assets = new_assets.split(",");
-		
 		for(int i=0;i<assigned_assets.size();i++)
 		{
 			ol_assets[i] = assigned_assets.get(i).getAsset().getAsset_id().toString();
@@ -107,9 +122,6 @@ public class EmployeeServImpl implements EmployeeService {
 		
 		if(ol_assets.length==nw_assets.length)
 		{
-			//List<String> olist= List.of(ol_assets);
-			//List<String> nlist= List.of(nw_assets);
-			
 			List<String> olist= Arrays.asList(ol_assets);
 			List<String> nlist= Stream.of(new_assets.split(",")).collect(Collectors.toList());
 			
@@ -152,6 +164,11 @@ public class EmployeeServImpl implements EmployeeService {
 						ahist.setOperation("Asset Retrieved");
 						
 						assetassignhistrepo.save(ahist);
+						Activity act = new Activity();
+						act.setActivity("Asset "+getasset.getAsset_name()+" retrieved from "+ emp.getEmp_name());
+						act.setOperation_date(ddate.format(LocalDateTime.now()));
+						act.setOperation_time(dtime.format(LocalDateTime.now()));
+						actrepo.save(act);
 					}
 				}
 			}
@@ -169,10 +186,7 @@ public class EmployeeServImpl implements EmployeeService {
 					int qty =0;
 					
 					Long astid = Long.valueOf(asid);
-					
 					Assets ast = new Assets();
-					
-					assetrepo.findById(astid);
 					Assets getasset = assetrepo.findById(astid).get();
 					
 					AssetType atype = new AssetType();
@@ -195,10 +209,8 @@ public class EmployeeServImpl implements EmployeeService {
 					
 					isassigned = assignassetrepo.save(assignasset);
 					
-					if(isassigned!=null)
-					{	
+					if(isassigned!=null) {	
 						qty = assetrepo.getQuantiyByAssetId(astid);
-
 						qty-=1;
 						assetrepo.updateAssetQuantityByAssetId(astid, ""+qty);
 						
@@ -212,6 +224,11 @@ public class EmployeeServImpl implements EmployeeService {
 						
 						assetassignhistrepo.save(ahist);
 						
+						Activity act = new Activity();
+						act.setActivity("Asset "+getasset.getAsset_name()+" assigned to "+ emp.getEmp_name());
+						act.setOperation_date(ddate.format(LocalDateTime.now()));
+						act.setOperation_time(dtime.format(LocalDateTime.now()));
+						actrepo.save(act);
 					}
 				}
 			}
@@ -278,6 +295,11 @@ public class EmployeeServImpl implements EmployeeService {
 						ahist.setOperation("Asset Assigned");
 						
 						assetassignhistrepo.save(ahist);
+						Activity act = new Activity();
+						act.setActivity("Asset "+getasset.getAsset_name()+" Assigned to "+ emp.getEmp_name());
+						act.setOperation_date(ddate.format(LocalDateTime.now()));
+						act.setOperation_time(dtime.format(LocalDateTime.now()));
+						actrepo.save(act);
 						
 					}
 				}
@@ -330,6 +352,11 @@ public class EmployeeServImpl implements EmployeeService {
 						ahist.setOperation("Asset Retrieved");
 						
 						assetassignhistrepo.save(ahist);
+						Activity act = new Activity();
+						act.setActivity("Asset "+getasset.getAsset_name()+" retrieved from "+ emp.getEmp_name());
+						act.setOperation_date(ddate.format(LocalDateTime.now()));
+						act.setOperation_time(dtime.format(LocalDateTime.now()));
+						actrepo.save(act);
 					}
 				}
 			}

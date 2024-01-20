@@ -51,6 +51,7 @@ public class AssetController {
 	public ResponseEntity<List<Assets>> viewAssets()
 	{
 		List<Assets> asset = assetserv.getAllAssets();
+		asset.stream().forEach(e->System.err.println(e.toString()));
 		if(asset.size()>0) {
 			return new ResponseEntity<List<Assets>>(asset,HttpStatus.OK);
 		}
