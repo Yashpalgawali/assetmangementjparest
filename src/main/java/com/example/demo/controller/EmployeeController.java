@@ -17,6 +17,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -84,7 +85,7 @@ public class EmployeeController {
 	@PostMapping("/")
 	public ResponseEntity<Employee> saveEmployee(@RequestBody Employee empl ) {
 		log.info("inside save employee \n");
-	System.out.println("inside save employee method \n Asset Ids = "+empl.getAsset_ids());
+		System.out.println("inside save employee method \n Asset Ids = "+empl.getAsset_ids());
 		String asset_ids = empl.getAsset_ids().toString().replace("[", "").replace("]", "").replace(" ", "");
 		
 		AssignedAssets isassigned = null;
@@ -237,8 +238,13 @@ public class EmployeeController {
 		System.out.println("inside getAssignedAssetsByEmpId() \n The emp Id is = "+id);
 		
 		List<AssignedAssets> assign = assignserv.getOnlyAssignedAssetsByEmpId(id);
-		assign.stream().forEach(e->System.err.println(e.toString()));
+		List<Assets> aslist = null;
+		for(int i=0;i<assign.size();i++)
+		{
+			aslist.add(assign.get(i).getAsset());
+		}
 	
+		aslist.stream().forEach(e->System.err.println(e.toString()));
 		if(assign.size()>0) {
 			return new ResponseEntity<List<AssignedAssets>>(assign,HttpStatus.OK);
 		}
@@ -247,18 +253,20 @@ public class EmployeeController {
 		}
 	}
 
-	@PutMapping("/delete")
-	public String updateRetrieveAssets(@RequestBody AssignedAssets assign)
+	@DeleteMapping("/delete/{id}")
+	//public String updateRetrieveAssets(@RequestBody AssignedAssets assign)
+	public ResponseEntity<String> updateRetrieveAssets(@PathVariable("id") Long id)
 	{
-		System.err.println("Delete mapping called \n"+assign.getAssigned_assets());
-		return "Delete mapping called";
+		System.err.println("Delete mapping called \n ID = "+id);
+		int val = assignserv.retrieveAssetByEmpId(id);
+		
+		return new ResponseEntity<String>("Retrieved successfully",HttpStatus.OK);
+		
 //		int val = assignserv.retrieveAssetByEmpId(assign);
 //		if(val>0) {
-//			attr.addFlashAttribute("response", "Assets are assigned successfully");
 //			return "redirect:/viewassignedassets";
 //		}
 //		else{
-//			attr.addFlashAttribute("reserr", "Assets are not assigned successfully");
 //			return "redirect:/viewassignedassets";
 //		}
 	}

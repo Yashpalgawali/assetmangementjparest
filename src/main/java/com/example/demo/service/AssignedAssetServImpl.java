@@ -3,6 +3,7 @@ package com.example.demo.service;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -60,31 +61,56 @@ public class AssignedAssetServImpl implements AssignedAssetService {
 	}
 
 	@Override
-	public int retrieveAssetByEmpId(AssignedAssets assign) {
-		String asset_ids = assign.getMulti_assets();
-		String[] strarr	=   asset_ids.split(",");
-		int res = 0;
+	public int retrieveAssetByEmpId(Long eid) {
 		
-		for(int i=0;i<strarr.length;i++) {
-			Long asid = Long.valueOf(strarr[i]);
-			Assets asset = new Assets();
-			asset=assetrepo.findById(asid).get();
-			Employee emp = emprepo.getAllEmployeeById(assign.getEmp_id());
-			res  = assignassetrepo.deleteAssignedAssetByEmpidAssetId(asid, assign.getEmp_id());
-			int asset_qty = assetrepo.getQuantiyByAssetId(asid);
-			asset_qty +=1;
-			assetrepo.updateAssetQuantityByAssetId(asid, ""+asset_qty);
-			AssetAssignHistory ahist = new AssetAssignHistory();
-			ahist.setOperation("Asset "+asset.getAsset_name()+" Retrieved From "+emp.getEmp_name());
-			ahist.setOperation_date(ddate.format(LocalDateTime.now()));
-			ahist.setOperation_time(dtime.format(LocalDateTime.now()));
-			assignhistrepo.save(ahist);
-			ahist.setOperation("Quantity of asset "+asset.getAsset_name()+" is increased to "+asset_qty);
-			ahist.setOperation_date(ddate.format(LocalDateTime.now()));
-			ahist.setOperation_time(dtime.format(LocalDateTime.now()));
-			assignhistrepo.save(ahist);
+		List<AssignedAssets> ass_list = assignassetrepo.getAllAssignedAssetsByEmpId(eid);
+		String asts = "";
+		int res = 0;
+		if(ass_list.size()>0)
+		{
+			for(int i=0;i<ass_list.size();i++)
+			{
+				if(i==0) { asts = ""+ass_list.get(i).getAsset().getAsset_id() ; }
+				else { asts = asts+","+ass_list.get(i).getAsset().getAsset_id(); }
+			}
+		
+			//String asset_ids = assign.getMulti_assets();
+			System.err.println("Assigned IDs are = "+asts);
+			String asset_ids = asts;
+			String[] strarr	 = asset_ids.split(",");
+			
+			
+			for(int i=0;i<strarr.length;i++) {
+				Long asid = Long.valueOf(strarr[i]);
+				Assets asset = new Assets();
+				asset=assetrepo.findById(asid).get();
+				System.err.println(asset.toString());
+				
+				Employee emp = emprepo.getAllEmployeeById(eid);
+				System.err.println(emp.toString());
+				
+				res  = assignassetrepo.deleteAssignedAssetByEmpidAssetId(asid, eid);
+				int asset_qty = assetrepo.getQuantiyByAssetId(asid);
+				asset_qty +=1;
+				assetrepo.updateAssetQuantityByAssetId(asid, ""+asset_qty);
+				
+				AssetAssignHistory ahist = new AssetAssignHistory();
+				ahist.setOperation("Asset "+asset.getAsset_name()+" Retrieved From "+emp.getEmp_name());
+				ahist.setOperation_date(ddate.format(LocalDateTime.now()));
+				ahist.setOperation_time(dtime.format(LocalDateTime.now()));
+				assignhistrepo.save(ahist);
+				
+				ahist.setOperation("Quantity of asset "+asset.getAsset_name()+" is increased to "+asset_qty);
+				ahist.setOperation_date(ddate.format(LocalDateTime.now()));
+				ahist.setOperation_time(dtime.format(LocalDateTime.now()));
+				assignhistrepo.save(ahist);
+			}
+			return res;
 		}
-		return res;
+		else {
+			return res;
+		}
+		
 	}
 
 	@Override

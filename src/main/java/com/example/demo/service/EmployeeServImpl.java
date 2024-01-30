@@ -71,7 +71,6 @@ public class EmployeeServImpl implements EmployeeService {
 	public List<Employee> getAllEmployees() {
 		try {
 			return emprepo.findAll();
-			//return emprepo.getAllEmployees();
 		}
 		catch(Exception e) {
 			return null;
@@ -218,8 +217,8 @@ public class EmployeeServImpl implements EmployeeService {
 					
 						ahist.setAsset(ast);
 						ahist.setEmployee(emp);
-						ahist.setOperation_date(tday);
-						ahist.setOperation_time(ttime);
+						ahist.setOperation_date(ddate.format(LocalDateTime.now()));
+						ahist.setOperation_time(dtime.format(LocalDateTime.now()));
 						ahist.setOperation("Asset Assigned");
 						
 						assetassignhistrepo.save(ahist);
@@ -290,8 +289,8 @@ public class EmployeeServImpl implements EmployeeService {
 					
 						ahist.setAsset(ast);
 						ahist.setEmployee(emp);
-						ahist.setOperation_date(tday);
-						ahist.setOperation_time(ttime);
+						ahist.setOperation_date(ddate.format(LocalDateTime.now()));
+						ahist.setOperation_time(dtime.format(LocalDateTime.now()));
 						ahist.setOperation("Asset Assigned");
 						
 						assetassignhistrepo.save(ahist);
