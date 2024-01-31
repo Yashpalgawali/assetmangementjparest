@@ -63,7 +63,23 @@ public class DepartmentServImpl implements DepartmentService {
 
 	@Override
 	public int updateDepartment(Department dept) {
-		return deptrepo.updateDepartmentById(dept.getDept_name(), dept.getCompany().getComp_id(), dept.getDept_id());
+		int res = deptrepo.updateDepartmentById(dept.getDept_name(), dept.getCompany().getComp_id(), dept.getDept_id());
+		if(res>0)
+		{
+			activity=new Activity();
+			activity.setActivity(dept.getDept_name() +" is updated successfully");
+			activity.setOperation_date(tday.format(LocalDateTime.now()));
+			activity.setOperation_time(ttime.format(LocalDateTime.now()));
+			activityrepo.save(activity);
+		}
+		else {
+			activity=new Activity();
+			activity.setActivity(dept.getDept_name() +" is not updated ");
+			activity.setOperation_date(tday.format(LocalDateTime.now()));
+			activity.setOperation_time(ttime.format(LocalDateTime.now()));
+			activityrepo.save(activity);
+		}
+		return res;
 	}
 
 	@Override

@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -235,16 +234,11 @@ public class EmployeeController {
 	@GetMapping("/getassignedassetsbyempid/{id}")
 	public ResponseEntity<List<AssignedAssets>> getAssignedAssetsByEmpId(@PathVariable("id") Long id)
 	{
-		System.out.println("inside getAssignedAssetsByEmpId() \n The emp Id is = "+id);
-		
 		List<AssignedAssets> assign = assignserv.getOnlyAssignedAssetsByEmpId(id);
 		List<Assets> aslist = null;
-		for(int i=0;i<assign.size();i++)
-		{
+		for(int i=0;i<assign.size();i++) {
 			aslist.add(assign.get(i).getAsset());
 		}
-	
-		aslist.stream().forEach(e->System.err.println(e.toString()));
 		if(assign.size()>0) {
 			return new ResponseEntity<List<AssignedAssets>>(assign,HttpStatus.OK);
 		}
@@ -258,17 +252,12 @@ public class EmployeeController {
 	public ResponseEntity<String> updateRetrieveAssets(@PathVariable("id") Long id)
 	{
 		System.err.println("Delete mapping called \n ID = "+id);
-		int val = assignserv.retrieveAssetByEmpId(id);
-		
-		return new ResponseEntity<String>("Retrieved successfully",HttpStatus.OK);
-		
-//		int val = assignserv.retrieveAssetByEmpId(assign);
-//		if(val>0) {
-//			return "redirect:/viewassignedassets";
-//		}
-//		else{
-//			return "redirect:/viewassignedassets";
-//		}
+		int res = assignserv.retrieveAssetByEmpId(id);
+		System.err.println("retrieve result is = "+res);
+		if(res>0)
+		 return new ResponseEntity<String>("SUCCESS",HttpStatus.OK);
+		else
+			return new ResponseEntity<String>("",HttpStatus.NOT_MODIFIED);
 	}
 	 
 	
@@ -498,7 +487,8 @@ public class EmployeeController {
 			System.err.println("inside exportassignshistory excel history \n ID = "+empid);
 			// Set headers
 	        HttpHeaders headers = new HttpHeaders();
-	        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Asset_Assigned_History_Employee.xlsx");
+	        String fname = "Asset_Assigned_History_Employee.xlsx";
+	        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename="+fname);
 	        
 //	        response.setContentType("application/octet-stream");
 //	        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");

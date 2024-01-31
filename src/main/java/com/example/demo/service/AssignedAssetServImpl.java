@@ -9,10 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.models.Activity;
 import com.example.demo.models.AssetAssignHistory;
 import com.example.demo.models.Assets;
 import com.example.demo.models.AssignedAssets;
 import com.example.demo.models.Employee;
+import com.example.demo.repository.ActivityRepo;
 import com.example.demo.repository.AssetAssignHistoryRepo;
 import com.example.demo.repository.AssetRepo;
 import com.example.demo.repository.AssignedAssetsRepo;
@@ -32,6 +34,9 @@ public class AssignedAssetServImpl implements AssignedAssetService {
 	
 	@Autowired
 	EmployeeRepo emprepo;
+	
+	@Autowired
+	ActivityRepo actrepo;
 	
 	private DateTimeFormatter ddate = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 	private DateTimeFormatter dtime = DateTimeFormatter.ofPattern("HH:mm:ss");
@@ -64,6 +69,7 @@ public class AssignedAssetServImpl implements AssignedAssetService {
 	public int retrieveAssetByEmpId(Long eid) {
 		
 		List<AssignedAssets> ass_list = assignassetrepo.getAllAssignedAssetsByEmpId(eid);
+		ass_list.stream().forEach(e->System.out.println(e.toString()));
 		String asts = "";
 		int res = 0;
 		if(ass_list.size()>0)
@@ -84,10 +90,8 @@ public class AssignedAssetServImpl implements AssignedAssetService {
 				Long asid = Long.valueOf(strarr[i]);
 				Assets asset = new Assets();
 				asset=assetrepo.findById(asid).get();
-				System.err.println(asset.toString());
 				
 				Employee emp = emprepo.getAllEmployeeById(eid);
-				System.err.println(emp.toString());
 				
 				res  = assignassetrepo.deleteAssignedAssetByEmpidAssetId(asid, eid);
 				int asset_qty = assetrepo.getQuantiyByAssetId(asid);
@@ -98,19 +102,21 @@ public class AssignedAssetServImpl implements AssignedAssetService {
 				ahist.setOperation("Asset "+asset.getAsset_name()+" Retrieved From "+emp.getEmp_name());
 				ahist.setOperation_date(ddate.format(LocalDateTime.now()));
 				ahist.setOperation_time(dtime.format(LocalDateTime.now()));
+				ahist.setAsset_id(asid);
+				ahist.setEmployee(emp);
 				assignhistrepo.save(ahist);
 				
-				ahist.setOperation("Quantity of asset "+asset.getAsset_name()+" is increased to "+asset_qty);
+				Activity act = new Activity();
+				act.setActivity("Quantity of asset "+asset.getAsset_name()+" is increased to "+asset_qty);
 				ahist.setOperation_date(ddate.format(LocalDateTime.now()));
 				ahist.setOperation_time(dtime.format(LocalDateTime.now()));
-				assignhistrepo.save(ahist);
+				actrepo.save(act);
 			}
 			return res;
 		}
 		else {
 			return res;
 		}
-		
 	}
 
 	@Override
@@ -119,15 +125,13 @@ public class AssignedAssetServImpl implements AssignedAssetService {
 			List<Object[]> nobj = assignassetrepo.getAllNewAssignedAssets();
 			return nobj;
 		}
-		catch(Exception e)
-		{
+		catch(Exception e) {
 			return null;
 		}
 	}
 
 	@Override
 	public List<AssignedAssets> getOnlyAssignedAssetsByEmpId(Long empid) {
-		
 		return assignassetrepo.getOnlyAssignedAssetsByEmpId(empid);
 	}
 }

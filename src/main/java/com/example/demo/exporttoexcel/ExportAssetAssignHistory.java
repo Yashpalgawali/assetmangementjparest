@@ -30,10 +30,13 @@ public class ExportAssetAssignHistory {
 		this.ahist = ahist;
 		workbook = new XSSFWorkbook();
 	}
-	
+	static final int cnt =1;
 	public void writeHeaderLine() {
-		
-			sheet = workbook.createSheet("Asset_assign_Hist") ;
+			
+			String fname = "Asset_assign_Hist";
+			int sheetIndex = workbook.getSheetIndex(fname);
+						
+			sheet = workbook.createSheet(fname) ;
 	
 			Row row = sheet.createRow(0); 
 			
