@@ -102,7 +102,7 @@ public class AssignedAssetServImpl implements AssignedAssetService {
 				ahist.setOperation("Asset "+asset.getAsset_name()+" Retrieved From "+emp.getEmp_name());
 				ahist.setOperation_date(ddate.format(LocalDateTime.now()));
 				ahist.setOperation_time(dtime.format(LocalDateTime.now()));
-				ahist.setAsset_id(asid);
+				ahist.setAsset(asset);
 				ahist.setEmployee(emp);
 				assignhistrepo.save(ahist);
 				

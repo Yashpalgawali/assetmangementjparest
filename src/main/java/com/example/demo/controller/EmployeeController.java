@@ -191,9 +191,7 @@ public class EmployeeController {
 					comp.setComp_name(ast[15].toString());
 					
 					String mod_num = "";
-					
 					mod_num = Stream.of(ast[16].toString().split(",")).collect(Collectors.toList()).toString().replace("[", "").replace("]", "");
-					
 					asts.setModel_numbers(mod_num);
 					
 					dept.setCompany(comp);
@@ -202,7 +200,6 @@ public class EmployeeController {
 					emp.setDesignation(desig);
 					
 					asts.setEmployee(emp);
-				
 					alist.add(asts);
 			});
 			return new ResponseEntity<List<AssignedAssets>>(alist ,HttpStatus.OK);
@@ -222,7 +219,6 @@ public class EmployeeController {
 	public ResponseEntity<List<AssignedAssets>> retrieveAssets(@PathVariable("id") Long id)
 	{
 		List<AssignedAssets> assign = assignserv.getAssignedAssetsByEmpId(id);
-		assign.stream().forEach(e->System.err.println(e));
 		if(assign.size()>0) {
 			return new ResponseEntity<List<AssignedAssets>>(assign,HttpStatus.OK);
 		}
@@ -248,14 +244,13 @@ public class EmployeeController {
 	}
 
 	@DeleteMapping("/delete/{id}")
-	//public String updateRetrieveAssets(@RequestBody AssignedAssets assign)
 	public ResponseEntity<String> updateRetrieveAssets(@PathVariable("id") Long id)
 	{
 		System.err.println("Delete mapping called \n ID = "+id);
 		int res = assignserv.retrieveAssetByEmpId(id);
 		System.err.println("retrieve result is = "+res);
 		if(res>0)
-		 return new ResponseEntity<String>("SUCCESS",HttpStatus.OK);
+			return new ResponseEntity<String>("SUCCESS",HttpStatus.OK);
 		else
 			return new ResponseEntity<String>("",HttpStatus.NOT_MODIFIED);
 	}
