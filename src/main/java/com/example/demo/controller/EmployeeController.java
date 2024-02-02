@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.servlet.http.HttpServletResponse;
+
+import org.aspectj.weaver.ast.Instanceof;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.InputStreamResource;
@@ -72,38 +74,27 @@ public class EmployeeController {
 	
 	@Autowired
 	Environment env;
-	
-//	private LocalDateTime today;
-	
+
 	private DateTimeFormatter ddate = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 	private DateTimeFormatter dtime = DateTimeFormatter.ofPattern("HH:mm:ss");
-	
-//	private String tday=ddate.format(LocalDateTime.now()),ttime=dtime.format(LocalDateTime.now());
-	
 
 	@PostMapping("/")
 	public ResponseEntity<Employee> saveEmployee(@RequestBody Employee empl ) {
-		log.info("inside save employee \n");
-		System.out.println("inside save employee method \n Asset Ids = "+empl.getAsset_ids());
+	
 		String asset_ids = empl.getAsset_ids().toString().replace("[", "").replace("]", "").replace(" ", "");
-		
 		AssignedAssets isassigned = null;
 		
 		Employee emp = empserv.saveEmployee(empl);
 		if(emp!=null) {
-			System.out.println("Employee is saved successfully\n");
+		
 			String[] asset_arr = asset_ids.split(",");
-							
 			for(int i=0;i<asset_arr.length;i++){
 				
-				System.err.println("Asset ID is = "+asset_arr[i]+"\n");
 				AssignedAssets assignasset = new AssignedAssets();
 				int qty =0;
 				Long astid = Long.valueOf(asset_arr[i]);
 				Assets ast = new Assets();
 				Assets getasset = assetserv.getAssetsById(""+astid);
-				
-				System.out.println("Asset is = "+getasset.toString());
 				
 				AssetType atype = new AssetType();
 				atype = atypeserv.getAssetTypeById(""+getasset.getAtype().getType_id());
@@ -139,11 +130,9 @@ public class EmployeeController {
 					ahistserv.saveAssetAssignHistory(ahist);
 				}
 			}
-			System.err.println("emp saved successfully");
 			return new ResponseEntity<Employee>(emp, HttpStatus.OK);
 		}
 		else {
-			System.err.println("emp is not saved successfully");
 			return new ResponseEntity<Employee>(HttpStatus.INTERNAL_SERVER_ERROR);
 		} 
 	}
@@ -151,8 +140,7 @@ public class EmployeeController {
 
 	@GetMapping("/viewassignedassets")
 	public ResponseEntity<List<AssignedAssets>> viewAllAssignedAssets()
-	{log.info("inside viewassignedassets method \n");
-		System.err.println("Inside viewassignedassets method \n");
+	{
 		List<AssignedAssets> alist = new ArrayList<AssignedAssets>();
 		List<Object[]>  aslist = assignserv.getAllAssignedassetsGroup();
 		
@@ -231,6 +219,7 @@ public class EmployeeController {
 	public ResponseEntity<List<AssignedAssets>> getAssignedAssetsByEmpId(@PathVariable("id") Long id)
 	{
 		List<AssignedAssets> assign = assignserv.getOnlyAssignedAssetsByEmpId(id);
+	
 		List<Assets> aslist = null;
 		for(int i=0;i<assign.size();i++) {
 			aslist.add(assign.get(i).getAsset());
@@ -246,29 +235,13 @@ public class EmployeeController {
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<String> updateRetrieveAssets(@PathVariable("id") Long id)
 	{
-		System.err.println("Delete mapping called \n ID = "+id);
 		int res = assignserv.retrieveAssetByEmpId(id);
-		System.err.println("retrieve result is = "+res);
 		if(res>0)
 			return new ResponseEntity<String>("SUCCESS",HttpStatus.OK);
 		else
 			return new ResponseEntity<String>("",HttpStatus.NOT_MODIFIED);
 	}
-	 
-	
-//	@PostMapping("/updateretrieveassets")
-//	public String updateRetrieveAssets(@ModelAttribute("AssignedAssets")AssignedAssets assign,RedirectAttributes attr)
-//	{
-//		int val = assignserv.retrieveAssetByEmpId(assign);
-//		if(val>0) {
-//			attr.addFlashAttribute("response", "Assets are assigned successfully");
-//			return "redirect:/viewassignedassets";
-//		}
-//		else{
-//			attr.addFlashAttribute("reserr", "Assets are not assigned successfully");
-//			return "redirect:/viewassignedassets";
-//		}
-//	}
+
 	 
 	@GetMapping("/viewemphistbyempid/{id}")
 	public ResponseEntity<List<AssetAssignHistory>> viewEmployeeHistoryByEmpId(@PathVariable("id") String id)
@@ -400,81 +373,7 @@ public class EmployeeController {
 
 	}
 	
-//		@GetMapping("/exportassignedassets/excel")
-//	    public void exportToExcel(HttpServletResponse response) throws IOException {
-//			System.err.println("exporto to excel");
-		
-//	        response.setContentType("application/octet-stream");
-//	        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-//	        String currentDateTime = dateFormatter.format(new Date());
-//	         
-//	        String headerKey = "Content-Disposition";
-//	        String headerValue = "attachment; filename=Assigned_Assets_" + currentDateTime + ".xls";
-//	        response.setHeader(headerKey, headerValue);
-//	         
-//	        List<AssignedAssets> alist = new ArrayList<AssignedAssets>();
-//			List<Object[]>  aslist = assignserv.getAllAssignedassetsGroup();
-//			
-//			if(aslist.size() >0){
-//				aslist.forEach(ast->{
-//						AssignedAssets asts = new AssignedAssets();
-//						
-//						String assets= "",asset_type="";
-//						
-//						asts.setAssigned_asset_id(Long.valueOf(ast[0].toString()));
-//						asts.setAssign_date(ast[1].toString());
-//						asts.setAssign_time(ast[2].toString());
-//						asts.setAsset_id(Long.valueOf(ast[3].toString()));
-//						asts.setEmp_id((Long.valueOf(ast[4].toString())));
-//						
-//						assets = Stream.of(ast[5].toString().split(",")).collect(Collectors.toList()).toString();
-//						
-//						assets = assets.replace("[", "").replace("]", "");
-//						
-//						asts.setAssigned(assets);
-//						
-//						asset_type = Stream.of(ast[6].toString().split(",")).collect(Collectors.toList()).toString();
-//						asset_type = asset_type.replace("[", "").replace("]", "");
-//						
-//						asts.setAssigned_types(asset_type);
-//						
-//						Employee emp = new Employee();
-//						
-//						emp.setEmp_name(ast[7].toString());
-//						emp.setEmp_email(ast[8].toString());
-//						emp.setEmp_contact(ast[9].toString());
-//						
-//						Designation desig = new Designation();
-//						desig.setDesig_id((Long.valueOf(ast[10].toString())));
-//						desig.setDesig_name(ast[11].toString());
-//
-//						Department dept = new Department();
-//						dept.setDept_id((Long.valueOf(ast[12].toString())));
-//						dept.setDept_name(ast[13].toString());
-//						
-//						Company comp = new Company();
-//						comp.setComp_id(Long.valueOf(ast[14].toString()));
-//						comp.setComp_name(ast[15].toString());
-//						
-//						String mod_num = "";
-//						
-//						mod_num = Stream.of(ast[16].toString().split(",")).collect(Collectors.toList()).toString().replace("[", "").replace("]", "");
-//						mod_num = mod_num.replace("[", "").replace("]", "");
-//						
-//						asts.setModel_numbers(mod_num);
-//						dept.setCompany(comp);
-//						
-//						emp.setDepartment(dept);
-//						emp.setDesignation(desig);
-//						asts.setEmployee(emp);
-//					
-//						alist.add(asts);
-//				});
-//			}
-//			
-//	        ExportAssignedAssets excelExporter = new ExportAssignedAssets(alist);
-//	        excelExporter.export(response);
-//	    } 
+ 
 		
 		@RequestMapping("/exportassignshistory/excel/{id}")
 	    public ResponseEntity<InputStreamResource> exportToExcel(HttpServletResponse response,@PathVariable("id")Long empid ) throws IOException {
