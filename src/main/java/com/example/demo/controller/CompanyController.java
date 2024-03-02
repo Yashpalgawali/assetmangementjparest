@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.models.Company;
 import com.example.demo.service.CompanyService;
 
+import io.swagger.annotations.ApiOperation;
+
 @RestController
 @RequestMapping("company") 
 @CrossOrigin("*")
@@ -26,6 +28,7 @@ public class CompanyController {
 	@Autowired
 	CompanyService compserv;
 
+	@ApiOperation("This End POint is used to save the Company")
 	@PostMapping("/")
 	public ResponseEntity<List<Company>> saveCompany(@RequestBody Company company)
 	{
@@ -39,6 +42,7 @@ public class CompanyController {
 	}
 
 	@GetMapping("/")
+	@ApiOperation("This End Point is used to get all companies list")
 	public ResponseEntity<List<Company>> viewCompany() {
 			List<Company> clist = compserv.getAllCompanies();
 			if(clist.size()>0){
@@ -50,6 +54,7 @@ public class CompanyController {
 	}
 	
 	@GetMapping("/{id}")
+	@ApiOperation("This End Point is used to get the company by company ID")
 	public ResponseEntity<Company> editCompany(@PathVariable("id") Long cid) {
 		Company comp = compserv.getCompanyById(cid);
 		if(comp!=null) {
@@ -61,6 +66,7 @@ public class CompanyController {
 	}
 	
 	@PutMapping("/")
+	@ApiOperation("This End point is used to Update the Company")
 	public ResponseEntity<List<Company>> updateCompany(@RequestBody Company comp) {
 		int res = compserv.updateCompany(comp);
 		if (res > 0){

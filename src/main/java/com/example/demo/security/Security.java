@@ -17,6 +17,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
@@ -53,7 +54,8 @@ public class Security extends WebSecurityConfigurerAdapter{
 			.csrf().disable()
 			.authorizeRequests()
 			.antMatchers("/employee/","/appointment/","/appointment/*","/appointment/appointmentbymail/*","/users/otp/**","/users/email/**",
-						 "/users/updatepass/**","/appointment/confappointment/**","/appointment/declineappointment/**").permitAll()
+						 "/users/updatepass/**","/appointment/confappointment/**","/appointment/declineappointment/**",
+						 "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
 			.antMatchers(HttpMethod.OPTIONS,"/**").permitAll()
 			.anyRequest()
 			.authenticated()
@@ -83,5 +85,6 @@ public class Security extends WebSecurityConfigurerAdapter{
 			}
 		};
 	}
+
 
 }
