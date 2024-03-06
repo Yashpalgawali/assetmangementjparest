@@ -44,6 +44,7 @@ import com.example.demo.service.CompanyService;
 import com.example.demo.service.DesignationService;
 import com.example.demo.service.EmployeeService;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -79,6 +80,7 @@ public class EmployeeController {
 	private DateTimeFormatter dtime = DateTimeFormatter.ofPattern("HH:mm:ss");
 
 	@PostMapping("/")
+	@ApiOperation("This will save the Employee details and will assign the Assets")
 	public ResponseEntity<Employee> saveEmployee(@RequestBody Employee empl ) {
 	
 		String asset_ids = empl.getAsset_ids().toString().replace("[", "").replace("]", "").replace(" ", "");
@@ -139,6 +141,7 @@ public class EmployeeController {
 	
 
 	@GetMapping("/viewassignedassets")
+	@ApiOperation("This endpoint will get the all assigned assets to the employee")
 	public ResponseEntity<List<AssignedAssets>> viewAllAssignedAssets()
 	{
 		List<AssignedAssets> alist = new ArrayList<AssignedAssets>();
@@ -198,12 +201,14 @@ public class EmployeeController {
 	}
 	
 	@GetMapping("/")
+	@ApiOperation("This endpoint will get List of all Employees")
 	public ResponseEntity<List<Employee>> viewAllEmployees() {
 		List<Employee> elist = empserv.getAllEmployees();
 		return new ResponseEntity<List<Employee>>(elist, HttpStatus.OK);
 	}
 	
 	@GetMapping("/retrieveassetsbyempid/{id}")
+	@ApiOperation("This endpoint will retrieve the assets by id")
 	public ResponseEntity<List<AssignedAssets>> retrieveAssets(@PathVariable("id") Long id)
 	{
 		List<AssignedAssets> assign = assignserv.getAssignedAssetsByEmpId(id);
@@ -216,6 +221,7 @@ public class EmployeeController {
 	}
 	
 	@GetMapping("/getassignedassetsbyempid/{id}")
+	@ApiOperation("This endpoint will return the assigned assets by employee ID")
 	public ResponseEntity<List<AssignedAssets>> getAssignedAssetsByEmpId(@PathVariable("id") Long id)
 	{
 		List<AssignedAssets> assign = assignserv.getOnlyAssignedAssetsByEmpId(id);
@@ -233,6 +239,7 @@ public class EmployeeController {
 	}
 
 	@DeleteMapping("/delete/{id}")
+	@ApiOperation("This endpoint will retrieve the assets by employee id")
 	public ResponseEntity<String> updateRetrieveAssets(@PathVariable("id") Long id)
 	{
 		int res = assignserv.retrieveAssetByEmpId(id);
@@ -244,6 +251,7 @@ public class EmployeeController {
 
 	 
 	@GetMapping("/viewemphistbyempid/{id}")
+	@ApiOperation("This endpoint will show History of assigning assets to employee by employee id")
 	public ResponseEntity<List<AssetAssignHistory>> viewEmployeeHistoryByEmpId(@PathVariable("id") String id)
 	{
 		List<AssetAssignHistory> ahist = ahistserv.getAssetAssignHistoryByEmpId(id);
@@ -256,6 +264,7 @@ public class EmployeeController {
 	}
 	
 	@GetMapping("/editempassignassetbyempid/{id}")
+	@ApiOperation("This endpoint will show History of assigning assets to employee by employee id")
 	public ResponseEntity<Employee> editEmployeeByEmpId(@PathVariable("id") String empid) {
 		Employee emp = empserv.getEmployeeById(empid);
 		if(emp!=null) {

@@ -18,6 +18,8 @@ import com.example.demo.models.Department;
 import com.example.demo.service.CompanyService;
 import com.example.demo.service.DepartmentService;
 
+import io.swagger.annotations.ApiOperation;
+
 @RestController
 @RequestMapping("department")
 @CrossOrigin("*")
@@ -31,6 +33,7 @@ public class DepartmentController {
 
 	
 	@PostMapping("/")
+	@ApiOperation("This End Point is used to save Department")
 	public ResponseEntity<List<Department>> saveDepartment(@RequestBody Department dept) {
 		
 		Department depart = deptserv.saveDepartment(dept);
@@ -43,6 +46,7 @@ public class DepartmentController {
 	}
 	
 	@GetMapping("/")
+	@ApiOperation("This End Point is used to get all Departments list")
 	public ResponseEntity<List<Department>> viewAllDepartments(){
 		List<Department> dlist = deptserv.getAllDepartments();
 		if(dlist.size()>0){
@@ -54,6 +58,7 @@ public class DepartmentController {
 	}
 	
 	@GetMapping("/{id}")
+	@ApiOperation("This End Point is used to get department by department ID")
 	public ResponseEntity<Department> getDepartmentByDeptId(@PathVariable("id")Long id){
 		Department dept = deptserv.getDepartmentById(id);
 		if(dept!=null) {
@@ -65,6 +70,7 @@ public class DepartmentController {
 	}
 	
 	@PutMapping("/")
+	@ApiOperation("This End Point is used to update the department")
 	public ResponseEntity<List<Department>> updateDepartment(@RequestBody Department dept)
 	{
 		int result = deptserv.updateDepartment(dept);
@@ -77,11 +83,13 @@ public class DepartmentController {
 	}
 	
 	@GetMapping("/getdeptbycompid/{id}")
+	@ApiOperation("This End Point is used to get departments by using company ID")
 	public ResponseEntity<List<Department>> getDepartmentByCompanyId(@PathVariable("id")Long id){
 		return new ResponseEntity<List<Department>>(deptserv.getDepartmentByCompanyId(id),HttpStatus.OK);
 	}
 	
 	@GetMapping("/getdeptbycompname/{name}")
+	@ApiOperation("This End Point is used to get departments by using company Name")
 	public ResponseEntity<List<Department>> getDepartmentByCompanyName(@PathVariable("name")String name){
 		return new ResponseEntity<List<Department>>(deptserv.getDepartmentByCompanyName(name),HttpStatus.OK);
 	}

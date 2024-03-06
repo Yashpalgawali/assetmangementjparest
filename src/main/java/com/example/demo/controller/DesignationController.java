@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.models.Designation;
 import com.example.demo.service.DesignationService;
 
+import io.swagger.annotations.ApiOperation;
+
 @RestController
 @RequestMapping("/designation")
 @CrossOrigin("*")
@@ -25,6 +27,7 @@ public class DesignationController {
 	DesignationService desigserv;
 	
 	@PostMapping("/")
+	@ApiOperation("This Will save the designation")
 	public ResponseEntity<List<Designation>> saveDesignation(@RequestBody Designation desig) {
 		Designation designation = desigserv.saveDesignation(desig);
 		if(designation !=null){
@@ -36,11 +39,13 @@ public class DesignationController {
 	}
 	
 	@GetMapping("/")
+	@ApiOperation("This Will get all the designation list")
 	public ResponseEntity<List<Designation>> viewDesignations() {
 		return new ResponseEntity<List<Designation>>(desigserv.getAllDesignations(), HttpStatus.OK);
 	}
 	
 	@GetMapping("/{id}")
+	@ApiOperation("This Will get the designation by ID")
 	public ResponseEntity<Designation> editDesignationById(@PathVariable("id")Long id) {
 		Designation desig = desigserv.getDesignationById(id);
 		if(desig!=null) {
@@ -52,6 +57,7 @@ public class DesignationController {
 	}
 	
 	@PutMapping("/")
+	@ApiOperation("This Will update the designation")
 	public ResponseEntity<List<Designation>> updateDesignation(@RequestBody Designation desig){
 		int res= desigserv.updateDesignation(desig);
 		if(res>0) {

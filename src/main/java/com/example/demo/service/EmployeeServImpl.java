@@ -304,7 +304,7 @@ public class EmployeeServImpl implements EmployeeService {
 				}
 			}
 		}
-		
+		int output = 0;
 		//If Assets to be assigned are smaller than the Already assigned assets
 		if(nw_assets.length<ol_assets.length)
 		{
@@ -321,9 +321,9 @@ public class EmployeeServImpl implements EmployeeService {
 				else
 				{
 					Long asid = Long.valueOf(ol_assets[i]);
-					int output = assignassetrepo.deleteAssignedAssetByEmpidAssetId(asid, emp.getEmp_id());
-					if(output>0)
-					{	
+					output = assignassetrepo.deleteAssignedAssetByEmpidAssetId(asid, emp.getEmp_id());
+					
+					if(output>0) {	
 						int qty = assetrepo.getQuantiyByAssetId(asid);
 						qty+=1;
 						assetrepo.updateAssetQuantityByAssetId(asid, ""+qty);
@@ -359,8 +359,8 @@ public class EmployeeServImpl implements EmployeeService {
 					}
 				}
 			}
-
 		}
+		System.err.println("Output var = "+output);
 		if(isassigned!=null)
 		{
 			return 1;

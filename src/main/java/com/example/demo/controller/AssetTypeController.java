@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.models.AssetType;
 import com.example.demo.service.AssetTypeService;
 
+import io.swagger.annotations.ApiOperation;
+
 @RestController
 @RequestMapping("assettype")
 @CrossOrigin("*")
@@ -25,6 +27,7 @@ public class AssetTypeController {
 	AssetTypeService atypeserv;
 	
 	@PostMapping("/")
+	@ApiOperation("This will save the Asset Type")
 	public ResponseEntity<List<AssetType>> saveAssetType(@RequestBody AssetType atype)
 	{
 		AssetType type = atypeserv.saveAssetType(atype);
@@ -37,6 +40,7 @@ public class AssetTypeController {
 	}
 	
 	@GetMapping("/")
+	@ApiOperation("This will get the Asset Types list")
 	public ResponseEntity<List<AssetType>> getAllAssetType()
 	{
 		List<AssetType> type = atypeserv.getAllAssetTypes();
@@ -49,6 +53,7 @@ public class AssetTypeController {
 	}
 	
 	@GetMapping("/{id}")
+	@ApiOperation("This will get the Asset Type by ID")
 	public ResponseEntity<AssetType> editAssetTypeById(@PathVariable("id") String id)
 	{
 		AssetType atype = atypeserv.getAssetTypeById(id);
@@ -61,6 +66,7 @@ public class AssetTypeController {
 	}
 	
 	@PutMapping("/")
+	@ApiOperation("This will Update the Asset Type")
 	public ResponseEntity<List<AssetType>> updateAssetType(@RequestBody AssetType atype)
 	{
 		int res = atypeserv.updateAssetType(atype);
