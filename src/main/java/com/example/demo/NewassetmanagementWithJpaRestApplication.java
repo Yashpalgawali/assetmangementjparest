@@ -1,8 +1,5 @@
 package com.example.demo;
 
-import java.util.List;
-import java.util.stream.IntStream;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

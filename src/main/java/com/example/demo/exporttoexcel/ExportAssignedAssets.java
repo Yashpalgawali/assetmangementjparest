@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -18,13 +17,9 @@ import com.example.demo.models.AssignedAssets;
 
 public class ExportAssignedAssets {
 
-	
 	private XSSFWorkbook workbook;
-	
 	private XSSFSheet sheet;
-	
 	private List<AssignedAssets> assignedAssets;
-	
 	
 	public ExportAssignedAssets(List<AssignedAssets> assignedAssets) {
 		this.assignedAssets = assignedAssets;
@@ -101,14 +96,12 @@ public class ExportAssignedAssets {
 		}
 	}
 	
-	//public void export(HttpServletResponse resp)throws IOException
 	public byte[] export(HttpServletResponse resp)throws IOException
 	{
 		writeHeaderLine();
 		writeDataLines();
 		
-		//ServletOutputStream outputStream = resp.getOutputStream();
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+	    ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
 		workbook.write(bos);
 		workbook.close();

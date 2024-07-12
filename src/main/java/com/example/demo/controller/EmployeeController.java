@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.servlet.http.HttpServletResponse;
 
-import org.aspectj.weaver.ast.Instanceof;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.InputStreamResource;
@@ -45,11 +44,9 @@ import com.example.demo.service.DesignationService;
 import com.example.demo.service.EmployeeService;
 
 import io.swagger.annotations.ApiOperation;
-import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("employee")
-@Slf4j
 public class EmployeeController {
 
 	@Autowired
@@ -226,10 +223,10 @@ public class EmployeeController {
 	{
 		List<AssignedAssets> assign = assignserv.getOnlyAssignedAssetsByEmpId(id);
 	
-		List<Assets> aslist = null;
-		for(int i=0;i<assign.size();i++) {
-			aslist.add(assign.get(i).getAsset());
-		}
+//		List<Assets> aslist = null;
+//		for(int i=0;i<assign.size();i++) {
+//			aslist.add(assign.get(i).getAsset());
+//		}
 		if(assign.size()>0) {
 			return new ResponseEntity<List<AssignedAssets>>(assign,HttpStatus.OK);
 		}
@@ -293,6 +290,7 @@ public class EmployeeController {
 	}
 	
 	@PutMapping("/")
+	@ApiOperation("This endpoint will update the employee details and the assigned assets")
 	public  ResponseEntity<Employee> updateAssignedAssets(@RequestBody Employee emp)
 	{
 		int res = empserv.updateEmployee(emp);
@@ -305,6 +303,7 @@ public class EmployeeController {
 	}
 	
 	@GetMapping("/exportassignedassets/excel")
+	@ApiOperation("This end point will Export the All assigned assets to excel file ")
     public ResponseEntity<InputStreamResource> exportToExcel(HttpServletResponse response) throws IOException {
 		// Set headers
         HttpHeaders headers = new HttpHeaders();
@@ -380,30 +379,20 @@ public class EmployeeController {
                 .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                 .body(new InputStreamResource(new ByteArrayInputStream(excelContent)));
 
-	}
+	}		
 	
- 
+	@ApiOperation("This end point will Export the All assigned assets History of an Employee to excel file ")
+	@RequestMapping("/exportassignshistory/excel/{id}")
+	public ResponseEntity<InputStreamResource> exportToExcel(HttpServletResponse response,@PathVariable("id")Long empid ) throws IOException {
 		
-		@RequestMapping("/exportassignshistory/excel/{id}")
-	    public ResponseEntity<InputStreamResource> exportToExcel(HttpServletResponse response,@PathVariable("id")Long empid ) throws IOException {
-		
-			System.err.println("inside exportassignshistory excel history \n ID = "+empid);
-			// Set headers
-	        HttpHeaders headers = new HttpHeaders();
-	        String fname = "Asset_Assigned_History_Employee.xlsx";
-	        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename="+fname);
-	        
-//	        response.setContentType("application/octet-stream");
-//	        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-//	        String currentDateTime = dateFormatter.format(new Date());
-//	        String headerKey   = "Content-Disposition";
-//	        String headerValue = "attachment; filename=Assigned_Assets_History" + currentDateTime + ".xls";
-//	        response.setHeader(headerKey, headerValue);
 	        List<AssetAssignHistory> alist = ahistserv.getAssetAssignHistoryByEmpId(""+empid);
 	        
-	        ExportAssetAssignHistory ahist = new ExportAssetAssignHistory(alist);
-	        ahist.export(response);
+			// Set headers
+	        HttpHeaders headers = new HttpHeaders();
+	        String fname = "Asset_Assigned_History_"+alist.get(0).getEmployee().getEmp_name()+".xlsx";
+	        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename="+fname);
 	        
+	        ExportAssetAssignHistory ahist = new ExportAssetAssignHistory(alist);
 	        byte[] excelContent = ahist.export(response);
 	        
 	        // Return the file as a ResponseEntity

@@ -2,16 +2,14 @@ package com.example.demo.exporttoexcel;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -30,14 +28,21 @@ public class ExportAssetAssignHistory {
 		this.ahist = ahist;
 		workbook = new XSSFWorkbook();
 	}
-	static final int cnt =1;
+	
 	public void writeHeaderLine() {
 			
-			String fname = "Asset_assign_Hist";
-			int sheetIndex = workbook.getSheetIndex(fname);
-						
-			sheet = workbook.createSheet(fname) ;
-	
+	    String sheetName = "Asset_Assign_History_Employee";
+	    
+	    // Check if sheet with the same name already exists
+	    Sheet existingSheet = workbook.getSheet(sheetName);
+
+	    if (existingSheet != null) {
+	        sheet = (XSSFSheet) existingSheet;
+	        System.out.println("Sheet already exists == "+sheetName);
+	    } else {
+	        sheet = workbook.createSheet(sheetName);
+	    }
+			
 			Row row = sheet.createRow(0); 
 			
 			CellStyle style = workbook.createCellStyle();
