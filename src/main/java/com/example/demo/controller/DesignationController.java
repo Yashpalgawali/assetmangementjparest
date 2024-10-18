@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -23,9 +22,13 @@ import io.swagger.annotations.ApiOperation;
 @CrossOrigin("*")
 public class DesignationController {
 
-	@Autowired
-	DesignationService desigserv;
-	
+	private final DesignationService desigserv;
+
+	public DesignationController(DesignationService desigserv) {
+		super();
+		this.desigserv = desigserv;
+	}
+
 	@PostMapping("/")
 	@ApiOperation("This Will save the designation")
 	public ResponseEntity<List<Designation>> saveDesignation(@RequestBody Designation desig) {

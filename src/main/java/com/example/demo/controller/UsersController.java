@@ -22,15 +22,17 @@ import com.example.demo.service.UserService;
 @RequestMapping("users")
 public class UsersController {
 
-	@Autowired
-	UserService userserv;
+	private final UserService userserv;
+	private final OtpService otpserv;
+	private final EmailService emailserv;
 	
-	@Autowired
-	OtpService otpserv;
-	
-	@Autowired
-	EmailService emailserv;
-	
+	public UsersController(UserService userserv, OtpService otpserv, EmailService emailserv) {
+		super();
+		this.userserv = userserv;
+		this.otpserv = otpserv;
+		this.emailserv = emailserv;
+	}
+
 	@GetMapping("/basicauth")
 	public AuthenticationBean authenticationBean()
 	{

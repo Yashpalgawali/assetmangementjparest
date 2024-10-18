@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -48,30 +47,30 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("employee")
 public class EmployeeController {
-
-	@Autowired
+	
 	EmployeeService empserv;
-	
-	@Autowired
 	CompanyService compserv;
-	
-	@Autowired
 	DesignationService desigserv;
-	
-	@Autowired
 	AssetService assetserv;
-	
-	@Autowired
 	AssignedAssetService assignserv;
-	
-	@Autowired
 	AssetAssignHistService ahistserv;
-	
-	@Autowired
 	AssetTypeService atypeserv;
-	
-	@Autowired
 	Environment env;
+
+	public EmployeeController(EmployeeService empserv, CompanyService compserv, DesignationService desigserv,
+			AssetService assetserv, AssignedAssetService assignserv, AssetAssignHistService ahistserv,
+			AssetTypeService atypeserv, Environment env  ) {
+		super();
+		this.empserv = empserv;
+		this.compserv = compserv;
+		this.desigserv = desigserv;
+		this.assetserv = assetserv;
+		this.assignserv = assignserv;
+		this.ahistserv = ahistserv;
+		this.atypeserv = atypeserv;
+		this.env = env;
+		 
+	}
 
 	private DateTimeFormatter ddate = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 	private DateTimeFormatter dtime = DateTimeFormatter.ofPattern("HH:mm:ss");

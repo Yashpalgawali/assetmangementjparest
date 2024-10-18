@@ -23,9 +23,13 @@ import io.swagger.annotations.ApiOperation;
 @CrossOrigin("*")
 public class AssetTypeController {
 
-	@Autowired
 	AssetTypeService atypeserv;
 	
+	public AssetTypeController(AssetTypeService atypeserv) {
+		super();
+		this.atypeserv = atypeserv;
+	}
+
 	@PostMapping("/")
 	@ApiOperation("This will save the Asset Type")
 	public ResponseEntity<List<AssetType>> saveAssetType(@RequestBody AssetType atype)
