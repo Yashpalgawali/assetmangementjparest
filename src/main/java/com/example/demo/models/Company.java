@@ -18,25 +18,56 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(name="tbl_company")
 @ToString
 public class Company {
 
-	
 	@Id
 	@SequenceGenerator(name = "comp_seq",allocationSize = 1,initialValue = 1)
 	@GeneratedValue(strategy = GenerationType.AUTO,generator = "comp_seq")
 	private Long comp_id;
 	
 	private String comp_name;
+
+	public Long getComp_id() {
+		return comp_id;
+	}
+
+	public void setComp_id(Long comp_id) {
+		this.comp_id = comp_id;
+	}
+
+	public String getComp_name() {
+		return comp_name;
+	}
+
+	public void setComp_name(String comp_name) {
+		this.comp_name = comp_name;
+	}
+
+	public Company(Long comp_id, String comp_name) {
+		super();
+		this.comp_id = comp_id;
+		this.comp_name = comp_name;
+	}
+
+	public Company() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public String toString() {
+		return "Company [comp_id=" + comp_id + ", comp_name=" + comp_name + "]";
+	}
 	
 	//@ToString.Exclude
 //	@JsonIgnore
 //	@OneToMany(mappedBy = "company")
 //	private List<Department> deplist;
+
+	
+	
 	
 }
