@@ -11,9 +11,13 @@ import com.example.demo.repository.AssetTypeRepo;
 @Service("atypeserv")
 public class AssetTypeServImpl implements AssetTypeService {
 
-	@Autowired
-	AssetTypeRepo atyperepo;
+	private	AssetTypeRepo atyperepo;
 	
+	public AssetTypeServImpl(AssetTypeRepo atyperepo) {
+		super();
+		this.atyperepo = atyperepo;
+	}
+
 	@Override
 	public AssetType saveAssetType(AssetType atype) {
 		return atyperepo.save(atype);

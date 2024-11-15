@@ -8,31 +8,28 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 @Table(name= "tbl_users")
+@Entity
 public class Users {
 
 	@Id
 	@SequenceGenerator(name = "user_seq",allocationSize = 1 , initialValue = 1)
 	@GeneratedValue(generator = "user_seq",strategy = GenerationType.AUTO)
 	private Long user_id;
-	
+
 	private String username;
-	
+
 	private String password;
-	
+
 	private String email;
 	
 	private int enabled;
-	
+
 	private String role;
-	
+
 	@Transient
 	private String cnf_pass;
-	
+
 	@Transient
 	private String cnf_otp;
 
@@ -43,7 +40,6 @@ public class Users {
 	public void setUser_id(Long user_id) {
 		this.user_id = user_id;
 	}
-
 	public String getUsername() {
 		return username;
 	}

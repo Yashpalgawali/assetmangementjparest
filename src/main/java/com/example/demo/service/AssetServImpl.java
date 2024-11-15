@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.models.Activity;
@@ -15,15 +14,20 @@ import com.example.demo.repository.AssetRepo;
 @Service("assetserv")
 public class AssetServImpl implements AssetService {
 
-	@Autowired
-	AssetRepo assetrepo;
-	@Autowired
-	ActivityRepo activityrepo;
+	private AssetRepo assetrepo;
 	
+	private ActivityRepo activityrepo;
+	
+	public AssetServImpl(AssetRepo assetrepo, ActivityRepo activityrepo) {
+		super();
+		this.assetrepo = assetrepo;
+		this.activityrepo = activityrepo;
+	}
+
 	DateTimeFormatter tday  =  DateTimeFormatter.ofPattern("dd-MM-yyyy");
 	DateTimeFormatter ttime =  DateTimeFormatter.ofPattern("hh:mm:ss");
 	
-	Activity activity;
+	Activity activity = null;
 	
 	@Override
 	public Assets saveAssets(Assets asset) {
@@ -81,7 +85,7 @@ public class AssetServImpl implements AssetService {
 	@Override
 	public int updateAssetQuantityByAssetId(Long asid,String qty) {
 		int res = assetrepo.updateAssetQuantityByAssetId(asid, qty);
-		Assets ast = assetrepo.getById(asid);
+		Assets ast = assetrepo.findById(asid).get();
 		if(res>0) {
 			activity=new Activity();
 			activity.setActivity("Quantity of "+ast.getAsset_name() +" is updated to "+qty+" successfully");

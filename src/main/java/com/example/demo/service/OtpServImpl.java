@@ -21,11 +21,12 @@ public class OtpServImpl implements OtpService {
 	public OtpServImpl() {
 		super();
 		
-		otpcache = CacheBuilder.newBuilder().expireAfterWrite(EXPIRE_MINS, TimeUnit.MINUTES).build(new CacheLoader<String, Integer>() {
+		otpcache = CacheBuilder.newBuilder()
+								.expireAfterWrite(EXPIRE_MINS, TimeUnit.MINUTES)
+								.build(new CacheLoader<String, Integer>() {
 
 			@Override
 			public Integer load(String key) throws Exception {
-				// TODO Auto-generated method stub
 				return 0;
 			}
 		});
@@ -33,7 +34,6 @@ public class OtpServImpl implements OtpService {
 	
 	@Override
 	public int generateotp(String uname) {
-		// TODO Auto-generated method stub
 		
 		Random rand = new Random();
 		
@@ -47,7 +47,6 @@ public class OtpServImpl implements OtpService {
 
 	@Override
 	public int getOtp(String uname) {
-		// TODO Auto-generated method stub
 		try {
 			return otpcache.get(uname);
 		}
@@ -58,7 +57,6 @@ public class OtpServImpl implements OtpService {
 
 	@Override
 	public void clearOtp(String uname) {
-		// TODO Auto-generated method stub
 		otpcache.invalidate(uname);
 	}
 

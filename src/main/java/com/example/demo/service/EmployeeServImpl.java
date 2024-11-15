@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.models.Activity;
@@ -25,24 +24,24 @@ import com.example.demo.repository.EmployeeRepo;
 @Service("empserv")
 public class EmployeeServImpl implements EmployeeService {
 
-	@Autowired
-	EmployeeRepo emprepo;
+	private EmployeeRepo emprepo;
+	private AssignedAssetsRepo assignassetrepo;
+	private AssetRepo assetrepo;
+	private AssetAssignHistoryRepo assetassignhistrepo;
+	private AssetTypeRepo atyperepo;
+	private ActivityRepo actrepo;
 	
-	@Autowired
-	AssignedAssetsRepo assignassetrepo;
-	
-	@Autowired
-	AssetRepo assetrepo;
-	
-	@Autowired
-	AssetAssignHistoryRepo assetassignhistrepo; 
-	
-	@Autowired
-	AssetTypeRepo atyperepo;
-	
-	@Autowired
-	ActivityRepo actrepo;
-	
+	public EmployeeServImpl(EmployeeRepo emprepo, AssignedAssetsRepo assignassetrepo, AssetRepo assetrepo,
+			AssetAssignHistoryRepo assetassignhistrepo, AssetTypeRepo atyperepo, ActivityRepo actrepo) {
+		super();
+		this.emprepo = emprepo;
+		this.assignassetrepo = assignassetrepo;
+		this.assetrepo = assetrepo;
+		this.assetassignhistrepo = assetassignhistrepo;
+		this.atyperepo = atyperepo;
+		this.actrepo = actrepo;
+	}
+
 	private LocalDateTime today;
 	
 	private DateTimeFormatter ddate = DateTimeFormatter.ofPattern("dd-MM-yyyy");

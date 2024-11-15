@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.models.Activity;
@@ -15,15 +14,20 @@ import com.example.demo.repository.DepartmentRepo;
 @Service("deptserv")
 public class DepartmentServImpl implements DepartmentService {
 
-	@Autowired
-	DepartmentRepo deptrepo;
-	@Autowired
-	ActivityRepo activityrepo;
+	private DepartmentRepo deptrepo;
+	
+	private ActivityRepo activityrepo;
 	
 	DateTimeFormatter tday  =  DateTimeFormatter.ofPattern("dd-MM-yyyy");
 	DateTimeFormatter ttime =  DateTimeFormatter.ofPattern("hh:mm:ss");
 	
-	Activity activity;
+	public DepartmentServImpl(DepartmentRepo deptrepo, ActivityRepo activityrepo) {
+		super();
+		this.deptrepo = deptrepo;
+		this.activityrepo = activityrepo;
+	}
+
+	Activity activity=null;
 	
 	@Override
 	public Department saveDepartment(Department dept) {

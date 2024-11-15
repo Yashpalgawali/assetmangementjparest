@@ -15,13 +15,18 @@ import com.example.demo.repository.DesignationRepo;
 @Service("desigserv")
 public class DesignationServiceImpl implements DesignationService {
 
-	@Autowired
-	DesignationRepo desigrepo;
-	@Autowired
-	ActivityRepo activityrepo;
-	
+	private DesignationRepo desigrepo;
+	private	ActivityRepo activityrepo;
+		
+	public DesignationServiceImpl(DesignationRepo desigrepo, ActivityRepo activityrepo) {
+		super();
+		this.desigrepo = desigrepo;
+		this.activityrepo = activityrepo;
+	}
+
 	DateTimeFormatter tday  =  DateTimeFormatter.ofPattern("dd-MM-yyyy");
 	DateTimeFormatter ttime =  DateTimeFormatter.ofPattern("hh:mm:ss");
+	
 	
 	Activity activity;
 	

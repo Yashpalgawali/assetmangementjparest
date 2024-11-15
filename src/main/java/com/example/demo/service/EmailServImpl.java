@@ -1,6 +1,5 @@
 package com.example.demo.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -9,16 +8,19 @@ import org.springframework.stereotype.Service;
 @Service("emailserv")
 public class EmailServImpl implements EmailService {
 
-	@Autowired
-	JavaMailSender mailsend;
+	private JavaMailSender mailsend;
+	private Environment env;
 	
-	@Autowired
-	Environment env;
-	
+	public EmailServImpl(JavaMailSender mailsend, Environment env) {
+		super();
+		this.mailsend = mailsend;
+		this.env = env;
+	}
+
+
+
 	@Override
 	public void sendSimpleEmail(String toemail, String body, String subject) {
-		// TODO Auto-generated method stub
-
 		String from = env.getProperty("spring.mail.username");
 		
 		SimpleMailMessage message = new SimpleMailMessage();

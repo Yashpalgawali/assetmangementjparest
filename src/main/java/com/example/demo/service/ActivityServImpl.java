@@ -2,8 +2,6 @@ package com.example.demo.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.models.Activity;
@@ -12,9 +10,13 @@ import com.example.demo.repository.ActivityRepo;
 @Service("activityserv")
 public class ActivityServImpl implements ActivityService {
 
-	@Autowired
-	ActivityRepo activityrepo;
+	private final ActivityRepo activityrepo;
 	
+	public ActivityServImpl(ActivityRepo activityrepo) {
+		super();
+		this.activityrepo = activityrepo;
+	}
+
 	@Override
 	public Activity saveActivity(Activity activity) {
 		return activityrepo.save(activity);

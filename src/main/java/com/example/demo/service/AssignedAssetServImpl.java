@@ -3,10 +3,7 @@ package com.example.demo.service;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.models.Activity;
@@ -23,34 +20,33 @@ import com.example.demo.repository.EmployeeRepo;
 @Service("assignassetserv")
 public class AssignedAssetServImpl implements AssignedAssetService {
 
-	@Autowired
-	AssignedAssetsRepo assignassetrepo;
+	private	AssignedAssetsRepo assignassetrepo;
 	
-	@Autowired
-	AssetAssignHistoryRepo assignhistrepo;
+	private AssetAssignHistoryRepo assignhistrepo;
 	
-	@Autowired
-	AssetRepo assetrepo;
+	private AssetRepo assetrepo;
 	
-	@Autowired
-	EmployeeRepo emprepo;
+	private EmployeeRepo emprepo;
 	
-	@Autowired
-	ActivityRepo actrepo;
+	private ActivityRepo actrepo;
 	
+	
+	public AssignedAssetServImpl(AssignedAssetsRepo assignassetrepo, AssetAssignHistoryRepo assignhistrepo,
+			AssetRepo assetrepo, EmployeeRepo emprepo, ActivityRepo actrepo) {
+		super();
+		this.assignassetrepo = assignassetrepo;
+		this.assignhistrepo = assignhistrepo;
+		this.assetrepo = assetrepo;
+		this.emprepo = emprepo;
+		this.actrepo = actrepo;
+	}
+
 	private DateTimeFormatter ddate = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 	private DateTimeFormatter dtime = DateTimeFormatter.ofPattern("HH:mm:ss");
 	
 	@Override
 	public AssignedAssets saveAssignedAssets(AssignedAssets assign) {
 		AssignedAssets asset = assignassetrepo.save(assign);
-		if(asset!=null)
-		{
-			System.out.println("\n Assets assigned successfully\n");
-		}
-		else {
-			System.out.println(" Assets are NOT assigned \n");
-		}
 		return  asset;
 	}
 
@@ -69,7 +65,7 @@ public class AssignedAssetServImpl implements AssignedAssetService {
 	public int retrieveAssetByEmpId(Long eid) {
 		
 		List<AssignedAssets> ass_list = assignassetrepo.getAllAssignedAssetsByEmpId(eid);
-		ass_list.stream().forEach(e->System.out.println(e.toString()));
+		
 		String asts = "";
 		int res = 0;
 		if(ass_list.size()>0)
@@ -81,7 +77,6 @@ public class AssignedAssetServImpl implements AssignedAssetService {
 			}
 		
 			//String asset_ids = assign.getMulti_assets();
-			System.err.println("Assigned IDs are = "+asts);
 			String asset_ids = asts;
 			String[] strarr	 = asset_ids.split(",");
 			
