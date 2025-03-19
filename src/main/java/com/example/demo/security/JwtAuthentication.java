@@ -25,6 +25,8 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.jwk.JWKSet;
@@ -45,13 +47,14 @@ public class JwtAuthentication {
 			auth.anyRequest().authenticated();
 		});
 		//http.formLogin();
-		
+
 		http.sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
 		 
 	 	http.csrf(csrf-> csrf.disable());
 	 	http.cors(cors->{
 	 		cors.configurationSource(request->{
 	 			 CorsConfiguration config = new CorsConfiguration();
+	 			//config.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // Your React app's URL
 	             config.setAllowedOrigins(Arrays.asList("http://localhost:4200")); // Your Angular app's URL
 	             config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 	             config.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
@@ -106,13 +109,11 @@ public class JwtAuthentication {
 		return new RSAKey.Builder((RSAPublicKey) keyPair.getPublic()).privateKey(keyPair.getPrivate())
 			.keyID(UUID.randomUUID().toString())
 			.build();
-
 	}
 
 	@Bean
 	JWKSource<SecurityContext> jwkSource(RSAKey rsaKey){
 		var jwkset = new JWKSet(rsaKey);
-		 
 //		new JWKSource() {
 //			@Override
 //			public List get(JWKSelector jwkSelector, SecurityContext context) throws KeySourceException {
@@ -132,8 +133,22 @@ public class JwtAuthentication {
 	JwtEncoder jwtEncoder(JWKSource<SecurityContext> jwkSource) {
 		return new NimbusJwtEncoder(jwkSource);
 	}
-	
-	 
 
-	 
+//  @Bean
+//  WebMvcConfigurer corsConfigurer()
+//	{
+//		return new WebMvcConfigurer() {
+//			@Override
+//			public void addCorsMappings(CorsRegistry registry) {
+//				  registry.addMapping("/**")
+//	                .allowedOrigins("http://localhost:4200")
+//	                .allowedMethods("GET", "POST", "PUT", "DELETE","OPTIONS")
+//	                .allowedHeaders("*");
+////				registry.addMapping("/**")
+////								.allowedOrigins("http://localhost:4200")
+////								.allowedMethods("POST","GET","DELETE","PUT","PATCH","OPTIONS");
+//			}
+//		};
+//	}
+
 }

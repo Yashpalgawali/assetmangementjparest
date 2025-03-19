@@ -86,7 +86,7 @@ public class AssignedAssetServImpl implements AssignedAssetService {
 				Assets asset = new Assets();
 				asset=assetrepo.findById(asid).get();
 				
-				Employee emp = emprepo.getAllEmployeeById(eid);
+				Employee emp = emprepo.getEmployeeById(eid).get();
 				
 				res  = assignassetrepo.deleteAssignedAssetByEmpidAssetId(asid, eid);
 				int asset_qty = assetrepo.getQuantiyByAssetId(asid);

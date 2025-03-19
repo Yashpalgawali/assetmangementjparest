@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.models.Activity;
 import com.example.demo.models.AssetAssignHistory;
 import com.example.demo.models.AssetType;
@@ -42,8 +43,6 @@ public class EmployeeServImpl implements EmployeeService {
 		this.actrepo = actrepo;
 	}
 
-	private LocalDateTime today;
-	
 	private DateTimeFormatter ddate = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 	private DateTimeFormatter dtime = DateTimeFormatter.ofPattern("HH:mm:ss");
 	
@@ -76,19 +75,11 @@ public class EmployeeServImpl implements EmployeeService {
 		}
 	}
 
-	@Override
+ 	@Override
 	public Employee getEmployeeById(String empid) {
-		if(empid!=null) {
-			try {
-				return emprepo.getAllEmployeeById(Long.valueOf(empid));
-			}
-			catch(Exception e) {
-				return null;
-			}
-		}
-		else {
-			return null;
-		}
+		 
+		return emprepo.getEmployeeById(Long.valueOf(empid)).orElseThrow(()-> new ResourceNotFoundException("No Employee Found for given Id "+empid));
+			 
 	}
 
 	@Override
@@ -173,12 +164,10 @@ public class EmployeeServImpl implements EmployeeService {
 			
 			for(int i=0;i<nw_assets.length;i++)
 			{
-				if(olist.contains(nw_assets[i]))
-				{
+				if(olist.contains(nw_assets[i])) {
 					continue;
 				}
-				else
-				{
+				else {
 					AssignedAssets assignasset = new AssignedAssets();
 					Long asid = Long.valueOf(nw_assets[i]);
 					int qty =0;
@@ -238,14 +227,11 @@ public class EmployeeServImpl implements EmployeeService {
 			List<String> olist= Arrays.asList(ol_assets);
 			List<String> nlist= Stream.of(new_assets.split(",")).collect(Collectors.toList());
 			
-			for(int i=0;i<nw_assets.length;i++)
-			{
-				if(olist.contains(nw_assets[i]))
-				{
+			for(int i=0;i<nw_assets.length;i++) {
+				if(olist.contains(nw_assets[i])) {
 					continue;
 				}
-				else
-				{
+				else {
 					AssignedAssets assignasset = new AssignedAssets();
 					Long asid = Long.valueOf(nw_assets[i]);
 					int qty =0;
@@ -277,8 +263,7 @@ public class EmployeeServImpl implements EmployeeService {
 					
 					isassigned = assignassetrepo.save(assignasset);
 					
-					if(isassigned!=null)
-					{	
+					if(isassigned!=null) {	
 						qty = assetrepo.getQuantiyByAssetId(astid);
 
 						qty-=1;
@@ -305,8 +290,7 @@ public class EmployeeServImpl implements EmployeeService {
 		}
 		int output = 0;
 		//If Assets to be assigned are smaller than the Already assigned assets
-		if(nw_assets.length<ol_assets.length)
-		{
+		if(nw_assets.length<ol_assets.length) {
 //			List<String> olist= List.of(ol_assets);
 //          List<String> nlist= List.of(nw_assets);
             
@@ -314,11 +298,8 @@ public class EmployeeServImpl implements EmployeeService {
 			List<String> nlist= Stream.of(new_assets.split(",")).collect(Collectors.toList());
 			for(int i=0;i<ol_assets.length;i++)
 			{
-				if(nlist.contains(ol_assets[i]))
-				{continue;
-				}
-				else
-				{
+				if(nlist.contains(ol_assets[i])) {continue; }
+				else {
 					Long asid = Long.valueOf(ol_assets[i]);
 					output = assignassetrepo.deleteAssignedAssetByEmpidAssetId(asid, emp.getEmp_id());
 					
@@ -360,8 +341,7 @@ public class EmployeeServImpl implements EmployeeService {
 			}
 		}
 		System.err.println("Output var = "+output);
-		if(isassigned!=null)
-		{
+		if(isassigned!=null) {
 			return 1;
 		}
 		else {
