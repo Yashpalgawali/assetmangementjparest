@@ -4,13 +4,14 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.example.demo.exceptions.NoContentException;
 import com.example.demo.models.AssetAssignHistory;
 import com.example.demo.repository.AssetAssignHistoryRepo;
 
 @Service("ahistserv")
 public class AssetAssignHistServImpl implements AssetAssignHistService {
 
-	private AssetAssignHistoryRepo assetassignhistrepo;
+	private final AssetAssignHistoryRepo assetassignhistrepo;
 	
 	public AssetAssignHistServImpl(AssetAssignHistoryRepo assetassignhistrepo) {
 		super();
@@ -23,8 +24,14 @@ public class AssetAssignHistServImpl implements AssetAssignHistService {
 	}
 
 	@Override
-	public List<AssetAssignHistory> getAssetAssignHistoryByEmpId(String empid) {
-		return assetassignhistrepo.getAssetAssginHistByEmpId(Long.valueOf(empid));
+	public List<AssetAssignHistory> getAssetAssignHistoryByEmpId(Long empid) throws NoContentException {
+		var list = assetassignhistrepo.getAssetAssginHistByEmpId(empid);
+		if(list.size()>0) {
+			return list;
+		}
+		else
+			throw new NoContentException("");
+		
 	}
 
 }

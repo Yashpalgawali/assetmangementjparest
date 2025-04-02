@@ -20,7 +20,7 @@ import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("company") 
-@CrossOrigin("*")
+//@CrossOrigin("*")
 public class CompanyController {
 
 	CompanyService compserv;
@@ -30,7 +30,7 @@ public class CompanyController {
 		this.compserv = compserv;
 	}
 
-	@ApiOperation("This End POint is used to save the Company")
+	@ApiOperation("This End Point is used to save the Company")
 	@PostMapping("/")
 	public ResponseEntity<List<Company>> saveCompany(@RequestBody Company company)
 	{
@@ -45,7 +45,7 @@ public class CompanyController {
 
 	@GetMapping("/")
 	@ApiOperation("This End Point is used to get all companies list")
-	public ResponseEntity<List<Company>> viewCompany() {
+	public ResponseEntity<List<Company>> viewCompanies() {
 			List<Company> clist = compserv.getAllCompanies();
 			if(clist.size()>0){
 				return new ResponseEntity<List<Company>>(clist,HttpStatus.OK) ;
@@ -59,12 +59,7 @@ public class CompanyController {
 	@ApiOperation("This End Point is used to get the company by company ID")
 	public ResponseEntity<Company> editCompany(@PathVariable("id") Long cid) {
 		Company comp = compserv.getCompanyById(cid);
-		if(comp!=null) {
-			return new ResponseEntity<Company>(comp,HttpStatus.OK);
-		}
-		else {
-			return new ResponseEntity<Company>(HttpStatus.NOT_FOUND);
-		}
+		return new ResponseEntity<Company>(comp,HttpStatus.OK);
 	}
 	
 	@PutMapping("/")

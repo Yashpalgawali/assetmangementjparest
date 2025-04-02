@@ -5,9 +5,9 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+//import org.springframework.security.core.Authentication;
+//import org.springframework.security.core.context.SecurityContextHolder;
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,8 +25,8 @@ import com.example.demo.service.UserService;
 @Controller
 public class MainController {
 
-	@Autowired
-	BCryptPasswordEncoder passcode;
+//	@Autowired
+//	BCryptPasswordEncoder passcode;
 	
 	@Autowired
 	Environment env;
@@ -59,13 +59,14 @@ public class MainController {
 	
 	@GetMapping("/forgotpass")
 	public String forgotPassword(){
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if(auth.getName().equals("admin")){
-			return "redirect:/changepass";
-		}
-		else {
-			return "ForgotPassword";
-		}
+		return "";
+//		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//		if(auth.getName().equals("admin")){
+//			return "redirect:/changepass";
+//		}
+//		else {
+//			return "ForgotPassword";
+//		}
 	}
 	
 	@RequestMapping("/forgotpassword")
@@ -118,38 +119,39 @@ public class MainController {
 	
 	@PostMapping("changepassword")
 	public String updatePassword(@ModelAttribute("Users")Users users,HttpSession sess,RedirectAttributes attr){
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		String enpass = passcode.encode(users.getCnf_pass());
-		Long uid =0L;
-		if(sess.getAttribute("userid")!=null){
-			uid = (Long) sess.getAttribute("userid");
-		}
-		else {
-			Users user = userserv.getUserByUserName(auth.getName());
-			uid = user.getUser_id();
-		}	
-		int res = userserv.updateUsersPassword(enpass, uid);
-		if(res>0){
-			if(auth.getName().equals("admin")) {
-				sess.removeAttribute("vemail");
-				sess.removeAttribute("userid");
-				attr.addFlashAttribute("response", "Password updated successfully");
-				return "redirect:/";
-			}
-			else {
-				attr.addFlashAttribute("response", "Password updated successfully");
-				return "redirect:/login";
-			}
-		}
-		else{
-			if(auth.getName().equals("admin")) {
-				attr.addFlashAttribute("reserr", "Password is not updated ");
-				return "redirect:/changepass";
-			}
-			else {
-				attr.addFlashAttribute("reserr", "Password is not updated ");
-				return "redirect:/login";
-			}
-		}
+		return "";
+//		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//		String enpass = passcode.encode(users.getCnf_pass());
+//		Long uid =0L;
+//		if(sess.getAttribute("userid")!=null){
+//			uid = (Long) sess.getAttribute("userid");
+//		}
+//		else {
+//			Users user = userserv.getUserByUserName(auth.getName());
+//			uid = user.getUser_id();
+//		}	
+//		int res = userserv.updateUsersPassword(enpass, uid);
+//		if(res>0){
+//			if(auth.getName().equals("admin")) {
+//				sess.removeAttribute("vemail");
+//				sess.removeAttribute("userid");
+//				attr.addFlashAttribute("response", "Password updated successfully");
+//				return "redirect:/";
+//			}
+//			else {
+//				attr.addFlashAttribute("response", "Password updated successfully");
+//				return "redirect:/login";
+//			}
+//		}
+//		else{
+//			if(auth.getName().equals("admin")) {
+//				attr.addFlashAttribute("reserr", "Password is not updated ");
+//				return "redirect:/changepass";
+//			}
+//			else {
+//				attr.addFlashAttribute("reserr", "Password is not updated ");
+//				return "redirect:/login";
+//			}
+//		}
 	}
 }

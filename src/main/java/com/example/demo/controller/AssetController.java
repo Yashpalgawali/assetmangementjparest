@@ -18,7 +18,6 @@ import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("asset")
-@CrossOrigin("*")
 public class AssetController {
 
 	private final AssetService assetserv;
@@ -30,15 +29,10 @@ public class AssetController {
 
 	@PostMapping("/")
 	@ApiOperation("This Will save the Asset")
-	public ResponseEntity<List<Assets>> saveAssets(@RequestBody Assets asset)
+	public ResponseEntity<Assets> saveAssets(@RequestBody Assets asset)
 	{
 		Assets ast = assetserv.saveAssets(asset);
-		if(ast!=null){
-			return new ResponseEntity<List<Assets>>(assetserv.getAllAssets(), HttpStatus.OK);
-		}
-		else {
-			return new ResponseEntity<List<Assets>>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		return new ResponseEntity<Assets>(ast, HttpStatus.OK);
 	}
 	
 	@GetMapping("/")
@@ -56,14 +50,9 @@ public class AssetController {
 
 	@GetMapping("/{id}")
 	@ApiOperation("This Will get the Asset by ID ")
-	public ResponseEntity<Assets> editAssetByIs(@PathVariable("id") String id) {
+	public ResponseEntity<Assets> editAssetByIs(@PathVariable Long id) {
 		Assets asset = assetserv.getAssetsById(id);
-		if(asset!=null){
-			return new ResponseEntity<Assets>(asset , HttpStatus.OK);
-		}
-		else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
+		return new ResponseEntity<Assets>(asset , HttpStatus.OK);
 	}
 	 
 	@PutMapping("/")

@@ -41,4 +41,15 @@ public class GlobalExceptionHandler extends Exception{
 				);
 		return new ResponseEntity<>(errorResponseDto, HttpStatus.NOT_FOUND);
 	}
+	
+	@ExceptionHandler(ResourceNotModifiedException.class)
+	public ResponseEntity<ErrorResponseDto> handleResourceNotModifiedException(ResourceNotModifiedException exception , WebRequest request) {
+		ErrorResponseDto errorResponseDto = new ErrorResponseDto(
+					request.getDescription(false),
+					HttpStatus.NOT_MODIFIED,
+					exception.getMessage(),
+					LocalDateTime.now()
+				);
+		return new ResponseEntity<ErrorResponseDto>(errorResponseDto, HttpStatus.NOT_MODIFIED);
+	}
 }

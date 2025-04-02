@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.models.Activity;
 import com.example.demo.models.Company;
 import com.example.demo.repository.ActivityRepo;
@@ -17,9 +18,9 @@ import com.example.demo.repository.CompanyRepo;
 @Service("compserv")
 public class CompanyServImpl implements CompanyService {
 
-	private	CompanyRepo comprepo;
+	private	final CompanyRepo comprepo;
 	
-	private ActivityRepo activityrepo;
+	private final ActivityRepo activityrepo;
 	
 	DateTimeFormatter tday  =  DateTimeFormatter.ofPattern("dd-MM-yyyy");
 	DateTimeFormatter ttime =  DateTimeFormatter.ofPattern("hh:mm:ss");
@@ -56,19 +57,14 @@ public class CompanyServImpl implements CompanyService {
 
 	@Override
 	public List<Company> getAllCompanies() {
-		List<Company> clist = comprepo.getAllCompanies();
+		List<Company> clist = comprepo.findAll();
 		return clist;
 	}
 
 	@Override
 	public Company getCompanyById(Long id) {
-		try {
-			Company comp = comprepo.findById(id).get();
-			return comp;
-		}
-		catch(Exception e) {
-			return null;
-		}
+	 	Company comp = comprepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("No Company found for given ID "+id));
+		return comp;
 	}
 
 	@Override

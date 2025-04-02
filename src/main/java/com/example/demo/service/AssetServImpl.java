@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.models.Activity;
 import com.example.demo.models.Assets;
 import com.example.demo.repository.ActivityRepo;
@@ -57,8 +58,8 @@ public class AssetServImpl implements AssetService {
 	}
 
 	@Override
-	public Assets getAssetsById(String id) { 
-		return assetrepo.findById(Long.valueOf(id)).get();
+	public Assets getAssetsById(Long id) { 
+		return assetrepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("No Asset found for given ID "+id));
 	}
 
 	@Override

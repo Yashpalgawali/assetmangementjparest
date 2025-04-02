@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.example.demo.exceptions.NoContentException;
 import com.example.demo.exporttoexcel.ExportAssetAssignHistory;
 import com.example.demo.exporttoexcel.ExportAssignedAssets;
 import com.example.demo.models.AssetAssignHistory;
@@ -92,10 +94,10 @@ public class EmployeeController {
 				int qty =0;
 				Long astid = Long.valueOf(asset_arr[i]);
 				Assets ast = new Assets();
-				Assets getasset = assetserv.getAssetsById(""+astid);
+				Assets getasset = assetserv.getAssetsById(astid);
 				
 				AssetType atype = new AssetType();
-				atype = atypeserv.getAssetTypeById(""+getasset.getAtype().getType_id());
+				atype = atypeserv.getAssetTypeById(getasset.getAtype().getType_id());
 				
 				ast.setAtype(atype);
 				
@@ -248,10 +250,10 @@ public class EmployeeController {
 	 
 	@GetMapping("/viewemphistbyempid/{id}")
 	@ApiOperation("This endpoint will show History of assigning assets to employee by employee id")
-	public ResponseEntity<List<AssetAssignHistory>> viewEmployeeHistoryByEmpId(@PathVariable String id)
+	public ResponseEntity<List<AssetAssignHistory>> viewEmployeeHistoryByEmpId(@PathVariable Long id) throws NoContentException
 	{
 		List<AssetAssignHistory> ahist = ahistserv.getAssetAssignHistoryByEmpId(id);
-		if(ahist.size()>0){	
+		if(ahist.size()>0) {
 			return new ResponseEntity<List<AssetAssignHistory>>(ahist,HttpStatus.OK);
 		}
 		else {
@@ -261,13 +263,11 @@ public class EmployeeController {
 	
 	@GetMapping("/editempassignassetbyempid/{id}")
 	@ApiOperation("This endpoint will show History of assigning assets to employee by employee id")
-	public ResponseEntity<Employee> editEmployeeByEmpId(@PathVariable("id") String empid) {
+	public ResponseEntity<Employee> editEmployeeByEmpId(@PathVariable("id") Long empid) {
 		Employee emp = empserv.getEmployeeById(empid);
 		
-		//System.err.println("inside editEmployeeByEmpId() \n "+emp.toString());
-		
 		if(emp!=null) {
-			List<AssignedAssets> aslist =  assignserv.getAssignedAssetsByEmpId(Long.valueOf(empid));
+			List<AssignedAssets> aslist =  assignserv.getAssignedAssetsByEmpId(empid);
 			String assigned_assets = "",assigned_asset_type="";
 			Long[] strArray = new Long[aslist.size()];
 			for(int i=0;i<aslist.size();i++) {
@@ -385,9 +385,9 @@ public class EmployeeController {
 	
 	@ApiOperation("This end point will Export the All assigned assets History of an Employee to excel file ")
 	@RequestMapping("/exportassignshistory/excel/{id}")
-	public ResponseEntity<InputStreamResource> exportToExcel(HttpServletResponse response,@PathVariable("id")Long empid ) throws IOException {
+	public ResponseEntity<InputStreamResource> exportToExcel(HttpServletResponse response,@PathVariable("id")Long empid ) throws IOException, NoContentException {
 		
-	        List<AssetAssignHistory> alist = ahistserv.getAssetAssignHistoryByEmpId(""+empid);
+	        List<AssetAssignHistory> alist = ahistserv.getAssetAssignHistoryByEmpId(empid);
 	        
 			// Set headers
 	        HttpHeaders headers = new HttpHeaders();

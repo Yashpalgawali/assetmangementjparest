@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -80,13 +81,13 @@ public class DepartmentController {
 	
 	@GetMapping("/getdeptbycompid/{id}")
 	@ApiOperation("This End Point is used to get departments by using company ID")
-	public ResponseEntity<List<Department>> getDepartmentByCompanyId(@PathVariable("id")Long id){
+	public ResponseEntity<List<Department>> getDepartmentByCompanyId(@PathVariable Long id){
 		return new ResponseEntity<List<Department>>(deptserv.getDepartmentByCompanyId(id),HttpStatus.OK);
 	}
 	
 	@GetMapping("/getdeptbycompname/{name}")
 	@ApiOperation("This End Point is used to get departments by using company Name")
-	public ResponseEntity<List<Department>> getDepartmentByCompanyName(@PathVariable("name")String name){
+	public ResponseEntity<List<Department>> getDepartmentByCompanyName(@PathVariable String name){
 		return new ResponseEntity<List<Department>>(deptserv.getDepartmentByCompanyName(name),HttpStatus.OK);
 	}
 

@@ -61,7 +61,12 @@ public class EmployeeServImpl implements EmployeeService {
 			return empl;
 		}
 		else {
-			return null;
+			Activity act = new Activity();
+			act.setActivity(emp.getEmp_name()+" is not saved ");
+			act.setOperation_date(ddate.format(LocalDateTime.now()));
+			act.setOperation_time(dtime.format(LocalDateTime.now()));
+			actrepo.save(act);
+			return empl;
 		}
 	}
 
@@ -76,10 +81,9 @@ public class EmployeeServImpl implements EmployeeService {
 	}
 
  	@Override
-	public Employee getEmployeeById(String empid) {
-		 
-		return emprepo.getEmployeeById(Long.valueOf(empid)).orElseThrow(()-> new ResourceNotFoundException("No Employee Found for given Id "+empid));
-			 
+	public Employee getEmployeeById(Long empid) {
+		return emprepo.getEmployeeById(empid)
+				.orElseThrow(()-> new ResourceNotFoundException("No Employee Found for given Id "+empid));
 	}
 
 	@Override
