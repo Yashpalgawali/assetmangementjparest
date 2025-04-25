@@ -35,8 +35,7 @@ public class AssetTypeController {
 	public ResponseEntity<AssetType> saveAssetType(@RequestBody AssetType atype)
 	{
 		AssetType type = atypeserv.saveAssetType(atype);
-		return new ResponseEntity<AssetType>(type, HttpStatus.OK);
-		 
+		return new ResponseEntity<AssetType>(type, HttpStatus.OK);		 
 	}
 	
 	@GetMapping("/")
