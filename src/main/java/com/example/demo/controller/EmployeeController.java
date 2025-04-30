@@ -203,6 +203,13 @@ public class EmployeeController {
 	public ResponseEntity<List<Employee>> viewAllEmployees() {
 		List<Employee> elist = empserv.getAllEmployees();
 		return new ResponseEntity<List<Employee>>(elist, HttpStatus.OK);
+	} 
+	
+	@GetMapping("{id}")
+	@ApiOperation("This endpoint will get the Employee By Id")
+	public ResponseEntity<Employee> viewEmployeeById(@PathVariable Long id) {
+		 
+		return new ResponseEntity<Employee>(empserv.getEmployeeById(id), HttpStatus.OK);
 	}
 	
 	@GetMapping("/retrieveassetsbyempid/{id}")
@@ -223,7 +230,7 @@ public class EmployeeController {
 	public ResponseEntity<List<AssignedAssets>> getAssignedAssetsByEmpId(@PathVariable Long id)
 	{
 		List<AssignedAssets> assign = assignserv.getOnlyAssignedAssetsByEmpId(id);
-	
+		assign.stream().forEach(System.out::println);
 //		List<Assets> aslist = null;
 //		for(int i=0;i<assign.size();i++) {
 //			aslist.add(assign.get(i).getAsset());
@@ -287,7 +294,7 @@ public class EmployeeController {
 			return new ResponseEntity<Employee>(emp , HttpStatus.OK) ;
 		}
 		else {
-			return new ResponseEntity<Employee>( HttpStatus.NOT_FOUND) ;
+			return new ResponseEntity<Employee>(HttpStatus.NOT_FOUND);
 		}
 	}
 	

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.example.demo.dto.ResponseDto;
 import com.example.demo.models.Department;
 import com.example.demo.service.DepartmentService;
 
@@ -25,20 +27,19 @@ public class DepartmentController {
 
 	public DepartmentController(DepartmentService deptserv) {
 		super();
-		this.deptserv = deptserv;
-		 
+		this.deptserv = deptserv;		 
 	}
 
 	@PostMapping("/")
 	@ApiOperation("This End Point is used to save Department")
-	public ResponseEntity<List<Department>> saveDepartment(@RequestBody Department dept) {
+	public ResponseEntity<ResponseDto> saveDepartment(@RequestBody Department dept) {
 		
 		Department depart = deptserv.saveDepartment(dept);
 		if(depart!=null) {
-			return new ResponseEntity<List<Department>>(deptserv.getAllDepartments() ,HttpStatus.OK);
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.toString(), "Department "+dept.getDept_name()+" is saved successfully"));
 		}	
 		else {
-			return new ResponseEntity<List<Department>>(HttpStatus.NO_CONTENT);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.toString(), "Department "+dept.getDept_name()+" is not saved "));
 		}
 	}
 	
@@ -56,7 +57,7 @@ public class DepartmentController {
 	
 	@GetMapping("/{id}")
 	@ApiOperation("This End Point is used to get department by department ID")
-	public ResponseEntity<Department> getDepartmentByDeptId(@PathVariable("id")Long id){
+	public ResponseEntity<Department> getDepartmentByDeptId(@PathVariable Long id){
 		Department dept = deptserv.getDepartmentById(id);
 		if(dept!=null) {
 			return new ResponseEntity<Department>(dept,HttpStatus.OK);
@@ -68,14 +69,14 @@ public class DepartmentController {
 	
 	@PutMapping("/")
 	@ApiOperation("This End Point is used to update the department")
-	public ResponseEntity<List<Department>> updateDepartment(@RequestBody Department dept)
+	public ResponseEntity<ResponseDto> updateDepartment(@RequestBody Department dept)
 	{
 		int result = deptserv.updateDepartment(dept);
 		if(result > 0 ){
-			return new ResponseEntity<List<Department>>(deptserv.getAllDepartments() ,HttpStatus.OK);
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.toString(), "Department "+dept.getDept_name()+" is saved successfully"));
 		}
 		else {
-			return new ResponseEntity<List<Department>>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(new ResponseDto(HttpStatus.NOT_MODIFIED.toString(), "Department "+dept.getDept_name()+" is not updated"));
 		}
 	}
 	

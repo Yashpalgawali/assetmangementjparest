@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.example.demo.dto.ResponseDto;
 import com.example.demo.models.Assets;
 import com.example.demo.service.AssetService;
 
@@ -26,13 +28,18 @@ public class AssetController {
 		super();
 		this.assetserv = assetserv;
 	}
-
+ 
 	@PostMapping("/")
 	@ApiOperation("This Will save the Asset")
-	public ResponseEntity<Assets> saveAssets(@RequestBody Assets asset)
+	public ResponseEntity<ResponseDto> saveAssets(@RequestBody Assets asset)
 	{
 		Assets ast = assetserv.saveAssets(asset);
-		return new ResponseEntity<Assets>(ast, HttpStatus.OK);
+		if(ast != null) {
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.toString() , "Asset "+ast.getAsset_name()+" is saved successfully"));
+		}
+		else {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.toString() , "Asset "+asset.getAsset_name()+" is not saved "));
+		}
 	}
 	
 	@GetMapping("/")
@@ -44,7 +51,7 @@ public class AssetController {
 			return new ResponseEntity<List<Assets>>(asset,HttpStatus.OK);
 		}
 		else {
-			return new ResponseEntity<List<Assets>>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<List<Assets>>(HttpStatus.NO_CONTENT);
 		}
 	}
 
@@ -57,13 +64,13 @@ public class AssetController {
 	 
 	@PutMapping("/")
 	@ApiOperation("This Will update the Asset")
-	public ResponseEntity<List<Assets>> updateAsset(@RequestBody Assets ast) {
+	public ResponseEntity<ResponseDto> updateAsset(@RequestBody Assets ast) {
 		int res = assetserv.updateAssets(ast);
 		if(res > 0) {
-			return new ResponseEntity<List<Assets>>(assetserv.getAllAssets(), HttpStatus.OK);
+			return  ResponseEntity.status(HttpStatus.OK).body(new ResponseDto("", "Asset "+ast.getAsset_name()+" is updated successfully"));
 		}
 		else {
-			return new ResponseEntity<List<Assets>>( HttpStatus.NOT_MODIFIED);
+			return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(new ResponseDto(HttpStatus.NOT_MODIFIED.toString(), "Asset "+ast.getAsset_name()+" is not updated"));
 		}
 	}
 }

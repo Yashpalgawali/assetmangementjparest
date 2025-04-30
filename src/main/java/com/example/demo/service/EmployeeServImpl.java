@@ -25,12 +25,12 @@ import com.example.demo.repository.EmployeeRepo;
 @Service("empserv")
 public class EmployeeServImpl implements EmployeeService {
 
-	private EmployeeRepo emprepo;
-	private AssignedAssetsRepo assignassetrepo;
-	private AssetRepo assetrepo;
-	private AssetAssignHistoryRepo assetassignhistrepo;
-	private AssetTypeRepo atyperepo;
-	private ActivityRepo actrepo;
+	private final EmployeeRepo emprepo;
+	private final AssignedAssetsRepo assignassetrepo;
+	private final AssetRepo assetrepo;
+	private final AssetAssignHistoryRepo assetassignhistrepo;
+	private final AssetTypeRepo atyperepo;
+	private final ActivityRepo actrepo;
 	
 	public EmployeeServImpl(EmployeeRepo emprepo, AssignedAssetsRepo assignassetrepo, AssetRepo assetrepo,
 			AssetAssignHistoryRepo assetassignhistrepo, AssetTypeRepo atyperepo, ActivityRepo actrepo) {

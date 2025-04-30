@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dto.ResponseDto;
 import com.example.demo.exceptions.NoContentException;
 import com.example.demo.exceptions.ResourceNotModifiedException;
 import com.example.demo.models.AssetType;
@@ -32,10 +33,16 @@ public class AssetTypeController {
 
 	@PostMapping("/")
 	@ApiOperation("This will save the Asset Type")
-	public ResponseEntity<AssetType> saveAssetType(@RequestBody AssetType atype)
+	public ResponseEntity<ResponseDto> saveAssetType(@RequestBody AssetType atype)
 	{
 		AssetType type = atypeserv.saveAssetType(atype);
-		return new ResponseEntity<AssetType>(type, HttpStatus.OK);		 
+		if(type!=null)
+		{
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.toString(), "Asset type "+atype.getType_name()+" is saved successfully "));		 
+		}
+		else {
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.toString(), "Asset type "+atype.getType_name()+" is not saved "));
+		}
 	}
 	
 	@GetMapping("/")
@@ -56,10 +63,15 @@ public class AssetTypeController {
 	
 	@PutMapping("/")
 	@ApiOperation("This will Update the Asset Type")
-	public ResponseEntity<String> updateAssetType(@RequestBody AssetType atype) throws ResourceNotModifiedException
+	public ResponseEntity<ResponseDto> updateAssetType(@RequestBody AssetType atype) throws ResourceNotModifiedException
 	{
-		atypeserv.updateAssetType(atype);
-		return new ResponseEntity<String>("Asset Type updated successfully", HttpStatus.OK);
+		int result = atypeserv.updateAssetType(atype);
+		if(result>0) {
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.toString(), "Asset type "+atype.getType_name()+" is updated successfully "));
+		}
+		else {
+			return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(new ResponseDto(HttpStatus.NOT_MODIFIED.toString(), "Asset type "+atype.getType_name()+" is not updated"));
+		}
 	}
 
 }
