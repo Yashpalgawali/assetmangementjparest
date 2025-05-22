@@ -18,7 +18,7 @@ import com.example.demo.exceptions.ResourceNotModifiedException;
 import com.example.demo.models.AssetType;
 import com.example.demo.service.AssetTypeService;
 
-import io.swagger.annotations.ApiOperation;
+//import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("assettype")
@@ -32,7 +32,7 @@ public class AssetTypeController {
 	}
 
 	@PostMapping("/")
-	@ApiOperation("This will save the Asset Type")
+//	@ApiOperation("This will save the Asset Type")
 	public ResponseEntity<ResponseDto> saveAssetType(@RequestBody AssetType atype)
 	{
 		AssetType type = atypeserv.saveAssetType(atype);
@@ -46,7 +46,7 @@ public class AssetTypeController {
 	}
 	
 	@GetMapping("/")
-	@ApiOperation("This will get the Asset Types list")
+//	@ApiOperation("This will get the Asset Types list")
 	public ResponseEntity<List<AssetType>> getAllAssetType() throws NoContentException
 	{
 		List<AssetType> type = atypeserv.getAllAssetTypes();
@@ -54,7 +54,7 @@ public class AssetTypeController {
 	}
 	
 	@GetMapping("/{id}")
-	@ApiOperation("This will get the Asset Type by ID")
+//	@ApiOperation("This will get the Asset Type by ID")
 	public ResponseEntity<AssetType> getAssetTypeById(@PathVariable Long id)
 	{
 		AssetType atype = atypeserv.getAssetTypeById(id);
@@ -62,7 +62,7 @@ public class AssetTypeController {
 	}
 	
 	@PutMapping("/")
-	@ApiOperation("This will Update the Asset Type")
+//	@ApiOperation("This will Update the Asset Type")
 	public ResponseEntity<ResponseDto> updateAssetType(@RequestBody AssetType atype) throws ResourceNotModifiedException
 	{
 		int result = atypeserv.updateAssetType(atype);

@@ -30,8 +30,6 @@ public class AssetAssignHistServImpl implements AssetAssignHistService {
 			return list;
 		}
 		else
-			throw new NoContentException("");
-		
+			throw new NoContentException("");		
 	}
-
 }

@@ -16,7 +16,7 @@ import com.example.demo.exceptions.NoContentException;
 import com.example.demo.models.Designation;
 import com.example.demo.service.DesignationService;
 
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
 @RequestMapping("/designation")
@@ -30,27 +30,27 @@ public class DesignationController {
 	}
 
 	@PostMapping("/")
-	@ApiOperation("This Will save the designation")
+	@Operation(summary="This Will save the designation")
 	public ResponseEntity<Designation> saveDesignation(@RequestBody Designation desig) throws NoContentException {
 		Designation designation = desigserv.saveDesignation(desig);
 		return new ResponseEntity<Designation>(designation, HttpStatus.OK);
 	}
 
 	@GetMapping("/")
-	@ApiOperation("This Will get all the designation list")
+	@Operation(summary="This Will get all the designation list")
 	public ResponseEntity<List<Designation>> viewDesignations() throws NoContentException {
 		return new ResponseEntity<List<Designation>>(desigserv.getAllDesignations(), HttpStatus.OK);
 	}
 
 	@GetMapping("/{id}")
-	@ApiOperation("This Will get the designation by ID")
+	@Operation(summary="This Will get the designation by ID")
 	public ResponseEntity<Designation> editDesignationById(@PathVariable Long id) {
 		Designation desig = desigserv.getDesignationById(id);
 		return new ResponseEntity<Designation>(desig, HttpStatus.OK);
 	}
 
 	@PutMapping("/")
-	@ApiOperation("This Will update the designation")
+	@Operation(summary="This Will update the designation")
 	public ResponseEntity<List<Designation>> updateDesignation(@RequestBody Designation desig)
 			throws NoContentException {
 		int res = desigserv.updateDesignation(desig);

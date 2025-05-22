@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.servlet.http.HttpServletResponse;
+//import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.InputStreamResource;
@@ -44,7 +44,8 @@ import com.example.demo.service.CompanyService;
 import com.example.demo.service.DesignationService;
 import com.example.demo.service.EmployeeService;
 
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("employee")
@@ -78,7 +79,7 @@ public class EmployeeController {
 	private DateTimeFormatter dtime = DateTimeFormatter.ofPattern("HH:mm:ss");
 
 	@PostMapping("/")
-	@ApiOperation("This will save the Employee details and will assign the Assets")
+	@Operation(summary="This will save the Employee details and will assign the Assets")
 	public ResponseEntity<Employee> saveEmployee(@RequestBody Employee empl ) {
 	
 		String asset_ids = empl.getAsset_ids().toString().replace("[", "").replace("]", "").replace(" ", "");
@@ -139,7 +140,7 @@ public class EmployeeController {
 	
 
 	@GetMapping("/viewassignedassets")
-	@ApiOperation("This endpoint will get the all assigned assets to the employee")
+	@Operation(summary="This endpoint will get the all assigned assets to the employee")
 	public ResponseEntity<List<AssignedAssets>> viewAllAssignedAssets()
 	{
 		List<AssignedAssets> alist = new ArrayList<AssignedAssets>();
@@ -199,21 +200,21 @@ public class EmployeeController {
 	}
 	
 	@GetMapping("/")
-	@ApiOperation("This endpoint will get List of all Employees")
+	@Operation(summary="This endpoint will get List of all Employees")
 	public ResponseEntity<List<Employee>> viewAllEmployees() {
 		List<Employee> elist = empserv.getAllEmployees();
 		return new ResponseEntity<List<Employee>>(elist, HttpStatus.OK);
 	} 
 	
 	@GetMapping("{id}")
-	@ApiOperation("This endpoint will get the Employee By Id")
+	@Operation(summary="This endpoint will get the Employee By Id")
 	public ResponseEntity<Employee> viewEmployeeById(@PathVariable Long id) {
 		 
 		return new ResponseEntity<Employee>(empserv.getEmployeeById(id), HttpStatus.OK);
 	}
 	
 	@GetMapping("/retrieveassetsbyempid/{id}")
-	@ApiOperation("This endpoint will retrieve the assets by id")
+	@Operation(summary="This endpoint will retrieve the assets by id")
 	public ResponseEntity<List<AssignedAssets>> retrieveAssets(@PathVariable Long id)
 	{
 		List<AssignedAssets> assign = assignserv.getAssignedAssetsByEmpId(id);
@@ -226,7 +227,7 @@ public class EmployeeController {
 	}
 	
 	@GetMapping("/getassignedassetsbyempid/{id}")
-	@ApiOperation("This endpoint will return the assigned assets by employee ID")
+	@Operation(summary="This endpoint will return the assigned assets by employee ID")
 	public ResponseEntity<List<AssignedAssets>> getAssignedAssetsByEmpId(@PathVariable Long id)
 	{
 		List<AssignedAssets> assign = assignserv.getOnlyAssignedAssetsByEmpId(id);
@@ -244,7 +245,7 @@ public class EmployeeController {
 	}
 
 	@DeleteMapping("/delete/{id}")
-	@ApiOperation("This endpoint will retrieve the assets by employee id")
+	@Operation(summary="This endpoint will retrieve the assets by employee id")
 	public ResponseEntity<String> updateRetrieveAssets(@PathVariable Long id)
 	{
 		int res = assignserv.retrieveAssetByEmpId(id);
@@ -256,7 +257,7 @@ public class EmployeeController {
 
 	 
 	@GetMapping("/viewemphistbyempid/{id}")
-	@ApiOperation("This endpoint will show History of assigning assets to employee by employee id")
+	@Operation(summary="This endpoint will show History of assigning assets to employee by employee id")
 	public ResponseEntity<List<AssetAssignHistory>> viewEmployeeHistoryByEmpId(@PathVariable Long id) throws NoContentException
 	{
 		List<AssetAssignHistory> ahist = ahistserv.getAssetAssignHistoryByEmpId(id);
@@ -269,7 +270,7 @@ public class EmployeeController {
 	}
 	
 	@GetMapping("/editempassignassetbyempid/{id}")
-	@ApiOperation("This endpoint will show History of assigning assets to employee by employee id")
+	@Operation(summary="This endpoint will show History of assigning assets to employee by employee id")
 	public ResponseEntity<Employee> editEmployeeByEmpId(@PathVariable("id") Long empid) {
 		Employee emp = empserv.getEmployeeById(empid);
 		
@@ -299,7 +300,7 @@ public class EmployeeController {
 	}
 	
 	@PutMapping("/")
-	@ApiOperation("This endpoint will update the employee details and the assigned assets")
+	@Operation(summary="This endpoint will update the employee details and the assigned assets")
 	public  ResponseEntity<Employee> updateAssignedAssets(@RequestBody Employee emp)
 	{
 		int res = empserv.updateEmployee(emp);
@@ -312,7 +313,7 @@ public class EmployeeController {
 	}
 	
 	@GetMapping("/exportassignedassets/excel")
-	@ApiOperation("This end point will Export the All assigned assets to excel file ")
+	@Operation(summary="This end point will Export the All assigned assets to excel file ")
     public ResponseEntity<InputStreamResource> exportToExcel(HttpServletResponse response) throws IOException {
 		// Set headers
         HttpHeaders headers = new HttpHeaders();
@@ -390,7 +391,7 @@ public class EmployeeController {
 
 	}		
 	
-	@ApiOperation("This end point will Export the All assigned assets History of an Employee to excel file ")
+	@Operation(summary="This end point will Export the All assigned assets History of an Employee to excel file ")
 	@RequestMapping("/exportassignshistory/excel/{id}")
 	public ResponseEntity<InputStreamResource> exportToExcel(HttpServletResponse response,@PathVariable("id")Long empid ) throws IOException, NoContentException {
 		

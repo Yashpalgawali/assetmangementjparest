@@ -1,12 +1,5 @@
 package com.example.demo.models;
 
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Value;
-
- 
-
- 
 public class AuthenticationBean {
 
 	private String message;

@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +16,7 @@ import com.example.demo.dto.ResponseDto;
 import com.example.demo.models.Department;
 import com.example.demo.service.DepartmentService;
 
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
 @RequestMapping("department")
@@ -31,7 +30,7 @@ public class DepartmentController {
 	}
 
 	@PostMapping("/")
-	@ApiOperation("This End Point is used to save Department")
+	@Operation(summary="This End Point is used to save Department")
 	public ResponseEntity<ResponseDto> saveDepartment(@RequestBody Department dept) {
 		
 		Department depart = deptserv.saveDepartment(dept);
@@ -44,7 +43,7 @@ public class DepartmentController {
 	}
 	
 	@GetMapping("/")
-	@ApiOperation("This End Point is used to get all Departments list")
+	@Operation(summary="This End Point is used to get all Departments list")
 	public ResponseEntity<List<Department>> viewAllDepartments(){
 		List<Department> dlist = deptserv.getAllDepartments();
 		if(dlist.size()>0){
@@ -56,7 +55,7 @@ public class DepartmentController {
 	}
 	
 	@GetMapping("/{id}")
-	@ApiOperation("This End Point is used to get department by department ID")
+	@Operation(summary="This End Point is used to get department by department ID")
 	public ResponseEntity<Department> getDepartmentByDeptId(@PathVariable Long id){
 		Department dept = deptserv.getDepartmentById(id);
 		if(dept!=null) {
@@ -68,12 +67,12 @@ public class DepartmentController {
 	}
 	
 	@PutMapping("/")
-	@ApiOperation("This End Point is used to update the department")
+	@Operation(summary="This End Point is used to update the department")
 	public ResponseEntity<ResponseDto> updateDepartment(@RequestBody Department dept)
 	{
 		int result = deptserv.updateDepartment(dept);
 		if(result > 0 ){
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.toString(), "Department "+dept.getDept_name()+" is saved successfully"));
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.toString(), "Department "+dept.getDept_name()+" is updated successfully"));
 		}
 		else {
 			return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(new ResponseDto(HttpStatus.NOT_MODIFIED.toString(), "Department "+dept.getDept_name()+" is not updated"));
@@ -81,13 +80,13 @@ public class DepartmentController {
 	}
 	
 	@GetMapping("/getdeptbycompid/{id}")
-	@ApiOperation("This End Point is used to get departments by using company ID")
+	@Operation(summary="This End Point is used to get departments by using company ID")
 	public ResponseEntity<List<Department>> getDepartmentByCompanyId(@PathVariable Long id){
 		return new ResponseEntity<List<Department>>(deptserv.getDepartmentByCompanyId(id),HttpStatus.OK);
 	}
 	
 	@GetMapping("/getdeptbycompname/{name}")
-	@ApiOperation("This End Point is used to get departments by using company Name")
+	@Operation(summary="This End Point is used to get departments by using company Name")
 	public ResponseEntity<List<Department>> getDepartmentByCompanyName(@PathVariable String name){
 		return new ResponseEntity<List<Department>>(deptserv.getDepartmentByCompanyName(name),HttpStatus.OK);
 	}

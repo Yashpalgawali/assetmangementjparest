@@ -7,7 +7,6 @@ import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
 import java.util.UUID;
 
-import javax.servlet.http.HttpServletResponse;
 //import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
@@ -41,6 +40,8 @@ import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 
 @Configuration
@@ -77,7 +78,7 @@ public class JwtAuthentication {
 			logout.deleteCookies("SESSION");
 			logout.logoutSuccessHandler((request, response , authentication)->{
 					response.setStatus(HttpServletResponse.SC_OK);
-					response.getWriter().write("{\" message\": \" Logged Out Successfully \" }");
+					response.getWriter().write("{\"message\": \" Logged Out Successfully \" }");
 					response.getWriter().flush();
 				});
 			});

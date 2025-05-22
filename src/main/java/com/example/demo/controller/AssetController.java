@@ -16,7 +16,7 @@ import com.example.demo.dto.ResponseDto;
 import com.example.demo.models.Assets;
 import com.example.demo.service.AssetService;
 
-import io.swagger.annotations.ApiOperation;
+//import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("asset")
@@ -30,7 +30,7 @@ public class AssetController {
 	}
  
 	@PostMapping("/")
-	@ApiOperation("This Will save the Asset")
+//	@ApiOperation("This Will save the Asset")
 	public ResponseEntity<ResponseDto> saveAssets(@RequestBody Assets asset)
 	{
 		Assets ast = assetserv.saveAssets(asset);
@@ -43,7 +43,7 @@ public class AssetController {
 	}
 	
 	@GetMapping("/")
-	@ApiOperation("This Will get the Asset list")
+//	@ApiOperation("This Will get the Asset list")
 	public ResponseEntity<List<Assets>> viewAssets()
 	{
 		List<Assets> asset = assetserv.getAllAssets();
@@ -56,14 +56,14 @@ public class AssetController {
 	}
 
 	@GetMapping("/{id}")
-	@ApiOperation("This Will get the Asset by ID ")
+//	@ApiOperation("This Will get the Asset by ID ")
 	public ResponseEntity<Assets> editAssetByIs(@PathVariable Long id) {
 		Assets asset = assetserv.getAssetsById(id);
 		return new ResponseEntity<Assets>(asset , HttpStatus.OK);
 	}
 	 
 	@PutMapping("/")
-	@ApiOperation("This Will update the Asset")
+//	@ApiOperation("This Will update the Asset")
 	public ResponseEntity<ResponseDto> updateAsset(@RequestBody Assets ast) {
 		int res = assetserv.updateAssets(ast);
 		if(res > 0) {

@@ -1,8 +1,7 @@
 package com.example.demo.controller;
+//
+//import javax.servlet.http.HttpSession;
 
-import javax.servlet.http.HttpSession;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +16,8 @@ import com.example.demo.models.Users;
 import com.example.demo.service.EmailService;
 import com.example.demo.service.OtpService;
 import com.example.demo.service.UserService;
+
+import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("users")

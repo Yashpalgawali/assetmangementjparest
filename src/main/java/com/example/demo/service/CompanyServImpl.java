@@ -31,7 +31,7 @@ public class CompanyServImpl implements CompanyService {
 		this.activityrepo = activityrepo;
 	}
 
-	Activity activity=null;
+	
 	
 	@Override
 	public Company saveCompany(Company comp) {
@@ -39,14 +39,14 @@ public class CompanyServImpl implements CompanyService {
 		Company company = comprepo.save(comp);
 		if(company!=null)
 		{
-			activity=new Activity();
+			Activity activity = new Activity();
 			activity.setActivity(comp.getComp_name()+" is saved successfully");
 			activity.setOperation_date(tday.format(LocalDateTime.now()));
 			activity.setOperation_time(ttime.format(LocalDateTime.now()));
 			activityrepo.save(activity);
 			return company;
 		}else {
-			activity=new Activity();
+			Activity activity = new Activity();
 			activity.setActivity(comp.getComp_name()+" is not saved ");
 			activity.setOperation_date(tday.format(LocalDateTime.now()));
 			activity.setOperation_time(ttime.format(LocalDateTime.now()));
@@ -72,7 +72,7 @@ public class CompanyServImpl implements CompanyService {
 		
 		int res = comprepo.updateCompany(comp.getComp_name(), comp.getComp_id());
 		if(res >0) {
-			activity=new Activity();
+			Activity activity = new Activity();
 			activity.setActivity(comp.getComp_name()+" is updated successfully");
 			activity.setOperation_date(tday.format(LocalDateTime.now()));
 			activity.setOperation_time(ttime.format(LocalDateTime.now()));
@@ -80,7 +80,7 @@ public class CompanyServImpl implements CompanyService {
 			return res;
 		}	
 		else {
-			activity=new Activity();
+			Activity activity = new Activity();
 			activity.setActivity(comp.getComp_name()+" is not updated ");
 			activity.setOperation_date(tday.format(LocalDateTime.now()));
 			activity.setOperation_time(ttime.format(LocalDateTime.now()));

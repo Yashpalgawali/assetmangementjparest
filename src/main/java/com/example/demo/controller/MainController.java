@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+//import javax.servlet.http.HttpServletRequest;
+//import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -21,6 +21,9 @@ import com.example.demo.models.Users;
 import com.example.demo.service.EmailService;
 import com.example.demo.service.OtpService;
 import com.example.demo.service.UserService;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class MainController {

@@ -16,7 +16,9 @@ import com.example.demo.dto.ResponseDto;
 import com.example.demo.models.Company;
 import com.example.demo.service.CompanyService;
 
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 @RestController
 @RequestMapping("company")
@@ -29,7 +31,7 @@ public class CompanyController {
 		this.compserv = compserv;
 	}
 
-//	@ApiOperation("This End Point is used to save the Company")
+//	@Operation("This End Point is used to save the Company")
 //	@PostMapping("/")
 //	public ResponseEntity<List<Company>> saveCompany(@RequestBody Company company)
 //	{
@@ -42,7 +44,10 @@ public class CompanyController {
 //		}
 //	}
 	
-	@ApiOperation("This End Point is used to save the Company")
+	@Operation(summary=" Save company" , description = "This End Point is used to save the Company")
+	@ApiResponses(value = 
+				@ApiResponse(responseCode = "200" ,description = "Company is saved successfully" )		
+			)
 	@PostMapping("/")
 	public ResponseEntity<ResponseDto> saveCompany(@RequestBody Company company)
 	{
@@ -55,12 +60,12 @@ public class CompanyController {
 		else {
 			 return ResponseEntity
 					 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-					 .body(new ResponseDto(HttpStatus.OK.toString(), "Company "+company.getComp_name()+" is not saved "));
+					 .body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.toString(), "Company "+company.getComp_name()+" is not saved "));
 		}
 	}
 
 	@GetMapping("/") 	
-	@ApiOperation("This End Point is used to get all companies list")
+	@Operation(summary ="This End Point is used to get all companies list")
 	public ResponseEntity<List<Company>> viewCompanies() {
 			List<Company> clist = compserv.getAllCompanies();
 			if(clist.size()>0){
@@ -72,14 +77,14 @@ public class CompanyController {
 	}
 	
 	@GetMapping("/{id}")	 
-	@ApiOperation("This End Point is used to get the company by company ID")
+	@Operation(summary ="This End Point is used to get the company by company ID")
 	public ResponseEntity<Company> editCompany(@PathVariable("id") Long cid) {
 		Company comp = compserv.getCompanyById(cid);
 		return new ResponseEntity<Company>(comp,HttpStatus.OK);
 	}
 	
 //	@PutMapping("/")
-//	@ApiOperation("This End point is used to Update the Company")
+//	@Operation("This End point is used to Update the Company")
 //	public ResponseEntity<List<Company>> updateCompany(@RequestBody Company comp) {
 //		int res = compserv.updateCompany(comp);
 //		if (res > 0){
@@ -89,8 +94,9 @@ public class CompanyController {
 //			return new ResponseEntity<List<Company>>(HttpStatus.NOT_FOUND);
 //		}
 //	}
+	
 	@PutMapping("/")
-	@ApiOperation("This End point is used to Update the Company")
+	@Operation(summary ="This End point is used to Update the Company")
 	public ResponseEntity<ResponseDto> updateCompany(@RequestBody Company comp) {
 		int res = compserv.updateCompany(comp);
 		if (res > 0){

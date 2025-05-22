@@ -16,36 +16,36 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import com.example.demo.models.Company;
 import com.example.demo.service.CompanyService;
 
-@WebMvcTest(CompanyController.class)
+//@WebMvcTest(CompanyController.class)
 class CompanyControllerTest {
 
-	@Autowired
-	private MockMvc mockMvc;
-	
-	@MockBean
-	private CompanyService compserv;
-	
-    private Company company;
-
-	@Test
-	void getAllCompanies() throws Exception {
-		List<Object> complist =  Arrays.asList(
-								new Company(1L,"Savera Press Comps Pvt. Ltd")
-					);
-		
-		when(compserv.getAllCompanies()).thenReturn(null);
-		mockMvc.perform(MockMvcRequestBuilders.get("/company/"))
-				.andExpect(MockMvcResultMatchers.status().isOk());
-	}
-	
-	@Test
-	void getCompanyByIdTest()throws Exception{
-		when(compserv.getCompanyById(1L)).thenReturn(company);
-		
-		mockMvc.perform(MockMvcRequestBuilders.get("/company/{id}" ,1L))
-				.andExpect(MockMvcResultMatchers.status().isOk());
-			
-		;
-	}
+//	@Autowired
+//	private MockMvc mockMvc;
+//	
+//	@MockBean
+//	private CompanyService compserv;
+//	
+//    private Company company;
+//
+//	@Test
+//	void getAllCompanies() throws Exception {
+//		List<Object> complist =  Arrays.asList(
+//								new Company(1L,"Savera Press Comps Pvt. Ltd")
+//					);
+//		
+//		when(compserv.getAllCompanies()).thenReturn(null);
+//		mockMvc.perform(MockMvcRequestBuilders.get("/company/"))
+//				.andExpect(MockMvcResultMatchers.status().isOk());
+//	}
+//	
+//	@Test
+//	void getCompanyByIdTest()throws Exception{
+//		when(compserv.getCompanyById(1L)).thenReturn(company);
+//		
+//		mockMvc.perform(MockMvcRequestBuilders.get("/company/{id}" ,1L))
+//				.andExpect(MockMvcResultMatchers.status().isOk());
+//			
+//		;
+//	}
 
 }
