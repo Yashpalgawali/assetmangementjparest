@@ -90,7 +90,7 @@ public class EmployeeController {
 		
 			String[] asset_arr = asset_ids.split(",");
 			for(int i=0;i<asset_arr.length;i++){
-				
+
 				AssignedAssets assignasset = new AssignedAssets();
 				int qty =0;
 				Long astid = Long.valueOf(asset_arr[i]);
