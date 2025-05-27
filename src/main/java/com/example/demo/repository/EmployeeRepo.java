@@ -23,6 +23,7 @@ public interface EmployeeRepo extends JpaRepository<Employee, Long> {
 	@Query("SELECT e FROM Employee e join e.designation JOIN e.department JOIN e.department.company")
 	public List<Employee> getAllEmployees();
 
-	@Query("SELECT e FROM Employee e join e.designation JOIN e.department JOIN e.department.company WHERE e.emp_id=?1")
+//	@Query("SELECT e FROM Employee e join e.designation JOIN e.department JOIN e.department.company WHERE e.emp_id=:eid")
+	@Query("SELECT e FROM Employee e WHERE e.emp_id=:eid")
 	public Optional<Employee> getEmployeeById(Long eid);
 }

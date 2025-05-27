@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 //import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -78,30 +80,34 @@ public class EmployeeController {
 	private DateTimeFormatter ddate = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 	private DateTimeFormatter dtime = DateTimeFormatter.ofPattern("HH:mm:ss");
 
+	private Logger logger = LoggerFactory.getLogger(getClass());
+	
 	@PostMapping("/")
 	@Operation(summary="This will save the Employee details and will assign the Assets")
 	public ResponseEntity<Employee> saveEmployee(@RequestBody Employee empl ) {
-	
+
+		logger.info("Sent EMployee Object is {} ",empl);
+
 		String asset_ids = empl.getAsset_ids().toString().replace("[", "").replace("]", "").replace(" ", "");
 		AssignedAssets isassigned = null;
-		
+
 		Employee emp = empserv.saveEmployee(empl);
 		if(emp!=null) {
-		
+
 			String[] asset_arr = asset_ids.split(",");
 			for(int i=0;i<asset_arr.length;i++){
-
+				
 				AssignedAssets assignasset = new AssignedAssets();
 				int qty =0;
 				Long astid = Long.valueOf(asset_arr[i]);
 				Assets ast = new Assets();
 				Assets getasset = assetserv.getAssetsById(astid);
-				
+
 				AssetType atype = new AssetType();
 				atype = atypeserv.getAssetTypeById(getasset.getAtype().getType_id());
-				
+
 				ast.setAtype(atype);
-				
+
 				ast.setAsset_id(astid);
 				ast.setAsset_name(getasset.getAsset_name());
 				ast.setAsset_number(getasset.getAsset_number());
@@ -206,11 +212,13 @@ public class EmployeeController {
 		return new ResponseEntity<List<Employee>>(elist, HttpStatus.OK);
 	} 
 	
-	@GetMapping("{id}")
+	@GetMapping("/{id}")
 	@Operation(summary="This endpoint will get the Employee By Id")
 	public ResponseEntity<Employee> viewEmployeeById(@PathVariable Long id) {
 		 
-		return new ResponseEntity<Employee>(empserv.getEmployeeById(id), HttpStatus.OK);
+		Employee employee = empserv.getEmployeeById(id);
+		return null;
+//		return new ResponseEntity<Employee>(employee, HttpStatus.OK);
 	}
 	
 	@GetMapping("/retrieveassetsbyempid/{id}")
@@ -231,12 +239,9 @@ public class EmployeeController {
 	public ResponseEntity<List<AssignedAssets>> getAssignedAssetsByEmpId(@PathVariable Long id)
 	{
 		List<AssignedAssets> assign = assignserv.getOnlyAssignedAssetsByEmpId(id);
-		assign.stream().forEach(System.out::println);
-//		List<Assets> aslist = null;
-//		for(int i=0;i<assign.size();i++) {
-//			aslist.add(assign.get(i).getAsset());
-//		}
-		if(assign.size()>0) {
+//		assign.stream().forEach(System.err::println);
+
+		if(assign.size() > 0) {
 			return new ResponseEntity<List<AssignedAssets>>(assign,HttpStatus.OK);
 		}
 		else{
@@ -303,6 +308,8 @@ public class EmployeeController {
 	@Operation(summary="This endpoint will update the employee details and the assigned assets")
 	public  ResponseEntity<Employee> updateAssignedAssets(@RequestBody Employee emp)
 	{
+		logger.info("Updated assigned assets are {} ",emp);
+		
 		int res = empserv.updateEmployee(emp);
 		if(res>0) {
 			return new  ResponseEntity<Employee>(emp,HttpStatus.OK);

@@ -46,7 +46,7 @@ public class EmployeeServImpl implements EmployeeService {
 	private DateTimeFormatter ddate = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 	private DateTimeFormatter dtime = DateTimeFormatter.ofPattern("HH:mm:ss");
 	
-	private String tday=ddate.format(LocalDateTime.now()),ttime=dtime.format(LocalDateTime.now());
+//	private String tday=ddate.format(LocalDateTime.now()),ttime=dtime.format(LocalDateTime.now());
 	
 	@Override
 	public Employee saveEmployee(Employee emp) {
@@ -102,6 +102,9 @@ public class EmployeeServImpl implements EmployeeService {
 		AssignedAssets isassigned = null;
 		int res = emprepo.updateEmployee(emp.getEmp_name(), emp.getEmp_email(), emp.getEmp_contact(), emp.getDepartment().getDept_id(), emp.getDesignation().getDesig_id(), emp.getEmp_id());
 		
+		// Fetch managed Employee entity
+		Employee managedEmp =  this.getEmployeeById(emp.getEmp_id());
+		
 		List<AssignedAssets> assigned_assets = assignassetrepo.getAllAssignedAssetsByEmpId(emp.getEmp_id());
 		
 		String[] ol_assets = new String[assigned_assets.size()];
@@ -112,7 +115,7 @@ public class EmployeeServImpl implements EmployeeService {
 		{
 			ol_assets[i] = assigned_assets.get(i).getAsset().getAsset_id().toString();
 		}
-		
+
 		if(ol_assets.length==nw_assets.length)
 		{
 			List<String> olist= Arrays.asList(ol_assets);
@@ -151,7 +154,7 @@ public class EmployeeServImpl implements EmployeeService {
 						ast.setQuantity(getasset.getQuantity());
 						
 						ahist.setAsset(ast);
-						ahist.setEmployee(emp);
+						ahist.setEmployee(managedEmp);
 						ahist.setOperation_date(ddate.format(LocalDateTime.now()));
 						ahist.setOperation_time(dtime.format(LocalDateTime.now()));
 						ahist.setOperation("Asset Retrieved");
@@ -192,7 +195,7 @@ public class EmployeeServImpl implements EmployeeService {
 					ast.setModel_number(getasset.getModel_number());
 					ast.setQuantity(getasset.getQuantity());
 					
-					assignasset.setEmployee(emp);
+					assignasset.setEmployee(managedEmp);
 					assignasset.setAsset(ast);
 				
 					assignasset.setAssign_date(ddate.format(LocalDateTime.now()));
@@ -208,7 +211,7 @@ public class EmployeeServImpl implements EmployeeService {
 						AssetAssignHistory ahist = new AssetAssignHistory();
 					
 						ahist.setAsset(ast);
-						ahist.setEmployee(emp);
+						ahist.setEmployee(managedEmp);
 						ahist.setOperation_date(ddate.format(LocalDateTime.now()));
 						ahist.setOperation_time(dtime.format(LocalDateTime.now()));
 						ahist.setOperation("Asset Assigned");
@@ -259,7 +262,7 @@ public class EmployeeServImpl implements EmployeeService {
 					ast.setModel_number(getasset.getModel_number());
 					ast.setQuantity(getasset.getQuantity());
 					
-					assignasset.setEmployee(emp);
+					assignasset.setEmployee(managedEmp);
 					assignasset.setAsset(ast);
 				
 					assignasset.setAssign_date(ddate.format(LocalDateTime.now()));
@@ -276,7 +279,7 @@ public class EmployeeServImpl implements EmployeeService {
 						AssetAssignHistory ahist = new AssetAssignHistory();
 					
 						ahist.setAsset(ast);
-						ahist.setEmployee(emp);
+						ahist.setEmployee(managedEmp);
 						ahist.setOperation_date(ddate.format(LocalDateTime.now()));
 						ahist.setOperation_time(dtime.format(LocalDateTime.now()));
 						ahist.setOperation("Asset Assigned");
@@ -329,7 +332,7 @@ public class EmployeeServImpl implements EmployeeService {
 						ast.setQuantity(getasset.getQuantity());
 						
 						ahist.setAsset(ast);
-						ahist.setEmployee(emp);
+						ahist.setEmployee(managedEmp);
 						ahist.setOperation_date(ddate.format(LocalDateTime.now()));
 						ahist.setOperation_time(dtime.format(LocalDateTime.now()));
 						ahist.setOperation("Asset Retrieved");

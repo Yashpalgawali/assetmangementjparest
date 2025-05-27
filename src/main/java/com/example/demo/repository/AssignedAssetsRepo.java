@@ -17,10 +17,12 @@ public interface AssignedAssetsRepo extends JpaRepository<AssignedAssets, Long> 
 	@Query("SELECT a FROM AssignedAssets a")
 	public List<AssignedAssets> getAllAssignedAssets();
 
-	@Query(value = "SELECT * FROM tbl_assigned_assets JOIN tbl_employee ON tbl_employee.emp_id=tbl_assigned_assets.emp_id JOIN tbl_assets ON tbl_assets.asset_id=tbl_assigned_assets.asset_id WHERE tbl_assigned_assets.emp_id=:eid", nativeQuery = true)
+	//@Query(value = "SELECT * FROM tbl_assigned_assets JOIN tbl_employee ON tbl_employee.emp_id=tbl_assigned_assets.emp_id JOIN tbl_assets ON tbl_assets.asset_id=tbl_assigned_assets.asset_id WHERE tbl_assigned_assets.emp_id=:eid", nativeQuery = true)
+	@Query("SELECT tas FROM AssignedAssets tas JOIN tas.employee JOIN tas.asset WHERE tas.employee.emp_id=:eid")
 	public List<AssignedAssets> getAllAssignedAssetsByEmpId(Long eid);
 
-	@Query(value = "SELECT tbl_assets.*,tbl_assigned_assets.* FROM tbl_assigned_assets JOIN tbl_employee ON tbl_employee.emp_id=tbl_assigned_assets.emp_id JOIN tbl_assets ON tbl_assets.asset_id=tbl_assigned_assets.asset_id WHERE tbl_assigned_assets.emp_id=:eid", nativeQuery = true)
+//	@Query(value = "SELECT tbl_assets.*,tbl_assigned_assets.* FROM tbl_assigned_assets JOIN tbl_employee ON tbl_employee.emp_id=tbl_assigned_assets.emp_id JOIN tbl_assets ON tbl_assets.asset_id=tbl_assigned_assets.asset_id WHERE tbl_assigned_assets.emp_id=:eid", nativeQuery = true)
+	@Query("SELECT a FROM AssignedAssets a JOIN a.employee JOIN a.asset WHERE a.employee.emp_id=:eid")
 	public List<AssignedAssets> getOnlyAssignedAssetsByEmpId(Long eid);
 
 	@Modifying
