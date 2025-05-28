@@ -102,12 +102,12 @@ public class CompanyController {
 		if (res > 0){
 		    return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(new ResponseDto("200", "Company "+comp.getComp_name()+" updated successfully"));
+                    .body(new ResponseDto(HttpStatus.OK.toString(), "Company "+comp.getComp_name()+" updated successfully"));
 		}
 		else{
             return ResponseEntity
                     .status(HttpStatus.NOT_MODIFIED)
-                    .body(new ResponseDto("304", "Company "+comp.getComp_name()+" is not updated "));
+                    .body(new ResponseDto(HttpStatus.NOT_MODIFIED.toString() , "Company "+comp.getComp_name()+" is not updated "));
         }
 	}
 }

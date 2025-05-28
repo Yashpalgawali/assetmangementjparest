@@ -290,7 +290,7 @@ public class EmployeeServImpl implements EmployeeService {
 						act.setOperation_date(ddate.format(LocalDateTime.now()));
 						act.setOperation_time(dtime.format(LocalDateTime.now()));
 						actrepo.save(act);
-						
+
 					}
 				}
 			}
@@ -300,7 +300,7 @@ public class EmployeeServImpl implements EmployeeService {
 		if(nw_assets.length<ol_assets.length) {
 //			List<String> olist= List.of(ol_assets);
 //          List<String> nlist= List.of(nw_assets);
-            
+
 			List<String> olist= Arrays.asList(ol_assets);
 			List<String> nlist= Stream.of(new_assets.split(",")).collect(Collectors.toList());
 			for(int i=0;i<ol_assets.length;i++)
@@ -309,34 +309,34 @@ public class EmployeeServImpl implements EmployeeService {
 				else {
 					Long asid = Long.valueOf(ol_assets[i]);
 					output = assignassetrepo.deleteAssignedAssetByEmpidAssetId(asid, emp.getEmp_id());
-					
+
 					if(output>0) {	
 						int qty = assetrepo.getQuantiyByAssetId(asid);
 						qty+=1;
 						assetrepo.updateAssetQuantityByAssetId(asid, ""+qty);
 						AssetAssignHistory ahist = new AssetAssignHistory();
 						Assets ast = new Assets();
-						
+
 						Assets getasset = assetrepo.findById(asid).get();
-						
+
 						AssetType atype = new AssetType();
-						
+
 						atype = atyperepo.findById(getasset.getAtype().getType_id()).get();
-						
+
 						ast.setAtype(atype);
-						
+
 						ast.setAsset_id(asid);
 						ast.setAsset_name(getasset.getAsset_name());
 						ast.setAsset_number(getasset.getAsset_number());
 						ast.setModel_number(getasset.getModel_number());
 						ast.setQuantity(getasset.getQuantity());
-						
+
 						ahist.setAsset(ast);
 						ahist.setEmployee(managedEmp);
 						ahist.setOperation_date(ddate.format(LocalDateTime.now()));
 						ahist.setOperation_time(dtime.format(LocalDateTime.now()));
 						ahist.setOperation("Asset Retrieved");
-						
+
 						assetassignhistrepo.save(ahist);
 						Activity act = new Activity();
 						act.setActivity("Asset "+getasset.getAsset_name()+" retrieved from "+ emp.getEmp_name());

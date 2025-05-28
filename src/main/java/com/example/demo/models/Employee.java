@@ -38,11 +38,13 @@ public class Employee {
 
 	private String emp_contact;
 
-	@ManyToOne(targetEntity = Designation.class, cascade = { CascadeType.MERGE })
+	//@ManyToOne(targetEntity = Designation.class, cascade = { CascadeType.MERGE })
+	@ManyToOne(targetEntity = Designation.class)
 	@JoinColumn(name = "desig_id", referencedColumnName = "desig_id")
 	private Designation designation;
 
-	@ManyToOne(targetEntity = Department.class, cascade = { CascadeType.MERGE })
+//	@ManyToOne(targetEntity = Department.class, cascade = { CascadeType.MERGE })
+	@ManyToOne(targetEntity = Department.class)
 	@JoinColumn(name = "dept_id", referencedColumnName = "dept_id")
 	private Department department;
 
