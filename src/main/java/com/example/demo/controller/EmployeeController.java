@@ -229,19 +229,20 @@ public class EmployeeController {
 	@Operation(summary = "This endpoint will return the assigned assets by employee ID")
 	public ResponseEntity<List<AssignedAssets>> getAssignedAssetsByEmpId(@PathVariable Long id) {
 		List<AssignedAssets> assign = assignserv.getOnlyAssignedAssetsByEmpId(id);
-//		assign.stream().forEach(System.err::println);
-
-		if (assign.size() > 0) {
-			return new ResponseEntity<List<AssignedAssets>>(assign, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<List<AssignedAssets>>(HttpStatus.NOT_FOUND);
-		}
+		System.err.println("Inside getAssignedAssetsByEmpId() List is \n");
+		assign.stream().forEach(System.err::println);
+		return ResponseEntity.status(HttpStatus.OK).body(assign);
+		 
 	}
 
-	@DeleteMapping("/delete/{id}")
+
+	//	@DeleteMapping("/delete/{id}")
+	//	public ResponseEntity<String> updateRetrieveAssets(@PathVariable Long id) {
+	@PostMapping("/delete")
 	@Operation(summary = "This endpoint will retrieve the assets by employee id")
-	public ResponseEntity<String> updateRetrieveAssets(@PathVariable Long id) {
-		int res = assignserv.retrieveAssetByEmpId(id);
+	public ResponseEntity<String> updateRetrieveAssets(@RequestBody Employee emp) {
+		logger.info("Employee ius {} ",emp);
+		int res = assignserv.retrieveAssetByEmpId(emp);
 		if (res > 0)
 			return new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
 		else
