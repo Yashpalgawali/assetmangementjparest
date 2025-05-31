@@ -58,7 +58,13 @@ public class CompanyServImpl implements CompanyService {
 	@Override
 	public List<Company> getAllCompanies() {
 		List<Company> clist = comprepo.findAll();
-		return clist;
+		if(clist.size() >0) {
+			return clist;
+		}
+		else {
+			throw new ResourceNotFoundException("No Companies Are Found");
+		}
+		
 	}
 
 	@Override

@@ -82,8 +82,9 @@ public class EmployeeServImpl implements EmployeeService {
 
  	@Override
 	public Employee getEmployeeById(Long empid) {
-		return emprepo.getEmployeeById(empid)
+		Employee empobj = emprepo.getEmployeeById(empid)
 				.orElseThrow(()-> new ResourceNotFoundException("No Employee Found for given Id "+empid));
+		return empobj;
 	}
 
 	@Override

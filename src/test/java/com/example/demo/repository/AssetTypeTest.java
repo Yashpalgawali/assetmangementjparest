@@ -1,21 +1,5 @@
 package com.example.demo.repository;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.example.demo.NewassetmanagementWithJpaRestApplication;
-import com.example.demo.models.AssetType;
-
-import jakarta.persistence.EntityManager;
-
 //@SpringBootTest(classes = NewassetmanagementWithJpaRestApplication.class) 
 //@Transactional
 class AssetTypeTest {

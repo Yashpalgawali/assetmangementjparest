@@ -54,10 +54,12 @@ public class DesignationServiceImpl implements DesignationService {
 	@Override
 	public List<Designation> getAllDesignations() throws NoContentException {
 		var desigList = desigrepo.findAll();
-		if(desigList.size()>0)
+		if(desigList.size()>0) {
 			return desigList;
-		else 
+		}
+		else {
 			throw new NoContentException("No Designations found");
+		}
 	}
 
 	@Override

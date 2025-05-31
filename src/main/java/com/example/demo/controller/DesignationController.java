@@ -12,11 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dto.ResponseDto;
 import com.example.demo.exceptions.NoContentException;
 import com.example.demo.models.Designation;
 import com.example.demo.service.DesignationService;
-
-import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
 @RequestMapping("/designation")
@@ -30,34 +29,59 @@ public class DesignationController {
 	}
 
 	@PostMapping("/")
-	@Operation(summary="This Will save the designation")
-	public ResponseEntity<Designation> saveDesignation(@RequestBody Designation desig) throws NoContentException {
+//	@ApiOperation(value = "This End Point Will save the designation")
+//	@ApiResponses(value = 
+//				{
+//					@ApiResponse(message = "Designation is saved successfully ", code = 200 ) ,
+//					@ApiResponse(message = "Designation is not saved ", code = 500 ) 
+//				})
+	public ResponseEntity<ResponseDto> saveDesignation(@RequestBody Designation desig) throws NoContentException {
 		Designation designation = desigserv.saveDesignation(desig);
-		return new ResponseEntity<Designation>(designation, HttpStatus.OK);
+		if(designation!=null) {
+			return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDto(HttpStatus.CREATED.toString() ,"Designtion "+desig.getDesig_name()+" is saved successfully"));
+		}
+		else {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.toString() ,"Designtion "+desig.getDesig_name()+" is not saved"));
+		}
 	}
 
 	@GetMapping("/")
-	@Operation(summary="This Will get all the designation list")
+//	@ApiOperation(value = "This Will return all designations list")
+//	@ApiResponses(value = 
+//				{
+//					@ApiResponse(message = "Designation is saved successfully ", code = 200 ) ,
+//					@ApiResponse(message = "Designation is not saved ", code = 500 ) 
+//				})
 	public ResponseEntity<List<Designation>> viewDesignations() throws NoContentException {
 		return new ResponseEntity<List<Designation>>(desigserv.getAllDesignations(), HttpStatus.OK);
 	}
 
 	@GetMapping("/{id}")
-	@Operation(summary="This Will get the designation by ID")
+//	@ApiOperation(value = "This Will get the Designation by ID")
+//	@ApiResponses(value = 
+//				{
+//					@ApiResponse(message = "Designation is fetched successfully ", code = 200 ) ,
+//					@ApiResponse(message = "Designation is not found", code = 404 ) 
+//				})
 	public ResponseEntity<Designation> editDesignationById(@PathVariable Long id) {
 		Designation desig = desigserv.getDesignationById(id);
 		return new ResponseEntity<Designation>(desig, HttpStatus.OK);
 	}
 
 	@PutMapping("/")
-	@Operation(summary="This Will update the designation")
-	public ResponseEntity<List<Designation>> updateDesignation(@RequestBody Designation desig)
+//	@ApiOperation(value = "This Will update the designation")
+//	@ApiResponses(value = 
+//				{
+//					@ApiResponse(message = "Designation is updated successfully ", code = 200 ) ,
+//					@ApiResponse(message = "Designation is not updated", code = 304 ) 
+//				})
+	public ResponseEntity<ResponseDto> updateDesignation(@RequestBody Designation desig)
 			throws NoContentException {
 		int res = desigserv.updateDesignation(desig);
 		if (res > 0) {
-			return new ResponseEntity<List<Designation>>(desigserv.getAllDesignations(), HttpStatus.OK);
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.toString(),"Designation "+desig.getDesig_name()+" is updated successfully"));
 		} else {
-			return new ResponseEntity<List<Designation>>(HttpStatus.NO_CONTENT);
+			return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(new ResponseDto(HttpStatus.NOT_MODIFIED.toString(),"Designation "+desig.getDesig_name()+" is not updated successfully"));
 		}
 	}
 

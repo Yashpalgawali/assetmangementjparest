@@ -16,8 +16,6 @@ import com.example.demo.dto.ResponseDto;
 import com.example.demo.models.Department;
 import com.example.demo.service.DepartmentService;
 
-import io.swagger.v3.oas.annotations.Operation;
-
 @RestController
 @RequestMapping("department")
 public class DepartmentController {
@@ -30,7 +28,15 @@ public class DepartmentController {
 	}
 
 	@PostMapping("/")
-	@Operation(summary="This End Point is used to save Department")
+	/*
+	 * @ApiOperation(value = "This End Point is used to save Department")
+	 * 
+	 * @ApiResponses(value = {
+	 * 
+	 * @ApiResponse(message = "Department is saved successfully ", code = 200 ) ,
+	 * 
+	 * @ApiResponse(message = "Department is not saved ", code = 500 ) })
+	 */
 	public ResponseEntity<ResponseDto> saveDepartment(@RequestBody Department dept) {
 		
 		Department depart = deptserv.saveDepartment(dept);
@@ -43,19 +49,33 @@ public class DepartmentController {
 	}
 	
 	@GetMapping("/")
-	@Operation(summary="This End Point is used to get all Departments list")
+//	@ApiOperation(value = "This End Point is used to get all Departments list")
+//	@ApiResponses(value = 
+//				{
+//					@ApiResponse(message = "Department List is fetched successfully ", code = 200 ) ,
+//					@ApiResponse(message = "Department is not saved ", code = 404 ) 
+//				})
 	public ResponseEntity<List<Department>> viewAllDepartments(){
 		List<Department> dlist = deptserv.getAllDepartments();
 		if(dlist.size()>0){
 			return new ResponseEntity<List<Department>>(dlist ,HttpStatus.OK);
 		}	
 		else {
-			return new ResponseEntity<List<Department>>(HttpStatus.NO_CONTENT);
+			return new ResponseEntity<List<Department>>(HttpStatus.NOT_FOUND);
 		}
 	}
 	
 	@GetMapping("/{id}")
-	@Operation(summary="This End Point is used to get department by department ID")
+	/*
+	 * @ApiOperation(value =
+	 * "This End Point is used to get department by department ID")
+	 * 
+	 * @ApiResponses(value = {
+	 * 
+	 * @ApiResponse(message = "Department is fetched successfully ", code = 200 ) ,
+	 * 
+	 * @ApiResponse(message = "Department is not FOUND ", code = 404 ) })
+	 */
 	public ResponseEntity<Department> getDepartmentByDeptId(@PathVariable Long id){
 		Department dept = deptserv.getDepartmentById(id);
 		if(dept!=null) {
@@ -67,7 +87,15 @@ public class DepartmentController {
 	}
 	
 	@PutMapping("/")
-	@Operation(summary="This End Point is used to update the department")
+	/*
+	 * @ApiOperation(value = "This End Point is used to update the Department")
+	 * 
+	 * @ApiResponses(value = {
+	 * 
+	 * @ApiResponse(message = "Department is Updated successfully ", code = 200 ) ,
+	 * 
+	 * @ApiResponse(message = "Department is Not Updated ", code = 304 ) })
+	 */
 	public ResponseEntity<ResponseDto> updateDepartment(@RequestBody Department dept)
 	{
 		int result = deptserv.updateDepartment(dept);
@@ -80,13 +108,23 @@ public class DepartmentController {
 	}
 	
 	@GetMapping("/getdeptbycompid/{id}")
-	@Operation(summary="This End Point is used to get departments by using company ID")
+//	@ApiOperation(value = "This End Point is used to get departments by using company ID")
+//	@ApiResponses(value = 
+//				{
+//					@ApiResponse(message = "Department of Company is found ", code = 200 ) ,
+//					@ApiResponse(message = "No Department is Not Updated ", code = 304 ) 
+//				})
 	public ResponseEntity<List<Department>> getDepartmentByCompanyId(@PathVariable Long id){
 		return new ResponseEntity<List<Department>>(deptserv.getDepartmentByCompanyId(id),HttpStatus.OK);
 	}
 	
 	@GetMapping("/getdeptbycompname/{name}")
-	@Operation(summary="This End Point is used to get departments by using company Name")
+//	@ApiOperation(value = "This End Point is used to get departments by using company Name")
+//	@ApiResponses(value = 
+//				{
+//					@ApiResponse(message = "Department of Company is found ", code = 200 ) ,
+//					@ApiResponse(message = "No Department is Not Updated ", code = 304 ) 
+//				})
 	public ResponseEntity<List<Department>> getDepartmentByCompanyName(@PathVariable String name){
 		return new ResponseEntity<List<Department>>(deptserv.getDepartmentByCompanyName(name),HttpStatus.OK);
 	}

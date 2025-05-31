@@ -2,21 +2,27 @@ package com.example.demo.models;
 
 import java.util.List;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.FieldDefaults;
 
 @Entity
 @Table(name = "tbl_employee")
@@ -25,45 +31,52 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@FieldDefaults(level=AccessLevel.PRIVATE)
 public class Employee {
 
 	@Id
 	@SequenceGenerator(name = "emp_seq", allocationSize = 1, initialValue = 1)
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "emp_seq")
-	private Long emp_id;
+	Long emp_id;
 
-	private String emp_name;
+	@NotEmpty(message = "Employee name cannot be blank")
+	@Size(min = 2 , max = 100, message = "Enter with at least 2 characters")
+	String emp_name;
 
-	private String emp_email;
+	@NotEmpty(message = "Email cannot be blank")
+	@Email(message = "Please Enter a valid email address")
+	String emp_email;
 
-	private String emp_contact;
+	@NotEmpty(message = "Mobile cannot be blank")
+	@Pattern(regexp = "(^|[0-9]{10})" , message = "Mobile Number must be 10 digits" )
+	String emp_contact;
 
 	//@ManyToOne(targetEntity = Designation.class, cascade = { CascadeType.MERGE })
 	@ManyToOne(targetEntity = Designation.class)
 	@JoinColumn(name = "desig_id", referencedColumnName = "desig_id")
-	private Designation designation;
+	Designation designation;
 
 //	@ManyToOne(targetEntity = Department.class, cascade = { CascadeType.MERGE })
 	@ManyToOne(targetEntity = Department.class)
 	@JoinColumn(name = "dept_id", referencedColumnName = "dept_id")
-	private Department department;
+	Department department;
 
 	@Transient
-	private String multi_assets;
+	String multi_assets;
 
 	@Transient
-	private List<String> asset_ids;
+	List<String> asset_ids;
 
 	@Transient
-	private String comments;
+	String comments;
 
 	@Transient
-	private String assigned_assets;
+	String assigned_assets;
 
 	@Transient
-	private String assigned_asset_types;
+	String assigned_asset_types;
 
 //	@Transient
-//	private List<AssignedAssets> assigned_asts;
+//	List<AssignedAssets> assigned_asts;
 
 }

@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 //import javax.servlet.http.HttpServletResponse;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
@@ -18,7 +20,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dto.ResponseDto;
 import com.example.demo.exceptions.NoContentException;
 import com.example.demo.exporttoexcel.ExportAssetAssignHistory;
 import com.example.demo.exporttoexcel.ExportAssignedAssets;
@@ -42,12 +44,7 @@ import com.example.demo.service.AssetAssignHistService;
 import com.example.demo.service.AssetService;
 import com.example.demo.service.AssetTypeService;
 import com.example.demo.service.AssignedAssetService;
-import com.example.demo.service.CompanyService;
-import com.example.demo.service.DesignationService;
 import com.example.demo.service.EmployeeService;
-
-import io.swagger.v3.oas.annotations.Operation;
-import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("employee")
@@ -71,7 +68,6 @@ public class EmployeeController {
 		this.ahistserv = ahistserv;
 		this.atypeserv = atypeserv;
 		this.env = env;
-
 	}
 
 	private DateTimeFormatter ddate = DateTimeFormatter.ofPattern("dd-MM-yyyy");
@@ -80,8 +76,13 @@ public class EmployeeController {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	@PostMapping("/")
-	@Operation(summary = "This will save the Employee details and will assign the Assets")
-	public ResponseEntity<Employee> saveEmployee(@RequestBody Employee empl) {
+//	@ApiOperation(value = "This will save the Employee details and will assign the Assets")
+//	@ApiResponses(value = 
+//				{
+//					@ApiResponse(message = "Company is saved Successfully", code = 200 ) ,
+//					@ApiResponse(message = "Company is NOT saved ", code = 500 ) 
+//				})
+	public ResponseEntity<ResponseDto> saveEmployee(@RequestBody Employee empl) {
 
 		logger.info("Sent EMployee Object is {} ", empl);
 
@@ -134,14 +135,20 @@ public class EmployeeController {
 					ahistserv.saveAssetAssignHistory(ahist);
 				}
 			}
-			return new ResponseEntity<Employee>(emp, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<Employee>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.CREATED.toString(), "Employee "+emp.getEmp_name()+" is saved sucessfully"));
+			}
+			else {
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.toString(), "Employee "+empl.getEmp_name()+" is NOT saved "));
+			}
 	}
 
 	@GetMapping("/viewassignedassets")
-	@Operation(summary = "This endpoint will get the all assigned assets to the employee")
+//	@ApiOperation(value = "This endpoint will get the all assigned assets to the employee")
+//	@ApiResponses(value = 
+//				{
+//					@ApiResponse(message = "Returns assigned Assets to the Employees ", code = 200 ) ,
+//					@ApiResponse(message = "No Assets are assigned to any Employee ", code = 404 ) 
+//				})
 	public ResponseEntity<List<AssignedAssets>> viewAllAssignedAssets() {
 		List<AssignedAssets> alist = new ArrayList<AssignedAssets>();
 		List<Object[]> aslist = assignserv.getAllAssignedassetsGroup();
@@ -194,19 +201,29 @@ public class EmployeeController {
 			});
 			return new ResponseEntity<List<AssignedAssets>>(alist, HttpStatus.OK);
 		} else {
-			return new ResponseEntity<List<AssignedAssets>>(HttpStatus.NO_CONTENT);
+			return new ResponseEntity<List<AssignedAssets>>(HttpStatus.NOT_FOUND);
 		}
 	}
 
 	@GetMapping("/")
-	@Operation(summary = "This endpoint will get List of all Employees")
+//	@ApiOperation(value = "This endpoint will get List of all Employees")
+//	@ApiResponses(value = 
+//				{
+//					@ApiResponse(message = "Employee List is found", code = 200 ) ,
+//					@ApiResponse(message = "No Employees are found ", code = 404 ) 
+//				})
 	public ResponseEntity<List<Employee>> viewAllEmployees() {
 		List<Employee> elist = empserv.getAllEmployees();
 		return new ResponseEntity<List<Employee>>(elist, HttpStatus.OK);
 	}
 
 	@GetMapping("/{id}")
-	@Operation(summary = "This endpoint will get the Employee By Id")
+//	@ApiOperation(value = "This endpoint will get the Employee By Id")
+//	@ApiResponses(value = 
+//				{
+//					@ApiResponse(message = "Employee List is found", code = 200 ) ,
+//					@ApiResponse(message = "No Employees are found ", code = 404 ) 
+//				})
 	public ResponseEntity<Employee> viewEmployeeById(@PathVariable Long id) {
 
 		Employee employee = empserv.getEmployeeById(id);
@@ -215,7 +232,12 @@ public class EmployeeController {
 	}
 
 	@GetMapping("/retrieveassetsbyempid/{id}")
-	@Operation(summary = "This endpoint will retrieve the assets by id")
+//	@ApiOperation(value = "This endpoint will retrieve the assets by Employee ID")
+//	@ApiResponses(value = 
+//				{
+//					@ApiResponse(message = "Assigned assets to the  Employee are retrieved", code = 200 ) ,
+//					@ApiResponse(message = "No assets are assigned to the Employee", code = 404 ) 
+//				})
 	public ResponseEntity<List<AssignedAssets>> retrieveAssets(@PathVariable Long id) {
 		List<AssignedAssets> assign = assignserv.getAssignedAssetsByEmpId(id);
 		if (assign.size() > 0) {
@@ -226,7 +248,12 @@ public class EmployeeController {
 	}
 
 	@GetMapping("/getassignedassetsbyempid/{id}")
-	@Operation(summary = "This endpoint will return the assigned assets by employee ID")
+//	@ApiOperation(value = "This endpoint will return the assigned assets by employee ID")
+//	@ApiResponses(value = 
+//				{
+//					@ApiResponse(message = "Assigned assets to the  Employee are found", code = 200 ) ,
+//					@ApiResponse(message = "No assets are assigned to the Employee", code = 404 ) 
+//				})
 	public ResponseEntity<List<AssignedAssets>> getAssignedAssetsByEmpId(@PathVariable Long id) {
 		List<AssignedAssets> assign = assignserv.getOnlyAssignedAssetsByEmpId(id);
 		System.err.println("Inside getAssignedAssetsByEmpId() List is \n");
@@ -239,7 +266,12 @@ public class EmployeeController {
 	//	@DeleteMapping("/delete/{id}")
 	//	public ResponseEntity<String> updateRetrieveAssets(@PathVariable Long id) {
 	@PostMapping("/delete")
-	@Operation(summary = "This endpoint will retrieve the assets by employee id")
+//	@ApiOperation(value = "This endpoint will UPDATE the assets by employee id")
+//	@ApiResponses(value = 
+//				{
+//					@ApiResponse(message = "Assets are updated Employee ", code = 200 ) ,
+//					@ApiResponse(message = "No assets are assigned to the Employee", code = 304 ) 
+//				})
 	public ResponseEntity<String> updateRetrieveAssets(@RequestBody Employee emp) {
 		logger.info("Employee ius {} ",emp);
 		int res = assignserv.retrieveAssetByEmpId(emp);
@@ -250,7 +282,12 @@ public class EmployeeController {
 	}
 
 	@GetMapping("/viewemphistbyempid/{id}")
-	@Operation(summary = "This endpoint will show History of assigning assets to employee by employee id")
+//	@ApiOperation(value = "This endpoint will show History of assigning assets to Employee by Employee ID")
+//	@ApiResponses(value = 
+//				{
+//					@ApiResponse(message = "Assets History found for the Employee ", code = 200 ) ,
+//					@ApiResponse(message = "No Asset History found for the Employee", code = 404 ) 
+//				})
 	public ResponseEntity<List<AssetAssignHistory>> viewEmployeeHistoryByEmpId(@PathVariable Long id)
 			throws NoContentException {
 		List<AssetAssignHistory> ahist = ahistserv.getAssetAssignHistoryByEmpId(id);
@@ -262,7 +299,12 @@ public class EmployeeController {
 	}
 
 	@GetMapping("/editempassignassetbyempid/{id}")
-	@Operation(summary = "This endpoint will show History of assigning assets to employee by employee id")
+//	@ApiOperation(value = "This endpoint will get the assigned assets to employee by employee id For Updating ")
+//	@ApiResponses(value = 
+//				{
+//					@ApiResponse(message = "Employee found for the given ID ", code = 200 ) ,
+//					@ApiResponse(message = "Employee is not found for the given ID", code = 404 ) 
+//				})
 	public ResponseEntity<Employee> editEmployeeByEmpId(@PathVariable("id") Long empid) {
 		Employee emp = empserv.getEmployeeById(empid);
 
@@ -293,7 +335,12 @@ public class EmployeeController {
 	}
 
 	@PutMapping("/")
-	@Operation(summary = "This endpoint will update the employee details and the assigned assets")
+//	@ApiOperation(value = "This endpoint will update the employee details and the assigned assets ")
+//	@ApiResponses(value = 
+//				{
+//					@ApiResponse(message = "Employee updated Successfully ", code = 200 ) ,
+//					@ApiResponse(message = "Employee is not Updated", code = 304 ) 
+//				})	
 	public ResponseEntity<Employee> updateAssignedAssets(@RequestBody Employee emp) {
 		logger.info("Updated assigned assets are {} ", emp);
 
@@ -306,7 +353,8 @@ public class EmployeeController {
 	}
 
 	@GetMapping("/exportassignedassets/excel")
-	@Operation(summary = "This end point will Export the All assigned assets to excel file ")
+//	@ApiOperation(value = "This end point will Export the All assigned assets to excel file ")
+//	@ApiResponse(message = "This will export assigned assets to the Employee ", code = 200 )		
 	public ResponseEntity<InputStreamResource> exportToExcel(HttpServletResponse response) throws IOException {
 		// Set headers
 		HttpHeaders headers = new HttpHeaders();
@@ -384,7 +432,8 @@ public class EmployeeController {
 
 	}
 
-	@Operation(summary = "This end point will Export the All assigned assets History of an Employee to excel file ")
+//	@ApiOperation(value = "This end point will Export the All assigned assets History of an Employee to excel file ")
+//	@ApiResponse(message = "This will export assigned assets history of the Employee ", code = 200 )
 	@RequestMapping("/exportassignshistory/excel/{id}")
 	public ResponseEntity<InputStreamResource> exportToExcel(HttpServletResponse response,
 			@PathVariable("id") Long empid) throws IOException, NoContentException {

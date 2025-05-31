@@ -2,6 +2,8 @@ package com.example.demo.controller;
 //
 //import javax.servlet.http.HttpSession;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,8 +18,6 @@ import com.example.demo.models.Users;
 import com.example.demo.service.EmailService;
 import com.example.demo.service.OtpService;
 import com.example.demo.service.UserService;
-
-import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("users")
@@ -53,7 +53,7 @@ public class UsersController {
 	}
 	
 	@GetMapping("/email/{email}")
-	public ResponseEntity<Users> getUserByUserEmail(@PathVariable("email") String email)
+	public ResponseEntity<Users> getUserByUserEmail(@PathVariable String email)
 	{
 		Users user = userserv.getUserByEmailId(email);
 		if(user!=null) {
@@ -65,7 +65,7 @@ public class UsersController {
 	}
 	
 	@GetMapping("/otp/{vemail}")
-	public ResponseEntity<String> otpForForgotPassword(@PathVariable("vemail") String vemail ,HttpSession sess) {
+	public ResponseEntity<String> otpForForgotPassword(@PathVariable String vemail ,HttpSession sess) {
 		
 		if(userserv.getUserByEmailId(vemail)!=null) {
 			otpserv.generateotp(vemail);
