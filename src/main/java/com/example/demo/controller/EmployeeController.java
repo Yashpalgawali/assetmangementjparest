@@ -256,8 +256,7 @@ public class EmployeeController {
 //				})
 	public ResponseEntity<List<AssignedAssets>> getAssignedAssetsByEmpId(@PathVariable Long id) {
 		List<AssignedAssets> assign = assignserv.getOnlyAssignedAssetsByEmpId(id);
-		System.err.println("Inside getAssignedAssetsByEmpId() List is \n");
-		assign.stream().forEach(System.err::println);
+		
 		return ResponseEntity.status(HttpStatus.OK).body(assign);
 		 
 	}
@@ -328,6 +327,7 @@ public class EmployeeController {
 			}
 			emp.setAssigned_assets(assigned_assets);
 			emp.setAssigned_asset_types(assigned_asset_type);
+			logger.info("Emloyee OBJ {} ",emp);
 			return new ResponseEntity<Employee>(emp, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<Employee>(HttpStatus.NOT_FOUND);

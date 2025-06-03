@@ -29,7 +29,8 @@ public class AssetAssignHistServImpl implements AssetAssignHistService {
 		if(list.size()>0) {
 			return list;
 		}
-		else
-			throw new NoContentException("");		
+		else {
+			throw new NoContentException("No asset assign history found for the employee ");		
+		}
 	}
 }

@@ -42,8 +42,7 @@ public class UserServiceImpl implements UserService {
 		try {
 			return userrepo.findById(uid).get();
 		}
-		catch(Exception e)
-		{
+		catch(Exception e) {
 			return null;
 		}
 	}
