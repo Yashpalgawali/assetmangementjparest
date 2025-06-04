@@ -9,6 +9,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -25,13 +27,16 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+
 public class Department {
 
 	@Id
 	@SequenceGenerator(name = "dept_seq", allocationSize = 1, initialValue = 1)
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "dept_seq")
 	Long dept_id;
-
+	
+	@NotEmpty(message = "Department Name cannot be Empty")
+	@Size(min = 2,max = 100 ,message = "Department name should have at least 2 characters")
 	String dept_name;
 
 	@ToString.Exclude

@@ -2,8 +2,11 @@ package com.example.demo.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +21,7 @@ import com.example.demo.service.DepartmentService;
 
 @RestController
 @RequestMapping("department")
+@Validated
 public class DepartmentController {
 
 	private final DepartmentService deptserv;
@@ -37,7 +41,7 @@ public class DepartmentController {
 	 * 
 	 * @ApiResponse(message = "Department is not saved ", code = 500 ) })
 	 */
-	public ResponseEntity<ResponseDto> saveDepartment(@RequestBody Department dept) {
+	public ResponseEntity<ResponseDto> saveDepartment(@Valid @RequestBody Department dept) {
 		
 		Department depart = deptserv.saveDepartment(dept);
 		if(depart!=null) {
@@ -96,7 +100,7 @@ public class DepartmentController {
 	 * 
 	 * @ApiResponse(message = "Department is Not Updated ", code = 304 ) })
 	 */
-	public ResponseEntity<ResponseDto> updateDepartment(@RequestBody Department dept)
+	public ResponseEntity<ResponseDto> updateDepartment(@Valid @RequestBody Department dept)
 	{
 		int result = deptserv.updateDepartment(dept);
 		if(result > 0 ){

@@ -32,7 +32,8 @@ public class Company {
 	Long comp_id;
 
 	@NotEmpty(message = "Company Name cannot be empty")
-	@Size(max = 100, min=2,message = "The length of the company should be between 2 and 100")
+	@NotNull(message = "Company name cant be NULL")
+	@Size(max = 100, min=2,message = "The Length of the Company Name should be between 2 and 100")
 	String comp_name;
 
 	public Company(String comp_name) {
