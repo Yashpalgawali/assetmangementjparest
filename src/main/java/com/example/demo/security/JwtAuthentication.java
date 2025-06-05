@@ -51,7 +51,18 @@ public class JwtAuthentication {
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.httpBasic(basic->{});
-		http.authorizeHttpRequests(auth ->{
+		http.authorizeHttpRequests(auth -> {
+			auth.antMatchers("/v3/api-docs/**",
+					"/v3/api-docs/**",
+	                "/swagger-ui.html",
+	                "/swagger-ui/**").permitAll();
+//			.antMatchers(
+//                    "/v3/api-docs/**",
+//                    "/swagger-ui/**",
+//                    "/swagger-ui.html",
+//                    "/swagger-resources/**",
+//                    "/webjars/**"
+//                ).permitAll()
 			auth.anyRequest().authenticated();
 		});
 		//http.formLogin();

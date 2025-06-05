@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -15,13 +16,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dto.ErrorResponseDto;
 import com.example.demo.dto.ResponseDto;
 import com.example.demo.models.Company;
 import com.example.demo.service.CompanyService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("company")
 @Validated
+@Tag(name = "Company",description = "Company Manangement API")
 public class CompanyController {
 
 	private final CompanyService compserv;
@@ -31,17 +39,14 @@ public class CompanyController {
 		this.compserv = compserv;
 	}
 
-//	@ApiOperation(summary=" Save company" , description = "This End Point is used to save the Company")
-//	@ApiResponses(value = 
-//				@ApiResponse(responseCode = "200" ,description = "Company is saved successfully" )		
-//			)
-//	@ApiOperation(value = "This End Point is used to save the Company")
-//	@ApiResponses(value = 
-//				{
-//					@ApiResponse(message = "Company is saved Successfully", code = 200 ) ,
-//					@ApiResponse(message = "Company is NOT saved ", code = 500 ) 
-//				})
+ 
 	@PostMapping("/")
+	@ApiResponses(value = 
+				{
+ 					@ApiResponse(description = "Company is saved Successfully", responseCode = "200" ) ,
+					@ApiResponse(description = "Company is NOT saved ", responseCode = "500" ) 
+				})
+	@Operation(summary = "Save Company",description = "This End Point is used to save the Company")
 	public ResponseEntity<ResponseDto> saveCompany(@Valid @RequestBody Company company)
 	{
 		Company comp = compserv.saveCompany(company);
@@ -58,38 +63,45 @@ public class CompanyController {
 	}
 
 	@GetMapping("/") 	
-//	@ApiOperation(value = "This End Point is used to get all companies list")
-//	@ApiResponses(value = 
-//				{
-//					@ApiResponse(message = "Company List is found", code = 200 ) ,
-//					@ApiResponse(message = "No Companies found ", code = 500 ) 
-//				})
+	@Operation(summary="Get List of Companies", description = "This End Point is used to get all companies list")
+	@ApiResponses(value = 
+						{
+							@ApiResponse(description = "Company is saved Successfully", responseCode = "200" ) ,
+							@ApiResponse(description = "Company is NOT saved ", responseCode = "500" ) 
+						})
 	public ResponseEntity<List<Company>> viewCompanies() {
 			List<Company> clist = compserv.getAllCompanies();
-			return new ResponseEntity<List<Company>>(clist,HttpStatus.OK) ;			 
+			if(clist.size() > 0)
+			{
+				return new ResponseEntity<List<Company>>(clist,HttpStatus.OK) ;			 
+			}
+			else {
+				return ResponseEntity.notFound().build();
+			}
 	}
 	
 	@GetMapping("/{id}")
-//	@ApiOperation(value = "This End Point is used to get the company by company ID")
-//	@ApiResponses(value = 
-//				{
-//					@ApiResponse(message = "Company is found", code = 200 ) ,
-//					@ApiResponse(message = "Company is NOT found ", code = 500 ) 
-//				})
+	@Operation(summary ="Retrieve Company", description = "This End point is used to retrieve the Company Details")
+	@ApiResponses(value = 
+				{
+					@ApiResponse(description = "Company is found ", responseCode = "200" ) ,
+					@ApiResponse(description = "Company is NOT found", responseCode = "404" ) 
+				})
 	public ResponseEntity<Company> editCompany(@PathVariable("id") Long cid) {
 		Company comp = compserv.getCompanyById(cid);
 		return new ResponseEntity<Company>(comp,HttpStatus.OK);
 	}
 	
 	@PutMapping("/")
-//	@ApiOperation(value = "This End point is used to Update the Company")
-//	@ApiResponses(value = 
-//				{
-//					@ApiResponse(message = "Company is Updated successfully", code = 200 ) ,
-//					@ApiResponse(message = "Company is NOT updated ", code = 304 ) 
-//				})
-	public ResponseEntity<ResponseDto> updateCompany(@Valid @RequestBody Company comp) {
-		int res = compserv.updateCompany(comp);
+	@Operation(summary ="Update Company", description = "This End point is used to Update the Company")
+	@ApiResponses(value = 
+				{
+					@ApiResponse(description = "Company is Updated successfully", responseCode = "200" ) ,
+					@ApiResponse(description = "Company is NOT Updated ", responseCode = "304" ) 
+				})
+	public ResponseEntity<?> updateCompany(@Valid @RequestBody Company comp) {
+//		int res = compserv.updateCompany(comp);
+		int res = 0;
 		if (res > 0){
 		    return ResponseEntity
                     .status(HttpStatus.OK)
@@ -97,8 +109,8 @@ public class CompanyController {
 		}
 		else{
             return ResponseEntity
-                    .status(HttpStatus.NOT_MODIFIED)
-                    .body(new ResponseDto(HttpStatus.NOT_MODIFIED.toString() , "Company "+comp.getComp_name()+" is not updated "));
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ErrorResponseDto("",HttpStatus.INTERNAL_SERVER_ERROR , "Company "+comp.getComp_name()+" is not updated ",LocalDateTime.now()));
         }
 	}
 }

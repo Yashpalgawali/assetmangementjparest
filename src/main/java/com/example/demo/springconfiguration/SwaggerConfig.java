@@ -1,30 +1,28 @@
 package com.example.demo.springconfiguration;
 
+import org.springdoc.core.GroupedOpenApi;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
 
 @Configuration
-//@EnableSwagger2
-public class SwaggerConfig  {
-	
+public class SwaggerConfig {
+
 	@Value("${spring.application.name}")
 	private String applicationName;
-	
-//	@Bean
-//    Docket swaggerApi() {
-//        return new Docket(DocumentationType.SWAGGER_2)
-//                .select()
-//                .apis(RequestHandlerSelectors.any()) // You can narrow this to a specific package
-//                .paths(PathSelectors.any())
-//                .build()
-//                .pathMapping("/");
-//    }
-	
-//	@Bean
-//    OpenAPI customOpenAPI(@Value("${spring.application.name}") String applicationName ) {
-//     return new OpenAPI()
-//          .info(new Info()
-//          .title("sample application API"));
-//    }
+
+	@Bean
+	OpenAPI apiInfo() {
+		return new OpenAPI().info(new Info().title("Asset Management").description("This is the detailed API documentation of the Asset Management Application").version("v1.0").summary("This documentation emphasized on the detailed working of different End Points"));
+	}
+
+	@Bean
+	GroupedOpenApi publicApi() {
+		return GroupedOpenApi.builder().group("v1").packagesToScan("com.example.demo") // change to your package
+				.build();
+	}
+
 }
