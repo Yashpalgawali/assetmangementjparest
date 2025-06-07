@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -79,35 +80,35 @@ public class CompanyController {
 				return ResponseEntity.notFound().build();
 			}
 	}
-	
+
 	@GetMapping("/{id}")
 	@Operation(summary ="Retrieve Company", description = "This End point is used to retrieve the Company Details")
 	@ApiResponses(value = 
 				{
-					@ApiResponse(description = "Company is found ", responseCode = "200" ) ,
+					@ApiResponse(description = "Company is found ", responseCode = "200" ),
 					@ApiResponse(description = "Company is NOT found", responseCode = "404" ) 
 				})
 	public ResponseEntity<Company> editCompany(@PathVariable("id") Long cid) {
 		Company comp = compserv.getCompanyById(cid);
 		return new ResponseEntity<Company>(comp,HttpStatus.OK);
 	}
-	
+
 	@PutMapping("/")
 	@Operation(summary ="Update Company", description = "This End point is used to Update the Company")
 	@ApiResponses(value = 
 				{
-					@ApiResponse(description = "Company is Updated successfully", responseCode = "200" ) ,
+					@ApiResponse(description = "Company is Updated Successfully", responseCode = "200" ),
 					@ApiResponse(description = "Company is NOT Updated ", responseCode = "304" ) 
 				})
 	public ResponseEntity<?> updateCompany(@Valid @RequestBody Company comp) {
-//		int res = compserv.updateCompany(comp);
-		int res = 0;
-		if (res > 0){
+		int res = compserv.updateCompany(comp);
+
+		if (res > 0) {
 		    return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(new ResponseDto(HttpStatus.OK.toString(), "Company "+comp.getComp_name()+" updated successfully"));
 		}
-		else{
+		else {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ErrorResponseDto("",HttpStatus.INTERNAL_SERVER_ERROR , "Company "+comp.getComp_name()+" is not updated ",LocalDateTime.now()));
