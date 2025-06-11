@@ -14,11 +14,11 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
@@ -97,19 +97,24 @@ public class JwtAuthentication {
 		return http.build();
 	}
 	
-	@Autowired
-	public void configAuthentication(AuthenticationManagerBuilder authBuilder) throws Exception {
-		authBuilder.jdbcAuthentication()
-		.dataSource(dataSource)
-		
-		//Following will select the username from database depending on the username from Login form
-		.usersByUsernameQuery("SELECT username,password,enabled FROM tbl_users WHERE username=? ")
-		
-		//Following will select the authority(s) depending on the username
-		.authoritiesByUsernameQuery("SELECT username,role FROM tbl_users WHERE username=?")
-		
-		.passwordEncoder(new BCryptPasswordEncoder());
+	@Bean
+	AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+	    return config.getAuthenticationManager();
 	}
+	
+//	@Autowired
+//	public void configAuthentication(AuthenticationManagerBuilder authBuilder) throws Exception {
+//		authBuilder.jdbcAuthentication()
+//		.dataSource(dataSource)
+//		
+//		//Following will select the username from database depending on the username from Login form
+//		.usersByUsernameQuery("SELECT username,password,enabled FROM tbl_users WHERE username=? ")
+//		
+//		//Following will select the authority(s) depending on the username
+//		.authoritiesByUsernameQuery("SELECT username,role FROM tbl_users WHERE username=?")
+//		
+//		.passwordEncoder(new BCryptPasswordEncoder());
+//	}
 	
 	@Bean
 	KeyPair keyPair() {

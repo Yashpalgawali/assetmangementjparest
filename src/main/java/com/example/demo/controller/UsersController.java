@@ -2,10 +2,17 @@ package com.example.demo.controller;
 //
 //import javax.servlet.http.HttpSession;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -93,4 +100,21 @@ public class UsersController {
 			return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
 	}
 	
+	// This endpoint will return the username, id and scope of Logged in User to the Frontend
+	@GetMapping("/userinfo")
+	public Map<String, Object> getUserInfo(@AuthenticationPrincipal Jwt jwt) {
+	    String username = jwt.getSubject();               // From `subject` claim
+	    Long userId = jwt.getClaim("userId");             // From custom claim you added
+	    String scope = jwt.getClaim("scope");             // e.g., "ROLE_USER ROLE_ADMIN"
+
+	    // Split scope string into a list of roles 
+	    List<String> roles = Arrays.asList(scope.split(" "));
+
+	    Map<String, Object> userDetails = new HashMap<>();
+	    userDetails.put("username", username);
+	    userDetails.put("userId", userId);
+	    userDetails.put("roles", roles);
+
+	    return userDetails;
+	}
 }
