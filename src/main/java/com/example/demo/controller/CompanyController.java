@@ -5,6 +5,9 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +43,8 @@ public class CompanyController {
 		this.compserv = compserv;
 	}
 
- 
+	private Logger logger = LoggerFactory.getLogger(getClass());
+	
 	@PostMapping("/")
 	@ApiResponses(value = 
 				{
@@ -48,6 +52,7 @@ public class CompanyController {
 					@ApiResponse(description = "Company is NOT saved ", responseCode = "500" ) 
 				})
 	@Operation(summary = "Save Company",description = "This End Point is used to save the Company")
+	@CacheEvict(allEntries = true,value = "companylist")
 	public ResponseEntity<ResponseDto> saveCompany(@Valid @RequestBody Company company)
 	{
 		Company comp = compserv.saveCompany(company);
@@ -70,10 +75,11 @@ public class CompanyController {
 							@ApiResponse(description = "Company is saved Successfully", responseCode = "200" ) ,
 							@ApiResponse(description = "Company is NOT saved ", responseCode = "500" ) 
 						})
+	@Cacheable("companylist")
 	public ResponseEntity<List<Company>> viewCompanies() {
 			List<Company> clist = compserv.getAllCompanies();
-			if(clist.size() > 0)
-			{
+			logger.info("Company list is {} ",clist);
+			if(clist.size() > 0) {
 				return new ResponseEntity<List<Company>>(clist,HttpStatus.OK) ;			 
 			}
 			else {
@@ -92,7 +98,7 @@ public class CompanyController {
 		Company comp = compserv.getCompanyById(cid);
 		return new ResponseEntity<Company>(comp,HttpStatus.OK);
 	}
-
+ 
 	@PutMapping("/")
 	@Operation(summary ="Update Company", description = "This End point is used to Update the Company")
 	@ApiResponses(value = 
@@ -100,6 +106,7 @@ public class CompanyController {
 					@ApiResponse(description = "Company is Updated Successfully", responseCode = "200" ),
 					@ApiResponse(description = "Company is NOT Updated ", responseCode = "304" ) 
 				})
+	@CacheEvict(allEntries = true,value = "companylist")
 	public ResponseEntity<?> updateCompany(@Valid @RequestBody Company comp) {
 		int res = compserv.updateCompany(comp);
 

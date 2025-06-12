@@ -14,6 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -88,6 +91,7 @@ public class EmployeeController {
 					@ApiResponse(description = "Company is saved Successfully", responseCode = "200" ) ,
 					@ApiResponse(description = "Company is NOT saved ", responseCode = "500" ) 
 				})
+	@CachePut(value = "assignedassetlist")
 	public ResponseEntity<ResponseDto> saveEmployee(@RequestBody Employee empl) {
 
 	
@@ -148,12 +152,13 @@ public class EmployeeController {
 	}
 
 	@GetMapping("/viewassignedassets")
-	@Operation(summary="View Assigned Assets", description = "This endpoint will get the all assigned assets to the employee")
+	@Operation(summary="View Assigned Assets", description = "This endpoint will get the all assigned assets to the Employee")
 	@ApiResponses(value = 
 				{
 					@ApiResponse(description = "Returns assigned Assets to the Employees ", responseCode = "200" ) ,
 					@ApiResponse(description = "No Assets are assigned to any Employee ", responseCode = "404" ) 
 				})
+	@Cacheable("assignedassetlist")
 	public ResponseEntity<List<AssignedAssets>> viewAllAssignedAssets() {
 		List<AssignedAssets> alist = new ArrayList<AssignedAssets>();
 		List<Object[]> aslist = assignserv.getAllAssignedassetsGroup();
@@ -204,6 +209,7 @@ public class EmployeeController {
 				asts.setEmployee(emp);
 				alist.add(asts);
 			});
+			logger.info("Assigned Assets List {} ",alist);
 			return new ResponseEntity<List<AssignedAssets>>(alist, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<List<AssignedAssets>>(HttpStatus.NOT_FOUND);
@@ -217,6 +223,7 @@ public class EmployeeController {
 					@ApiResponse(description = "Employee List is found", responseCode =  "200" ) ,
 					@ApiResponse(description = "No Employees are found ", responseCode = "404" ) 
 				})
+//	@Cacheable("emplist")
 	public ResponseEntity<List<Employee>> viewAllEmployees() {
 		List<Employee> elist = empserv.getAllEmployees();
 		return new ResponseEntity<List<Employee>>(elist, HttpStatus.OK);
@@ -267,14 +274,15 @@ public class EmployeeController {
 	}
 
 	@PostMapping("/delete")
-	@Operation(description = "This endpoint will UPDATE the assets by employee id",summary ="This will retrieve the Assigned Assets ")
+	@Operation(description = "This endpoint will UPDATE the Assets by Employee ID",summary ="This will retrieve the Assigned Assets ")
 	@ApiResponses(value = 
 				{
 					@ApiResponse(description = "Assets are Retrieved from Employee ", responseCode = "200" ) ,
 					@ApiResponse(description = "No Assets are Retrieved from the Employee", responseCode = "304" ) 
 				})
+	@CachePut(value = "assignedassetlist")
 	public ResponseEntity<String> updateRetrieveAssets(@RequestBody Employee emp) {
-		logger.info("Employee ius {} ",emp);
+//		logger.info("Employee is {} ",emp);
 		int res = assignserv.retrieveAssetByEmpId(emp);
 		if (res > 0)
 			return new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
@@ -329,7 +337,7 @@ public class EmployeeController {
 			}
 			emp.setAssigned_assets(assigned_assets);
 			emp.setAssigned_asset_types(assigned_asset_type);
-			logger.info("Emloyee OBJ {} ",emp);
+			
 			return new ResponseEntity<Employee>(emp, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<Employee>(HttpStatus.NOT_FOUND);
@@ -337,12 +345,13 @@ public class EmployeeController {
 	}
 
 	@PutMapping("/")
-	@Operation(description = "This endpoint will update the employee details and the assigned assets ", summary = "Update Assets of the Employee")
+	@Operation(description = "This endpoint will update the Employee details and the assigned assets ", summary = "Update Assets of the Employee")
 	@ApiResponses(value = 
 				{
 					@ApiResponse(description = "Employee updated Successfully ", responseCode = "200" ) ,
 					@ApiResponse(description = "Employee is not Updated", responseCode = "304" ) 
-				})	
+				})
+	@CacheEvict(value = "assignedassetlist",allEntries = true)
 	public ResponseEntity<Employee> updateAssignedAssets(@RequestBody Employee emp) {
 		logger.info("Updated assigned assets are {} ", emp);
 
@@ -406,11 +415,10 @@ public class EmployeeController {
 				comp.setComp_id(Long.valueOf(ast[14].toString()));
 				comp.setComp_name(ast[15].toString());
 
-				String mod_num = "";
-
-				mod_num = Stream.of(ast[16].toString().split(",")).collect(Collectors.toList()).toString()
-						.replace("[", "").replace("]", "");
-				mod_num = mod_num.replace("[", "").replace("]", "");
+				String mod_num = Stream.of(ast[16].toString().split(","))
+								.collect(Collectors.toList()).toString()
+								.replace("[", "").replace("]", "");
+				//mod_num = mod_num.replace("[", "").replace("]", "");
 
 				asts.setModel_numbers(mod_num);
 				dept.setCompany(comp);

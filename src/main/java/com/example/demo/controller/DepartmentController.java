@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -43,7 +45,7 @@ public class DepartmentController {
 	@ApiResponses(value = {
 	  @ApiResponse(description = "Department is saved successfully ",  responseCode = "200") ,
 	  @ApiResponse(description = "Department is not saved ", responseCode = "500")  })
-	 
+	@CacheEvict(value = "departmentlist" , allEntries = true)
 	public ResponseEntity<ResponseDto> saveDepartment(@Valid @RequestBody Department dept) {
 
 		Department depart = deptserv.saveDepartment(dept);
@@ -62,6 +64,7 @@ public class DepartmentController {
 	@ApiResponses(value = {
 			@ApiResponse(description = "Department List is fetched successfully ", responseCode = "200"),
 			@ApiResponse(description = "No Departments are found", responseCode = "404") })
+	@Cacheable("departmentlist")
 	public ResponseEntity<List<Department>> viewAllDepartments() {
 		List<Department> dlist = deptserv.getAllDepartments();
 		if (dlist.size() > 0) {
@@ -88,6 +91,7 @@ public class DepartmentController {
 	@Operation(description = "This End Point is used to Update the Department", summary = "Update Department")
 	@ApiResponses(value = { @ApiResponse(description = "Department is Updated successfully ", responseCode = "200"),
 			@ApiResponse(description = "Department is Not Updated ", responseCode = "404") })
+	@CacheEvict(value = "departmentlist" , allEntries = true)
 	public ResponseEntity<ResponseDto> updateDepartment(@Valid @RequestBody Department dept) {
 		int result = deptserv.updateDepartment(dept);
 		if (result > 0) {
