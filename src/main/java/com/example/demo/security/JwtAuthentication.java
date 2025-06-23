@@ -45,8 +45,8 @@ import com.nimbusds.jose.proc.SecurityContext;
 
 @Configuration
 public class JwtAuthentication {
-	@Autowired
-    private DataSource dataSource;
+//	@Autowired
+//    private DataSource dataSource;
 	
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -63,11 +63,13 @@ public class JwtAuthentication {
 //                    "/swagger-resources/**",
 //                    "/webjars/**"
 //                ).permitAll()
+			auth.antMatchers("/users/**").permitAll();
 			auth.anyRequest().authenticated();
 		});
 		//http.formLogin();
 
-		http.sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
+		//http.sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
+		http.sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 		 
 	 	http.csrf(csrf-> csrf.disable());
 	 	http.cors(cors->{

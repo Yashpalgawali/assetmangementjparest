@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public int updateUsersPassword(String pass, Long id) {
 	
-		return userrepo.updateUsersPassword(pass,id);
+		return userrepo.updateUsersPassword(new BCryptPasswordEncoder().encode(pass) ,id);
 		//return userrepo.updateUsersPassword(new BCryptPasswordEncoder().encode(pass), id);
 	}
 

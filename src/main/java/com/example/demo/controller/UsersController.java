@@ -48,7 +48,7 @@ public class UsersController {
 	} 
 	
 	@GetMapping("/{uname}")
-	public ResponseEntity<Users> getUserByUserName(@PathVariable("uname") String uname)
+	public ResponseEntity<Users> getUserByUserName(@PathVariable String uname)
 	{
 		Users user = userserv.getUserByUserName(uname);
 		if(user!=null) {
