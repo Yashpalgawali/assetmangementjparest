@@ -3,6 +3,8 @@ package com.example.demo.service;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -64,27 +66,35 @@ public class AssignedAssetServImpl implements AssignedAssetService {
 
 	@Override
 	public List<AssignedAssets> getAssignedAssetsByEmpId(Long empid) {
-		return assignassetrepo.getAllAssignedAssetsByEmpId(empid);
+		List<AssignedAssets> astlist = assignassetrepo.getAllAssignedAssetsByEmpId(empid);
+		return astlist;
+		
 	}
 
 	@Override
 	public int retrieveAssetByEmpId(Employee employee) {
+	 
 		Long eid = employee.getEmp_id();
 		List<AssignedAssets> ass_list = assignassetrepo.getAllAssignedAssetsByEmpId(eid);
 
 		String asts = "";
+		
+//		asts = ass_list.stream().map(assets -> ""+assets.getAsset().getAsset_id()).filter(Objects::nonNull).collect(Collectors.joining(","));
+		
 		int res = 0;
 		if (ass_list.size() > 0) {
-			for (int i = 0; i < ass_list.size(); i++) {
-				if (i == 0) {
-					asts = "" + ass_list.get(i).getAsset().getAsset_id();
-				} else {
-					asts = asts + "," + ass_list.get(i).getAsset().getAsset_id();
-				}
-			}
+			
+//			for (int i = 0; i < ass_list.size(); i++) {
+//				if (i == 0) {
+//					asts = "" + ass_list.get(i).getAsset().getAsset_id();
+//				} else {
+//					asts = asts + "," + ass_list.get(i).getAsset().getAsset_id();
+//				}
+//			}
 
 			// String asset_ids = assign.getMulti_assets();
-			String asset_ids = asts;
+//			String asset_ids = asts;
+			String asset_ids = ass_list.stream().map(assets -> ""+assets.getAsset().getAsset_id()).filter(Objects::nonNull).collect(Collectors.joining(","));
 			String[] strarr = asset_ids.split(",");
 
 			for (int i = 0; i < strarr.length; i++) {
@@ -95,6 +105,7 @@ public class AssignedAssetServImpl implements AssignedAssetService {
 				Employee emp = emprepo.getEmployeeById(eid).get();
 
 				res = assignassetrepo.deleteAssignedAssetByEmpidAssetId(asid, eid);
+//				System.err.println("After deleting the result is ");
 				int asset_qty = assetrepo.getQuantiyByAssetId(asid);
 				asset_qty += 1;
 				assetrepo.updateAssetQuantityByAssetId(asid, "" + asset_qty);
@@ -122,7 +133,7 @@ public class AssignedAssetServImpl implements AssignedAssetService {
 			}
 			return res;
 		} else {
-			return res;
+			throw new ResourceNotFoundException("No Assets are assigned to "+employee.getEmp_name());
 		}
 	}
 
@@ -139,7 +150,7 @@ public class AssignedAssetServImpl implements AssignedAssetService {
 	@Override
 	public List<AssignedAssets> getOnlyAssignedAssetsByEmpId(Long empid) {
 		List<AssignedAssets> assignedList = assignassetrepo.getOnlyAssignedAssetsByEmpId(empid);
-		
+	
 		if (assignedList.size() > 0) {
 			return assignedList;
 		} else {

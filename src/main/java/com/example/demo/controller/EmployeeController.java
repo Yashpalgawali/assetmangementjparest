@@ -23,6 +23,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -252,11 +253,8 @@ public class EmployeeController {
 				})
 	public ResponseEntity<List<AssignedAssets>> retrieveAssets(@PathVariable Long id) {
 		List<AssignedAssets> assign = assignserv.getAssignedAssetsByEmpId(id);
-		if (assign.size() > 0) {
-			return new ResponseEntity<List<AssignedAssets>>(assign, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<List<AssignedAssets>>(HttpStatus.NOT_FOUND);
-		}
+		return new ResponseEntity<List<AssignedAssets>>(assign, HttpStatus.OK);
+		 
 	}
 
 	@GetMapping("/getassignedassetsbyempid/{id}")
@@ -280,7 +278,7 @@ public class EmployeeController {
 					@ApiResponse(description = "Assets are Retrieved from Employee ", responseCode = "200" ) ,
 					@ApiResponse(description = "No Assets are Retrieved from the Employee", responseCode = "304" ) 
 				})
-	@CachePut(value = "assignedassetlist")
+	@CacheEvict(value = "assignedassetlist",allEntries = true)
 	public ResponseEntity<String> updateRetrieveAssets(@RequestBody Employee emp) {
 //		logger.info("Employee is {} ",emp);
 		int res = assignserv.retrieveAssetByEmpId(emp);
@@ -316,25 +314,28 @@ public class EmployeeController {
 				})
 	public ResponseEntity<Employee> editEmployeeByEmpId(@PathVariable("id") Long empid) {
 		Employee emp = empserv.getEmployeeById(empid);
-
+		String assigned_assets = "", assigned_asset_type = "";
 		if (emp != null) {
 			List<AssignedAssets> aslist = assignserv.getAssignedAssetsByEmpId(empid);
-			String assigned_assets = "", assigned_asset_type = "";
-			Long[] strArray = new Long[aslist.size()];
-			for (int i = 0; i < aslist.size(); i++) {
-				if (i == 0) {
-					assigned_assets = assigned_assets + aslist.get(i).getAsset().getAsset_name() + "("
-							+ aslist.get(i).getAsset().getModel_number() + ")";
-					assigned_asset_type = assigned_asset_type + aslist.get(i).getAsset().getAtype().getType_name();
-					strArray[i] = aslist.get(i).getAsset().getAsset_id();
-				} else {
-					assigned_assets = assigned_assets + "," + aslist.get(i).getAsset().getAsset_name() + "("
-							+ aslist.get(i).getAsset().getModel_number() + ")";
-					assigned_asset_type = assigned_asset_type + ","
-							+ aslist.get(i).getAsset().getAtype().getType_name();
-					strArray[i] = aslist.get(i).getAsset().getAsset_id();
+			if(aslist.size() >0) {
+				
+				Long[] strArray = new Long[aslist.size()];
+				for (int i = 0; i < aslist.size(); i++) {
+					if (i == 0) {
+						assigned_assets = assigned_assets + aslist.get(i).getAsset().getAsset_name() + "("
+								+ aslist.get(i).getAsset().getModel_number() + ")";
+						assigned_asset_type = assigned_asset_type + aslist.get(i).getAsset().getAtype().getType_name();
+						strArray[i] = aslist.get(i).getAsset().getAsset_id();
+					} else {
+						assigned_assets = assigned_assets + "," + aslist.get(i).getAsset().getAsset_name() + "("
+								+ aslist.get(i).getAsset().getModel_number() + ")";
+						assigned_asset_type = assigned_asset_type + ","
+								+ aslist.get(i).getAsset().getAtype().getType_name();
+						strArray[i] = aslist.get(i).getAsset().getAsset_id();
+					}
 				}
 			}
+			
 			emp.setAssigned_assets(assigned_assets);
 			emp.setAssigned_asset_types(assigned_asset_type);
 			
