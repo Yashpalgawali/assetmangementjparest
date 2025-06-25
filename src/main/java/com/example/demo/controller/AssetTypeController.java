@@ -35,14 +35,9 @@ public class AssetTypeController {
 //	@ApiOperation("This will save the Asset Type")
 	public ResponseEntity<ResponseDto> saveAssetType(@RequestBody AssetType atype)
 	{
-		AssetType type = atypeserv.saveAssetType(atype);
-		if(type!=null)
-		{
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.toString(), "Asset type "+atype.getType_name()+" is saved successfully "));		 
-		}
-		else {
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.toString(), "Asset type "+atype.getType_name()+" is not saved "));
-		}
+		AssetType type = atypeserv.saveAssetType(atype);		 
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.toString(), "Asset type "+atype.getType_name()+" is saved successfully "));		 
+		 
 	}
 	
 	@GetMapping("/")
@@ -63,15 +58,11 @@ public class AssetTypeController {
 	
 	@PutMapping("/")
 //	@ApiOperation("This will Update the Asset Type")
-	public ResponseEntity<ResponseDto> updateAssetType(@RequestBody AssetType atype) throws ResourceNotModifiedException
+	public ResponseEntity<ResponseDto> updateAssetType(@RequestBody AssetType atype)
 	{
 		int result = atypeserv.updateAssetType(atype);
-		if(result>0) {
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.toString(), "Asset type "+atype.getType_name()+" is updated successfully "));
-		}
-		else {
-			return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(new ResponseDto(HttpStatus.NOT_MODIFIED.toString(), "Asset type "+atype.getType_name()+" is not updated"));
-		}
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.toString(), "Asset type "+atype.getType_name()+" is updated successfully "));
+		
 	}
 
 }

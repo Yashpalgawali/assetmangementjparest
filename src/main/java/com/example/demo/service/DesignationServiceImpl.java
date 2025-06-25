@@ -7,8 +7,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.exceptions.GlobalException;
 import com.example.demo.exceptions.NoContentException;
 import com.example.demo.exceptions.ResourceNotFoundException;
+import com.example.demo.exceptions.ResourceNotModifiedException;
 import com.example.demo.models.Activity;
 import com.example.demo.models.Designation;
 import com.example.demo.repository.ActivityRepo;
@@ -47,12 +49,13 @@ public class DesignationServiceImpl implements DesignationService {
 			activity.setOperation_date(tday.format(LocalDateTime.now()));
 			activity.setOperation_time(ttime.format(LocalDateTime.now()));
 			activityrepo.save(activity);
-			return des;
+			
+			throw new GlobalException("Designation "+desig.getDesig_name()+" is not saved");
 		}
 	}
 
 	@Override
-	public List<Designation> getAllDesignations() throws NoContentException {
+	public List<Designation> getAllDesignations() {
 		var desigList = desigrepo.findAll();
 		if(desigList.size()>0) {
 			return desigList;
@@ -72,6 +75,7 @@ public class DesignationServiceImpl implements DesignationService {
 	@Override
 	public int updateDesignation(Designation desig) {
 		int res = desigrepo.updateDesignation(desig.getDesig_id(), desig.getDesig_name());
+
 		if (res > 0) {
 			activity = new Activity();
 			activity.setActivity(desig.getDesig_name() + " is updated successfully");
@@ -85,7 +89,9 @@ public class DesignationServiceImpl implements DesignationService {
 			activity.setOperation_date(tday.format(LocalDateTime.now()));
 			activity.setOperation_time(ttime.format(LocalDateTime.now()));
 			activityrepo.save(activity);
-			return res;
+
+			throw new ResourceNotModifiedException("Designation "+desig.getDesig_name()+" is not Updated");
+			
 		}
 	}
 

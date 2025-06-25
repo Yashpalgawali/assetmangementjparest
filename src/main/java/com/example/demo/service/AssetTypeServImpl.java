@@ -3,6 +3,7 @@ package com.example.demo.service;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.exceptions.GlobalException;
 import com.example.demo.exceptions.NoContentException;
 import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.exceptions.ResourceNotModifiedException;
@@ -21,7 +22,14 @@ public class AssetTypeServImpl implements AssetTypeService {
 
 	@Override
 	public AssetType saveAssetType(AssetType atype) {
-		return atyperepo.save(atype);
+		AssetType assettype = atyperepo.save(atype);
+		 
+		if(assettype != null) {
+			return assettype;
+		}
+		else {
+			throw new GlobalException("Asset Type "+atype.getType_name()+" is not saved");
+		}
 	}
 
 	@Override
@@ -35,17 +43,18 @@ public class AssetTypeServImpl implements AssetTypeService {
 
 	@Override
 	public AssetType getAssetTypeById(Long id) {
-		AssetType atype = atyperepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("No Asset Type found for given ID "+id));
-		return atype;
+		return atyperepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("No Asset Type found for given ID "+id));
+		
 	}
 
 	@Override
-	public int updateAssetType(AssetType atype) throws ResourceNotModifiedException {
+	public int updateAssetType(AssetType atype)  {
 		var result = atyperepo.updateAssetType(atype.getType_id(), atype.getType_name());
+		
 		if(result > 0)
 			return result;
 		else 
-			throw new ResourceNotModifiedException(atype.getType_name()+" is not updated");
+			throw new ResourceNotModifiedException("returned "+ atype.getType_name()+" is not updated");
 	}
 
 }

@@ -6,7 +6,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.example.demo.exceptions.GlobalException;
 import com.example.demo.exceptions.ResourceNotFoundException;
+import com.example.demo.exceptions.ResourceNotModifiedException;
 import com.example.demo.models.Activity;
 import com.example.demo.models.Assets;
 import com.example.demo.repository.ActivityRepo;
@@ -48,7 +50,8 @@ public class AssetServImpl implements AssetService {
 			activity.setOperation_date(tday.format(LocalDateTime.now()));
 			activity.setOperation_time(ttime.format(LocalDateTime.now()));
 			activityrepo.save(activity);
-			return ast;
+
+			throw new GlobalException("Asset "+asset.getAsset_name()+" is not saved");
 		 }
 	}
 
@@ -64,7 +67,8 @@ public class AssetServImpl implements AssetService {
 
 	@Override
 	public int updateAssets(Assets asset) {
-		int res = assetrepo.updateAsset(asset.getAsset_name(), asset.getAtype().getType_id(), asset.getAsset_number(), asset.getModel_number(), asset.getQuantity() , asset.getAsset_id());
+//		int res = assetrepo.updateAsset(asset.getAsset_name(), asset.getAtype().getType_id(), asset.getAsset_number(), asset.getModel_number(), asset.getQuantity() , asset.getAsset_id());
+		int res =0;
 		if(res>0) {
 			activity=new Activity();
 			activity.setActivity(asset.getAsset_name() +" is updated successfully");
@@ -79,7 +83,8 @@ public class AssetServImpl implements AssetService {
 			activity.setOperation_date(tday.format(LocalDateTime.now()));
 			activity.setOperation_time(ttime.format(LocalDateTime.now()));
 			activityrepo.save(activity);
-			return res;
+			 
+			throw new ResourceNotModifiedException("Asset "+asset.getAsset_name()+" is not Updated");
 		}
 	}
 

@@ -6,7 +6,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.example.demo.exceptions.GlobalException;
 import com.example.demo.exceptions.ResourceNotFoundException;
+import com.example.demo.exceptions.ResourceNotModifiedException;
 import com.example.demo.models.Activity;
 import com.example.demo.models.Company;
 import com.example.demo.repository.ActivityRepo;
@@ -32,9 +34,10 @@ public class CompanyServImpl implements CompanyService {
 	public Company saveCompany(Company comp) {
 
 		Company company = comprepo.save(comp);
+		
 		if (company != null) {
 			Activity activity = new Activity();
-			activity.setActivity(comp.getComp_name() + " is saved successfully");
+			activity.setActivity(company.getComp_name() + " is saved successfully");
 			activity.setOperation_date(tday.format(LocalDateTime.now()));
 			activity.setOperation_time(ttime.format(LocalDateTime.now()));
 			activityrepo.save(activity);
@@ -45,7 +48,8 @@ public class CompanyServImpl implements CompanyService {
 			activity.setOperation_date(tday.format(LocalDateTime.now()));
 			activity.setOperation_time(ttime.format(LocalDateTime.now()));
 			activityrepo.save(activity);
-			return company;
+			 
+			throw new GlobalException("Company "+comp.getComp_name()+" is not saved ");
 		}
 	}
 
@@ -61,29 +65,33 @@ public class CompanyServImpl implements CompanyService {
 
 	@Override
 	public Company getCompanyById(Long id) {
-		Company comp = comprepo.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("No Company found for given ID " + id));
-		return comp;
+		return comprepo.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("No Company found for given ID " + id));		
 	}
 
 	@Override
 	public int updateCompany(Company comp) {
 
 		int res = comprepo.updateCompany(comp.getComp_name(), comp.getComp_id());
+		
 		if (res > 0) {
+			
 			Activity activity = new Activity();
 			activity.setActivity(comp.getComp_name() + " is updated successfully");
 			activity.setOperation_date(tday.format(LocalDateTime.now()));
 			activity.setOperation_time(ttime.format(LocalDateTime.now()));
 			activityrepo.save(activity);
+			
 			return res;
+			
 		} else {
 			Activity activity = new Activity();
 			activity.setActivity(comp.getComp_name() + " is not updated ");
 			activity.setOperation_date(tday.format(LocalDateTime.now()));
 			activity.setOperation_time(ttime.format(LocalDateTime.now()));
 			activityrepo.save(activity);
-			return res;
+			
+			throw new ResourceNotModifiedException("Company "+comp.getComp_name()+" is not updated");
 		}
 	}
 

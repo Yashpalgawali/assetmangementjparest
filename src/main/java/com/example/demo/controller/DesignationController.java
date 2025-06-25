@@ -43,12 +43,9 @@ public class DesignationController {
 				})
 	public ResponseEntity<ResponseDto> saveDesignation(@RequestBody Designation desig) throws NoContentException {
 		Designation designation = desigserv.saveDesignation(desig);
-		if(designation!=null) {
-			return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDto(HttpStatus.CREATED.toString() ,"Designtion "+desig.getDesig_name()+" is saved successfully"));
-		}
-		else {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.toString() ,"Designtion "+desig.getDesig_name()+" is not saved"));
-		}
+		 
+		return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDto(HttpStatus.CREATED.toString() ,"Designtion "+desig.getDesig_name()+" is saved successfully"));
+		
 	}
 
 	@GetMapping("/")
@@ -58,7 +55,7 @@ public class DesignationController {
 					@ApiResponse(description = "Designation is saved successfully ", responseCode = "200" ) ,
 					@ApiResponse(description = "Designation is not saved ", responseCode = "500" ) 
 				})
-	public ResponseEntity<List<Designation>> viewDesignations() throws NoContentException {
+	public ResponseEntity<List<Designation>> viewDesignations()  {
 		return new ResponseEntity<List<Designation>>(desigserv.getAllDesignations(), HttpStatus.OK);
 	}
 
@@ -81,14 +78,11 @@ public class DesignationController {
 					@ApiResponse(description = "Designation is updated successfully ", responseCode = "200" ) ,
 					@ApiResponse(description = "Designation is not updated", responseCode  = "304" ) 
 				})
-	public ResponseEntity<ResponseDto> updateDesignation(@RequestBody Designation desig)
-			throws NoContentException {
+	public ResponseEntity<ResponseDto> updateDesignation(@RequestBody Designation desig) {
 		int res = desigserv.updateDesignation(desig);
-		if (res > 0) {
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.toString(),"Designation "+desig.getDesig_name()+" is updated successfully"));
-		} else {
-			return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(new ResponseDto(HttpStatus.NOT_MODIFIED.toString(),"Designation "+desig.getDesig_name()+" is not updated successfully"));
-		}
+		
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.toString(),"Designation "+desig.getDesig_name()+" is updated successfully"));
+		
 	}
 
 }

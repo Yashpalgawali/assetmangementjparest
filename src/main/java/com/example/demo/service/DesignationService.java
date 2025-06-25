@@ -9,7 +9,7 @@ public interface DesignationService {
 
 public Designation saveDesignation(Designation dept);
 	
-	public List<Designation> getAllDesignations() throws NoContentException;
+	public List<Designation> getAllDesignations();
 	
 	public Designation getDesignationById(Long deptid);
 	

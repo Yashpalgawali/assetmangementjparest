@@ -21,11 +21,6 @@ import com.example.demo.dto.ErrorResponseDto;
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler{
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -7243509103644399166L;
-
 	@ExceptionHandler(EmployeeAlreadyExistsException.class)
 	public ResponseEntity<ErrorResponseDto> handleEmployeeAlreadyExistsException(EmployeeAlreadyExistsException exception, WebRequest request) {
 		
@@ -36,6 +31,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler{
 													LocalDateTime.now()
 				);
 		return new ResponseEntity<>(errorResponseDto, HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler(GlobalException.class)
+	public ResponseEntity<ErrorResponseDto> handleGlobalException(GlobalException exception, WebRequest request) {
+		
+		ErrorResponseDto errorResponseDto = new ErrorResponseDto(
+													request.getDescription(false),
+													HttpStatus.INTERNAL_SERVER_ERROR,
+													exception.getMessage(),
+													LocalDateTime.now()
+				);
+		return new ResponseEntity<>(errorResponseDto, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
 	@ExceptionHandler(ResourceNotFoundException.class)
@@ -50,15 +57,19 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler{
 		return new ResponseEntity<>(errorResponseDto, HttpStatus.NOT_FOUND);
 	}
 	
+	// You are returning the response with status code 304 Not Modified, but HTTP 304 is a special status used for caching/conditional GETs, and Angular's HttpClient automatically suppresses the response body for such statuses.
+	// RFC 7232: 304 Not Modified should not contain a response body. Browsers and clients follow this strictly.
+
 	@ExceptionHandler(ResourceNotModifiedException.class)
-	public ResponseEntity<ErrorResponseDto> handleResourceNotModifiedException(ResourceNotModifiedException exception , WebRequest request) {
+	public ResponseEntity<ErrorResponseDto> handleResourceNotModifiedException(ResourceNotModifiedException exception, WebRequest request) {
+		
 		ErrorResponseDto errorResponseDto = new ErrorResponseDto(
-					request.getDescription(false),
-					HttpStatus.NOT_MODIFIED,
-					exception.getMessage(),
-					LocalDateTime.now()
+													request.getDescription(false),
+													HttpStatus.CONFLICT,
+													exception.getMessage(),
+													LocalDateTime.now()
 				);
-		return new ResponseEntity<ErrorResponseDto>(errorResponseDto, HttpStatus.NOT_MODIFIED);
+		return new ResponseEntity<>(errorResponseDto, HttpStatus.CONFLICT);
 	}
 
 	@Override

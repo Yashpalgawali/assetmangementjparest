@@ -67,6 +67,7 @@ public class AssignedAssetServImpl implements AssignedAssetService {
 	@Override
 	public List<AssignedAssets> getAssignedAssetsByEmpId(Long empid) {
 		List<AssignedAssets> astlist = assignassetrepo.getAllAssignedAssetsByEmpId(empid);
+		 
 		return astlist;
 		
 	}
@@ -92,7 +93,7 @@ public class AssignedAssetServImpl implements AssignedAssetService {
 //				}
 //			}
 
-			// String asset_ids = assign.getMulti_assets();
+		 // String asset_ids = assign.getMulti_assets();
 //			String asset_ids = asts;
 			String asset_ids = ass_list.stream().map(assets -> ""+assets.getAsset().getAsset_id()).filter(Objects::nonNull).collect(Collectors.joining(","));
 			String[] strarr = asset_ids.split(",");

@@ -53,24 +53,19 @@ public class CompanyController {
 				})
 	@Operation(summary = "Save Company",description = "This End Point is used to save the Company")
 	@CacheEvict(allEntries = true,value = "companylist")
-	public ResponseEntity<ResponseDto> saveCompany(@Valid @RequestBody Company company)
+	public ResponseEntity<?> saveCompany(@Valid @RequestBody Company company)
 	{
 		Company comp = compserv.saveCompany(company);
-		if(comp!=null) {
-			 return ResponseEntity
+		
+		return ResponseEntity
 					 .status(HttpStatus.CREATED)
-					 .body(new ResponseDto(HttpStatus.CREATED.toString(), "Company "+company.getComp_name()+" is saved successully"));
-		}
-		else {
-			 return ResponseEntity
-					 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-					 .body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.toString(), "Company "+company.getComp_name()+" is not saved "));
-		}
+					 .body(new ResponseDto(HttpStatus.CREATED.toString(), "Company "+comp.getComp_name()+" is saved successully"));
+		
 	}
 
 	@GetMapping("/") 	
 	@Operation(summary="Get List of Companies", description = "This End Point is used to get all companies list")
-	@ApiResponses(value = 
+	@ApiResponses(value =
 						{
 							@ApiResponse(description = "Company is saved Successfully", responseCode = "200" ) ,
 							@ApiResponse(description = "Company is NOT saved ", responseCode = "500" ) 
@@ -78,7 +73,7 @@ public class CompanyController {
 	@Cacheable("companylist")
 	public ResponseEntity<List<Company>> viewCompanies() {
 			List<Company> clist = compserv.getAllCompanies();
-			logger.info("Company list is {} ",clist);
+			 
 			if(clist.size() > 0) {
 				return new ResponseEntity<List<Company>>(clist,HttpStatus.OK) ;			 
 			}
@@ -108,17 +103,10 @@ public class CompanyController {
 				})
 	@CacheEvict(allEntries = true,value = "companylist")
 	public ResponseEntity<?> updateCompany(@Valid @RequestBody Company comp) {
-		int res = compserv.updateCompany(comp);
+		compserv.updateCompany(comp);
+		 
+		return ResponseEntity.status(HttpStatus.OK).body(
+				new ResponseDto(HttpStatus.OK.toString(), "Company " + comp.getComp_name() + " Updated successfully"));
 
-		if (res > 0) {
-		    return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(new ResponseDto(HttpStatus.OK.toString(), "Company "+comp.getComp_name()+" updated successfully"));
-		}
-		else {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ErrorResponseDto("",HttpStatus.INTERNAL_SERVER_ERROR , "Company "+comp.getComp_name()+" is not updated ",LocalDateTime.now()));
-        }
 	}
 }

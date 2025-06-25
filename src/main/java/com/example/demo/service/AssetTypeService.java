@@ -14,6 +14,6 @@ public interface AssetTypeService {
 
 	public AssetType getAssetTypeById(Long id);
 
-	public int updateAssetType(AssetType atype) throws ResourceNotModifiedException;
+	public int updateAssetType(AssetType atype);
 
 }

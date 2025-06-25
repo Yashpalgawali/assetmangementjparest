@@ -48,12 +48,7 @@ public class AssetController {
 	public ResponseEntity<ResponseDto> saveAssets(@RequestBody Assets asset)
 	{
 		Assets ast = assetserv.saveAssets(asset);
-		if(ast != null) {
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.toString() , "Asset "+ast.getAsset_name()+" is saved successfully"));
-		}
-		else {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.toString() , "Asset "+asset.getAsset_name()+" is not saved "));
-		}
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.toString() , "Asset "+ast.getAsset_name()+" is saved successfully"));
 	}
 	
 	@GetMapping("/")
@@ -98,11 +93,7 @@ public class AssetController {
 		)
 	public ResponseEntity<?> updateAsset(@RequestBody Assets ast) {
 		int res = assetserv.updateAssets(ast);
-		if(res > 0) {
-			return  ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.toString(), "Asset "+ast.getAsset_name()+" is updated successfully"));
-		}
-		else {
-			return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(new ErrorResponseDto("",HttpStatus.NOT_MODIFIED, "Asset "+ast.getAsset_name()+" is not updated ",LocalDateTime.now()));
-		}
+		 
+		return  ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.toString(), "Asset "+ast.getAsset_name()+" is updated successfully"));
 	}
 }
