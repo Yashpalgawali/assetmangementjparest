@@ -27,7 +27,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-
+@ToString
 public class Department {
 
 	@Id
@@ -39,7 +39,7 @@ public class Department {
 	@Size(min = 2,max = 100 ,message = "Department name should have at least 2 characters")
 	String dept_name;
 
-	@ToString.Exclude
+//	@ToString.Exclude
 //	@ManyToOne(targetEntity = Company.class,cascade = {CascadeType.MERGE},fetch = FetchType.EAGER)
 	@ManyToOne(targetEntity = Company.class, cascade = { CascadeType.MERGE })
 	@JoinColumn(name = "comp_id", referencedColumnName = "comp_id")

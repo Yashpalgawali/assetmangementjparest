@@ -7,7 +7,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.example.demo.exceptions.GlobalException;
+import com.example.demo.exceptions.NoContentException;
 import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.models.Activity;
 import com.example.demo.models.AssetAssignHistory;
@@ -66,42 +69,51 @@ public class EmployeeServImpl implements EmployeeService {
 			act.setOperation_date(ddate.format(LocalDateTime.now()));
 			act.setOperation_time(dtime.format(LocalDateTime.now()));
 			actrepo.save(act);
-			return empl;
+			
+			throw new GlobalException("Employee "+emp.getEmp_name()+" is not saved" );
 		}
 	}
 
 	@Override
 	public List<Employee> getAllEmployees() {
-		try {
-			return emprepo.findAll();
+	
+		List<Employee> empList = emprepo.findAll();
+		if(empList.size()>0) {
+			return empList;
 		}
-		catch(Exception e) {
-			return null;
+		else {
+			throw new NoContentException("No Employees found !!!");
 		}
+		
+	
 	}
 
  	@Override
 	public Employee getEmployeeById(Long empid) {
-		Employee empobj = emprepo.getEmployeeById(empid)
-				.orElseThrow(()-> new ResourceNotFoundException("No Employee Found for given Id "+empid));
-		return empobj;
+		return  emprepo.getEmployeeById(empid)
+				.orElseThrow(()-> new ResourceNotFoundException("No Employee Found for given Id "+empid));		
 	}
 
 	@Override
+	@Transactional
 	public int updateEmployee(Employee emp) {
 		String new_assets = "";
 		List<String> nl = emp.getAsset_ids();
-
-		for(int i=0;i<nl.size();i++) {
-			if(i==0) {
-				new_assets = nl.get(i);
-			}
-			else {
-				new_assets = new_assets+","+nl.get(i);
-			}
-		}
-		AssignedAssets isassigned = null;
+		
 		int res = emprepo.updateEmployee(emp.getEmp_name(), emp.getEmp_email(), emp.getEmp_contact(), emp.getDepartment().getDept_id(), emp.getDesignation().getDesig_id(), emp.getEmp_id());
+		System.err.println("Employee Update result "+res);
+		if(nl != null)  {
+			if(nl.size()>0) {
+			for(int i=0;i<nl.size();i++) {
+				if(i==0) {
+					new_assets = nl.get(i);
+				}
+				else {
+					new_assets = new_assets+","+nl.get(i);
+				}
+			}
+		AssignedAssets isassigned = null;
+		
 		
 		// Fetch managed Employee entity
 		Employee managedEmp =  this.getEmployeeById(emp.getEmp_id());
@@ -204,7 +216,7 @@ public class EmployeeServImpl implements EmployeeService {
 					
 					isassigned = assignassetrepo.save(assignasset);
 					
-					if(isassigned!=null) {	
+					if(isassigned!=null) {
 						qty = assetrepo.getQuantiyByAssetId(astid);
 						qty-=1;
 						assetrepo.updateAssetQuantityByAssetId(astid, ""+qty);
@@ -347,13 +359,20 @@ public class EmployeeServImpl implements EmployeeService {
 					}
 				}
 			}
+		  }
+			if(isassigned!=null) {
+				return 1;
+			}
+			else {
+				throw new GlobalException("Asset(s) are not Updated of Employee "+emp.getEmp_name());
+			}
+		  }
 		}
-		
-		if(isassigned!=null) {
+		if(res > 0) {
 			return 1;
 		}
 		else {
-			return 0;
+			throw new GlobalException("Employee "+emp.getEmp_name()+" is not updated");
 		}
 	}
 }

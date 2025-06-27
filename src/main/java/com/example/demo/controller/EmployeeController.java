@@ -94,7 +94,6 @@ public class EmployeeController {
 				})
 	@CachePut(value = "assignedassetlist")
 	public ResponseEntity<ResponseDto> saveEmployee(@RequestBody Employee empl) {
-
 	
 		String asset_ids = empl.getAsset_ids().toString().replace("[", "").replace("]", "").replace(" ", "");
 		AssignedAssets isassigned = null;
@@ -134,6 +133,7 @@ public class EmployeeController {
 					qty = (Integer) assetserv.getAssetQuantityByAssetId(astid);
 					qty -= 1;
 					assetserv.updateAssetQuantityByAssetId(astid, "" + qty);
+					
 					AssetAssignHistory ahist = new AssetAssignHistory();
 
 					ahist.setAsset(ast);
@@ -279,13 +279,12 @@ public class EmployeeController {
 					@ApiResponse(description = "No Assets are Retrieved from the Employee", responseCode = "304" ) 
 				})
 	@CacheEvict(value = "assignedassetlist",allEntries = true)
-	public ResponseEntity<String> updateRetrieveAssets(@RequestBody Employee emp) {
+	public ResponseEntity<ResponseDto> updateRetrieveAssets(@RequestBody Employee emp) {
 //		logger.info("Employee is {} ",emp);
 		int res = assignserv.retrieveAssetByEmpId(emp);
-		if (res > 0)
-			return new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
-		else
-			return new ResponseEntity<String>("FAILED", HttpStatus.NOT_MODIFIED);
+		 
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.toString(), "Assets are retrieved from "+emp.getEmp_name()));
+		 
 	}
 
 	@GetMapping("/viewemphistbyempid/{id}")
@@ -353,15 +352,13 @@ public class EmployeeController {
 					@ApiResponse(description = "Employee is not Updated", responseCode = "304" ) 
 				})
 	@CacheEvict(value = "assignedassetlist",allEntries = true)
-	public ResponseEntity<Employee> updateAssignedAssets(@RequestBody Employee emp) {
+	public ResponseEntity<ResponseDto> updateAssignedAssets(@RequestBody Employee emp) {
 		logger.info("Updated assigned assets are {} ", emp);
 
 		int res = empserv.updateEmployee(emp);
-		if (res > 0) {
-			return new ResponseEntity<Employee>(emp, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<Employee>(HttpStatus.NOT_MODIFIED);
-		}
+		 
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.toString(), "Employee "+emp.getEmp_name()+" is updated Successfully"));
+		 
 	}
 
 	@GetMapping("/exportassignedassets/excel")

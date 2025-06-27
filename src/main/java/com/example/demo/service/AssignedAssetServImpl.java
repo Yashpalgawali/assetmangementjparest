@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.models.Activity;
@@ -73,12 +74,13 @@ public class AssignedAssetServImpl implements AssignedAssetService {
 	}
 
 	@Override
+	@Transactional
 	public int retrieveAssetByEmpId(Employee employee) {
 	 
 		Long eid = employee.getEmp_id();
 		List<AssignedAssets> ass_list = assignassetrepo.getAllAssignedAssetsByEmpId(eid);
 
-		String asts = "";
+//		String asts = "";
 		
 //		asts = ass_list.stream().map(assets -> ""+assets.getAsset().getAsset_id()).filter(Objects::nonNull).collect(Collectors.joining(","));
 		
