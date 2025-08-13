@@ -63,7 +63,7 @@ public class JwtAuthentication {
 //                    "/swagger-resources/**",
 //                    "/webjars/**"
 //                ).permitAll()
-			auth.antMatchers("/users/**").permitAll();
+			auth.antMatchers("/users/**","/authenticate").permitAll();
 			auth.anyRequest().authenticated();
 		});
 		//http.formLogin();
@@ -75,7 +75,7 @@ public class JwtAuthentication {
 	 	http.cors(cors->{
 	 		cors.configurationSource(request->{
 	 			 CorsConfiguration config = new CorsConfiguration();
-	 			//config.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // Your React app's URL
+	 			
 	             config.setAllowedOrigins(Arrays.asList("http://localhost:4200","http://localhost:3000")); // Your Angular app's URL
 	             config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 	             config.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));

@@ -208,6 +208,7 @@ public class EmployeeController {
 				emp.setDesignation(desig);
 
 				asts.setEmployee(emp);
+				logger.info("Assigned assets are {} ",asts);
 				alist.add(asts);
 			});
 			logger.info("Assigned Assets List {} ",alist);

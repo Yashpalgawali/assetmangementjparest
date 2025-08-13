@@ -67,8 +67,8 @@ public class AssetServImpl implements AssetService {
 
 	@Override
 	public int updateAssets(Assets asset) {
-//		int res = assetrepo.updateAsset(asset.getAsset_name(), asset.getAtype().getType_id(), asset.getAsset_number(), asset.getModel_number(), asset.getQuantity() , asset.getAsset_id());
-		int res =0;
+		int res = assetrepo.updateAsset(asset.getAsset_name(), asset.getAtype().getType_id(), asset.getAsset_number(), asset.getModel_number(), asset.getQuantity() , asset.getAsset_id());
+		
 		if(res>0) {
 			activity=new Activity();
 			activity.setActivity(asset.getAsset_name() +" is updated successfully");
