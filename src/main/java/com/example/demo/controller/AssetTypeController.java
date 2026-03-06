@@ -35,17 +35,17 @@ public class AssetTypeController {
 //	@ApiOperation("This will save the Asset Type")
 	public ResponseEntity<ResponseDto> saveAssetType(@RequestBody AssetType atype)
 	{
-		AssetType type = atypeserv.saveAssetType(atype);		 
+		atypeserv.saveAssetType(atype);		 
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.toString(), "Asset type "+atype.getType_name()+" is saved successfully "));		 
 		 
 	}
 	
 	@GetMapping("/")
 //	@ApiOperation("This will get the Asset Types list")
-	public ResponseEntity<List<AssetType>> getAllAssetType() throws NoContentException
+	public ResponseEntity<List<AssetType>> getAllAssetType()
 	{
 		List<AssetType> type = atypeserv.getAllAssetTypes();
-		return new ResponseEntity<List<AssetType>>(type , HttpStatus.OK);
+		return ResponseEntity.status(HttpStatus.OK).body(type);
 	}
 	
 	@GetMapping("/{id}")

@@ -64,6 +64,7 @@ public class JwtAuthentication {
 //                    "/webjars/**"
 //                ).permitAll()
 			auth.antMatchers("/users/**","/authenticate").permitAll();
+			
 			auth.anyRequest().authenticated();
 		});
 		//http.formLogin();

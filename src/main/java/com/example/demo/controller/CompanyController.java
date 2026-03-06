@@ -52,7 +52,6 @@ public class CompanyController {
 					@ApiResponse(description = "Company is NOT saved ", responseCode = "500" ) 
 				})
 	@Operation(summary = "Save Company",description = "This End Point is used to save the Company")
-	@CacheEvict(allEntries = true,value = "companylist")
 	public ResponseEntity<?> saveCompany(@Valid @RequestBody Company company)
 	{
 		Company comp = compserv.saveCompany(company);
@@ -70,7 +69,6 @@ public class CompanyController {
 							@ApiResponse(description = "Company is saved Successfully", responseCode = "200" ) ,
 							@ApiResponse(description = "Company is NOT saved ", responseCode = "500" ) 
 						})
-	@Cacheable("companylist")
 	public ResponseEntity<List<Company>> viewCompanies() {
 			List<Company> clist = compserv.getAllCompanies();
 			 
@@ -101,7 +99,6 @@ public class CompanyController {
 					@ApiResponse(description = "Company is Updated Successfully", responseCode = "200" ),
 					@ApiResponse(description = "Company is NOT Updated ", responseCode = "304" ) 
 				})
-	@CacheEvict(allEntries = true,value = "companylist")
 	public ResponseEntity<?> updateCompany(@Valid @RequestBody Company comp) {
 		compserv.updateCompany(comp);
 		 

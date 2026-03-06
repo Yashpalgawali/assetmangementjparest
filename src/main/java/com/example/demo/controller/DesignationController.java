@@ -42,7 +42,7 @@ public class DesignationController {
 					@ApiResponse(description = "Designation is not saved ", responseCode  = "500" ) 
 				})
 	public ResponseEntity<ResponseDto> saveDesignation(@RequestBody Designation desig) throws NoContentException {
-		Designation designation = desigserv.saveDesignation(desig);
+		desigserv.saveDesignation(desig);
 		 
 		return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDto(HttpStatus.CREATED.toString() ,"Designtion "+desig.getDesig_name()+" is saved successfully"));
 		
@@ -79,7 +79,7 @@ public class DesignationController {
 					@ApiResponse(description = "Designation is not updated", responseCode  = "304" ) 
 				})
 	public ResponseEntity<ResponseDto> updateDesignation(@RequestBody Designation desig) {
-		int res = desigserv.updateDesignation(desig);
+		 desigserv.updateDesignation(desig);
 		
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.toString(),"Designation "+desig.getDesig_name()+" is updated successfully"));
 		

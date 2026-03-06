@@ -16,7 +16,7 @@ import lombok.experimental.FieldDefaults;
 @Entity
 @Table(name = "tbl_assettype")
 @Data
-@AllArgsConstructor()
+@AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level=AccessLevel.PRIVATE)
 public class AssetType {

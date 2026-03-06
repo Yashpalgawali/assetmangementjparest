@@ -33,7 +33,7 @@ public class AssetTypeServImpl implements AssetTypeService {
 	}
 
 	@Override
-	public List<AssetType> getAllAssetTypes() throws NoContentException {
+	public List<AssetType> getAllAssetTypes() {
 		var atypeList = atyperepo.findAll();
 		if(atypeList.size()>0 )
 			return atypeList;
@@ -44,7 +44,6 @@ public class AssetTypeServImpl implements AssetTypeService {
 	@Override
 	public AssetType getAssetTypeById(Long id) {
 		return atyperepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("No Asset Type found for given ID "+id));
-		
 	}
 
 	@Override
@@ -54,7 +53,7 @@ public class AssetTypeServImpl implements AssetTypeService {
 		if(result > 0)
 			return result;
 		else 
-			throw new ResourceNotModifiedException("returned "+ atype.getType_name()+" is not updated");
+			throw new ResourceNotModifiedException("Asset Type "+ atype.getType_name()+" is not updated");
 	}
 
 }
