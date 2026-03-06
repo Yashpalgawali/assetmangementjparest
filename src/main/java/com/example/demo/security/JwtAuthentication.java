@@ -77,9 +77,10 @@ public class JwtAuthentication {
 	 		cors.configurationSource(request->{
 	 			 CorsConfiguration config = new CorsConfiguration();
 	 			
-	             config.setAllowedOrigins(Arrays.asList("http://localhost:4200","http://localhost:3000","192.168.0.219:8081")); // Your Angular app's URL
-	             config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-	             config.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
+	 			 config.setAllowedOrigins(Arrays.asList("http://192.168.0.219:3000","http://localhost:4200","http://192.168.0.219:4200","http://localhost:8081","http://192.168.0.219:8081","http://localhost:3000")); // Your React app's URL
+//	             config.setAllowedOrigins(Arrays.asList("http://localhost:4200","http://localhost:3000","http://192.168.0.219:8081")); // Your Angular app's URL
+	 			config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH"));
+	 			config.setAllowedHeaders(Arrays.asList("*"));	             
 	             config.setAllowCredentials(true); // Allow cookies
 	             return config;
 	 		});
