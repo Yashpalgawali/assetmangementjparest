@@ -7,9 +7,8 @@ import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
 import java.util.UUID;
 
-import javax.servlet.http.HttpServletResponse;
-//import javax.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
+import jakarta.servlet.http.HttpServletResponse;
+//import jakarta.servlet.http.HttpServletResponse; 
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -45,25 +44,23 @@ import com.nimbusds.jose.proc.SecurityContext;
 
 @Configuration
 public class JwtAuthentication {
-//	@Autowired
-//    private DataSource dataSource;
-	
+ 
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.httpBasic(basic->{});
 		http.authorizeHttpRequests(auth -> {
-			auth.antMatchers("/v3/api-docs/**",
+			auth.requestMatchers("/v3/api-docs/**",
 					"/v3/api-docs/**",
 	                "/swagger-ui.html",
 	                "/swagger-ui/**").permitAll();
-//			.antMatchers(
+//			.requestMatchers(
 //                    "/v3/api-docs/**",
 //                    "/swagger-ui/**",
 //                    "/swagger-ui.html",
 //                    "/swagger-resources/**",
 //                    "/webjars/**"
 //                ).permitAll()
-			auth.antMatchers("/users/**","/authenticate").permitAll();
+			auth.requestMatchers("/users/**","/authenticate").permitAll();
 			
 			auth.anyRequest().authenticated();
 		});
