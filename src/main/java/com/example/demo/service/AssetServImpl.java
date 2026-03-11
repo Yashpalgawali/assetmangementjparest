@@ -15,16 +15,22 @@ import com.example.demo.repository.ActivityRepo;
 import com.example.demo.repository.AssetRepo;
 
 @Service("assetserv")
+
 public class AssetServImpl implements AssetService {
 
 	private AssetRepo assetrepo;
 	
 	private ActivityRepo activityrepo;
 	
-	public AssetServImpl(AssetRepo assetrepo, ActivityRepo activityrepo) {
+	private AssetTypeService assettypeserv;
+	
+	
+	
+	public AssetServImpl(AssetRepo assetrepo, ActivityRepo activityrepo, AssetTypeService assettypeserv) {
 		super();
 		this.assetrepo = assetrepo;
 		this.activityrepo = activityrepo;
+		this.assettypeserv = assettypeserv;
 	}
 
 	DateTimeFormatter tday  =  DateTimeFormatter.ofPattern("dd-MM-yyyy");
@@ -34,6 +40,8 @@ public class AssetServImpl implements AssetService {
 	
 	@Override
 	public Assets saveAssets(Assets asset) {
+		var assetType = assettypeserv.getAssetTypeById(asset.getAtype().getType_id());
+		asset.setAtype(assetType);
 		Assets ast = assetrepo.save(asset);
 		if(ast!=null) {
 			activity=new Activity();

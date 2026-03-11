@@ -40,6 +40,11 @@ public class Company {
 		super();
 		this.comp_name = comp_name;
 	}
+	
+	public Company(Long comp_id) {
+		super();
+		this.comp_id = comp_id;
+	}
 
 	// @ToString.Exclude
 //	@JsonIgnore

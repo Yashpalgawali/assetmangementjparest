@@ -32,4 +32,8 @@ public class AssetType {
 		super();
 		this.type_name = type_name;
 	}
+	public AssetType(Long type_id) {
+		super();
+		this.type_id = type_id;
+	}
 }

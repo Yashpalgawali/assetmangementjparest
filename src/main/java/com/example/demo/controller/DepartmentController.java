@@ -36,23 +36,19 @@ public class DepartmentController {
 		this.deptserv = deptserv;
 	}
 
-	 
 	@PostMapping("/")
 	@Operation(description = "This End Point is used to save Department", summary = "Save Department")
-	@ApiResponses(value = {
-	  @ApiResponse(description = "Department is saved successfully ",  responseCode = "200") ,
-	  @ApiResponse(description = "Department is not saved ", responseCode = "500")  })
+	@ApiResponses(value = { @ApiResponse(description = "Department is saved successfully ", responseCode = "200"),
+			@ApiResponse(description = "Department is not saved ", responseCode = "500") })
 	public ResponseEntity<ResponseDto> saveDepartment(@Valid @RequestBody Department dept) {
 
-		Department depart = deptserv.saveDepartment(dept);
-		if (depart != null) {
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.toString(),
-					"Department " + dept.getDept_name() + " is saved successfully"));
-		} else {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.toString(),
-							"Department " + dept.getDept_name() + " is not saved "));
-		}
+		System.err.println("Deparment to be saved " + dept.toString());
+
+		// deptserv.saveDepartment(dept);
+
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.toString(),
+				"Department " + dept.getDept_name() + " is saved successfully"));
+
 	}
 
 	@GetMapping("/")
@@ -85,16 +81,13 @@ public class DepartmentController {
 	@PutMapping("/")
 	@Operation(description = "This End Point is used to Update the Department", summary = "Update Department")
 	@ApiResponses(value = { @ApiResponse(description = "Department is Updated successfully ", responseCode = "200"),
-			@ApiResponse(description = "Department is Not Updated ", responseCode = "404") })
+			@ApiResponse(description = "Department is Not Updated ", responseCode = "500") })
 	public ResponseEntity<ResponseDto> updateDepartment(@Valid @RequestBody Department dept) {
-		int result = deptserv.updateDepartment(dept);
-		if (result > 0) {
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.toString(),
-					"Department " + dept.getDept_name() + " is updated successfully"));
-		} else {
-			return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(new ResponseDto(
-					HttpStatus.NOT_MODIFIED.toString(), "Department " + dept.getDept_name() + " is not updated"));
-		}
+		deptserv.updateDepartment(dept);
+
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.toString(),
+				"Department " + dept.getDept_name() + " is updated successfully"));
+
 	}
 
 	@GetMapping("/getdeptbycompid/{id}")

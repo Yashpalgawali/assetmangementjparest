@@ -32,4 +32,10 @@ public class Designation {
 
 	String desig_name;
 
+	public Designation(Long desig_id) {
+		super();
+		this.desig_id = desig_id;
+	}
+
+	
 }

@@ -45,4 +45,7 @@ public class Department {
 	@JoinColumn(name = "comp_id", referencedColumnName = "comp_id")
 	Company company;
 
+	public Department(Long dept_id) {
+		this.dept_id=dept_id;
+	}
 }
