@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.exceptions.GlobalException;
 import com.example.demo.exceptions.ResourceNotFoundException;
@@ -21,13 +22,11 @@ import jakarta.mail.search.IntegerComparisonTerm;
 public class AssetServImpl implements AssetService {
 
 	private AssetRepo assetrepo;
-	
+
 	private ActivityRepo activityrepo;
-	
+
 	private AssetTypeService assettypeserv;
-	
-	
-	
+
 	public AssetServImpl(AssetRepo assetrepo, ActivityRepo activityrepo, AssetTypeService assettypeserv) {
 		super();
 		this.assetrepo = assetrepo;
@@ -35,85 +34,84 @@ public class AssetServImpl implements AssetService {
 		this.assettypeserv = assettypeserv;
 	}
 
-	DateTimeFormatter tday  =  DateTimeFormatter.ofPattern("dd-MM-yyyy");
-	DateTimeFormatter ttime =  DateTimeFormatter.ofPattern("hh:mm:ss");
-	
+	DateTimeFormatter tday = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+	DateTimeFormatter ttime = DateTimeFormatter.ofPattern("hh:mm:ss");
+
 	Activity activity = null;
-	
+
 	@Override
 	public Assets saveAssets(Assets asset) {
 		var assetType = assettypeserv.getAssetTypeById(asset.getAtype().getType_id());
 		asset.setAtype(assetType);
 		Assets ast = assetrepo.save(asset);
-		if(ast!=null) {
-			activity=new Activity();
-			activity.setActivity(asset.getAsset_name() +" is saved successfully");
+		if (ast != null) {
+			activity = new Activity();
+			activity.setActivity(asset.getAsset_name() + " is saved successfully");
 			activity.setOperation_date(tday.format(LocalDateTime.now()));
 			activity.setOperation_time(ttime.format(LocalDateTime.now()));
 			activityrepo.save(activity);
 			return ast;
-		}
-		else
-		 {
-			activity=new Activity();
-			activity.setActivity(asset.getAsset_name() +" is not saved ");
+		} else {
+			activity = new Activity();
+			activity.setActivity(asset.getAsset_name() + " is not saved ");
 			activity.setOperation_date(tday.format(LocalDateTime.now()));
 			activity.setOperation_time(ttime.format(LocalDateTime.now()));
 			activityrepo.save(activity);
 
-			throw new GlobalException("Asset "+asset.getAsset_name()+" is not saved");
-		 }
+			throw new GlobalException("Asset " + asset.getAsset_name() + " is not saved");
+		}
 	}
 
 	@Override
 	public List<Assets> getAllAssets() {
-		System.err.println("Total assets are "+ this.getTotalAssetsCount());
 		return assetrepo.findAll();
 	}
 
 	@Override
-	public Assets getAssetsById(Long id) { 
-		return assetrepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("No Asset found for given ID "+id));
+	public Assets getAssetsById(Long id) {
+		return assetrepo.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("No Asset found for given ID " + id));
 	}
 
 	@Override
+	@Transactional	
 	public int updateAssets(Assets asset) {
-		int res = assetrepo.updateAsset(asset.getAsset_name(), asset.getAtype().getType_id(), asset.getAsset_number(), asset.getModel_number(), asset.getQuantity() , asset.getAsset_id());
-		
-		if(res>0) {
-			activity=new Activity();
-			activity.setActivity(asset.getAsset_name() +" is updated successfully");
+		int res = assetrepo.updateAsset(asset.getAsset_name(), asset.getAtype().getType_id(), asset.getAsset_number(),
+				asset.getModel_number(), asset.getQuantity(), asset.getAsset_id());
+
+		if (res > 0) {
+			activity = new Activity();
+			activity.setActivity(asset.getAsset_name() + " is updated successfully");
 			activity.setOperation_date(tday.format(LocalDateTime.now()));
 			activity.setOperation_time(ttime.format(LocalDateTime.now()));
 			activityrepo.save(activity);
 			return res;
-		 }
-		else {
-			activity=new Activity();
-			activity.setActivity(asset.getAsset_name() +" is not updated ");
+		} else {
+			activity = new Activity();
+			activity.setActivity(asset.getAsset_name() + " is not updated ");
 			activity.setOperation_date(tday.format(LocalDateTime.now()));
 			activity.setOperation_time(ttime.format(LocalDateTime.now()));
 			activityrepo.save(activity);
-			 
-			throw new ResourceNotModifiedException("Asset "+asset.getAsset_name()+" is not Updated");
+
+			throw new ResourceNotModifiedException("Asset " + asset.getAsset_name() + " is not Updated");
 		}
 	}
 
 	@Override
-	public int updateAssetQuantityByAssetId(Long asid,String qty) {
+	@Transactional
+	public int updateAssetQuantityByAssetId(Long asid, String qty) {
 		int res = assetrepo.updateAssetQuantityByAssetId(asid, qty);
 		Assets ast = assetrepo.findById(asid).get();
-		if(res>0) {
-			activity=new Activity();
-			activity.setActivity("Quantity of "+ast.getAsset_name() +" is updated to "+qty+" successfully");
+		if (res > 0) {
+			activity = new Activity();
+			activity.setActivity("Quantity of " + ast.getAsset_name() + " is updated to " + qty + " successfully");
 			activity.setOperation_date(tday.format(LocalDateTime.now()));
 			activity.setOperation_time(ttime.format(LocalDateTime.now()));
 			activityrepo.save(activity);
 			return res;
-		 }
-		else {
-			activity=new Activity();
-			activity.setActivity("Quantity of "+ast.getAsset_name() +" is not updated ");
+		} else {
+			activity = new Activity();
+			activity.setActivity("Quantity of " + ast.getAsset_name() + " is not updated ");
 			activity.setOperation_date(tday.format(LocalDateTime.now()));
 			activity.setOperation_time(ttime.format(LocalDateTime.now()));
 			activityrepo.save(activity);
@@ -128,8 +126,7 @@ public class AssetServImpl implements AssetService {
 
 	@Override
 	public int getTotalAssetsCount() {
-		String total = ""+assetrepo.count();
-		 
-		return  Integer.parseInt(total);
+		int total = assetrepo.sumOfTotalAssetsQuantity();
+		return total;
 	}
 }
