@@ -14,6 +14,8 @@ import com.example.demo.models.Assets;
 import com.example.demo.repository.ActivityRepo;
 import com.example.demo.repository.AssetRepo;
 
+import jakarta.mail.search.IntegerComparisonTerm;
+
 @Service("assetserv")
 
 public class AssetServImpl implements AssetService {
@@ -65,6 +67,7 @@ public class AssetServImpl implements AssetService {
 
 	@Override
 	public List<Assets> getAllAssets() {
+		System.err.println("Total assets are "+ this.getTotalAssetsCount());
 		return assetrepo.findAll();
 	}
 
@@ -121,5 +124,12 @@ public class AssetServImpl implements AssetService {
 	@Override
 	public int getAssetQuantityByAssetId(Long asid) {
 		return assetrepo.getQuantiyByAssetId(asid);
+	}
+
+	@Override
+	public int getTotalAssetsCount() {
+		String total = ""+assetrepo.count();
+		 
+		return  Integer.parseInt(total);
 	}
 }

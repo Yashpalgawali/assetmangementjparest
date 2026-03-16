@@ -94,4 +94,17 @@ public class AssetController {
 		 
 		return  ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.toString(), "Asset "+ast.getAsset_name()+" is updated successfully"));
 	}
+	
+	@GetMapping("/count")
+	@Operation(description = "This Will get the total Assets count" ,summary = "Total Assets count")
+	@ApiResponses(
+			value = {
+					@ApiResponse(description = "Asset count is fetched Successfully", responseCode = "200"),
+					@ApiResponse(description = "Asset count is not fetched ", responseCode = "404")
+			}
+		)
+	public ResponseEntity<Integer> getAssetsCount() {
+		int count =assetserv.getTotalAssetsCount();
+		return new ResponseEntity<Integer>(count , HttpStatus.OK);
+	}
 }

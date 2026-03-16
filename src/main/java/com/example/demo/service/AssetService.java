@@ -18,4 +18,5 @@ public interface AssetService {
 
 	public int getAssetQuantityByAssetId(Long asid);
 
+	public int getTotalAssetsCount();
 }

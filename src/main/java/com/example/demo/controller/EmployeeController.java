@@ -271,6 +271,8 @@ public class EmployeeController {
 		return ResponseEntity.status(HttpStatus.OK).body(assign);
 		 
 	}
+	
+ 
 
 	@PostMapping("/delete")
 	@Operation(description = "This endpoint will UPDATE the Assets by Employee ID",summary ="This will retrieve the Assigned Assets ")
@@ -279,7 +281,6 @@ public class EmployeeController {
 					@ApiResponse(description = "Assets are Retrieved from Employee ", responseCode = "200" ) ,
 					@ApiResponse(description = "No Assets are Retrieved from the Employee", responseCode = "304" ) 
 				})
-	@CacheEvict(value = "assignedassetlist",allEntries = true)
 	public ResponseEntity<ResponseDto> updateRetrieveAssets(@RequestBody Employee emp) {
 //		logger.info("Employee is {} ",emp);
 		int res = assignserv.retrieveAssetByEmpId(emp);
@@ -288,6 +289,7 @@ public class EmployeeController {
 		 
 	}
 
+	
 	@GetMapping("/viewemphistbyempid/{id}")
 	@Operation(description = "This endpoint will show History of assigning assets to Employee by Employee ID",summary ="History of assigned assets to the Employee")
 	@ApiResponses(value = 
@@ -352,12 +354,8 @@ public class EmployeeController {
 					@ApiResponse(description = "Employee updated Successfully ", responseCode = "200" ) ,
 					@ApiResponse(description = "Employee is not Updated", responseCode = "304" ) 
 				})
-	@CacheEvict(value = "assignedassetlist",allEntries = true)
 	public ResponseEntity<ResponseDto> updateAssignedAssets(@RequestBody Employee emp) {
-		logger.info("Updated assigned assets are {} ", emp);
-
-		int res = empserv.updateEmployee(emp);
-		 
+		int res = empserv.updateEmployee(emp);		 
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.toString(), "Employee "+emp.getEmp_name()+" is updated Successfully"));
 		 
 	}
